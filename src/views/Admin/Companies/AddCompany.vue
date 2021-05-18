@@ -11,22 +11,28 @@
           <form @submit.prevent="addUser">
         <div className="form-flex">
       <div className="form-flex-col">
-        <input v-model="form2.firstName" type="text" className="app-modal-form-field w-input"  placeholder="First Name"  required/>
+         <label style="color:#a3a3a3; font-weight:500;font-size:13px" >First Name</label> 
+        <input v-model="form2.firstName" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
          <div className="form-flex-col">
-        <input v-model="form2.lastName" type="text" className="app-modal-form-field w-input"  placeholder="Last Name"  required/>
+            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Last Name</label> 
+        <input v-model="form2.lastName" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
          <div className="form-flex-col">
-        <input v-model="form2.emailAddress" type="text" className="app-modal-form-field w-input"  placeholder="Email Address"  required/>
+               <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Email Address</label>
+        <input v-model="form2.emailAddress" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
          <div className="form-flex-col">
-        <input v-model="form2.userName" type="text" className="app-modal-form-field w-input"  placeholder="Username"  required/>
+             <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Username</label>
+        <input v-model="form2.userName" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
          <div className="form-flex-col">
-        <input v-model="form2.mobileNo" type="text" className="app-modal-form-field w-input"  placeholder="Phone Number"  required/>
+            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Phone Number</label>
+        <input v-model="form2.mobileNo" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
          <div className="form-flex-col">
-          <select id="roles" style="marginBottom: 30px" class="app-select w-select">
+            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role</label>
+          <select v-model="form2.rolesId" id="roles" style="marginBottom: 30px" class="app-select w-select">
                <option selected>Select a Role</option> 
              <option  v-for="(role, index) in getRoles" :key="index" :value="role.id">{{role.name}}</option>     
             </select>
@@ -42,31 +48,43 @@
           <form @submit.prevent="createCompany">
                <div className="form-flex">
       <div className="form-flex-col">
-        <input v-model="form.name" type="text" className="app-modal-form-field w-input"  placeholder="MFB Name"  required/>
+         <label style="color:#a3a3a3; font-weight:500;font-size:13px" >MFB Name</label> 
+        <input v-model="form.name" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
          <div className="form-flex-col">
-        <input v-model="form.accountNumber" type="text" className="app-modal-form-field w-input"  placeholder="Account Number"  required/>
+             <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Account Number</label> 
+        <input v-model="form.accountNumber" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
          <div className="form-flex-col">
-        <input v-model="form.companyCode" type="text" className="app-modal-form-field w-input"  placeholder="Company Code"  required/>
+           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Company Code</label> 
+        <input v-model="form.companyCode" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
           <div className="form-flex-col">
-        <input v-model="form.emailAddress" type="text" className="app-modal-form-field w-input"  placeholder="Email Address"  required/>
+              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Email Address</label> 
+        <input v-model="form.emailAddress" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
         <div className="form-flex-col">
-        <input v-model="form.phoneNumber" type="text" className="app-modal-form-field w-input"  placeholder="Phone Number"  required/>
+           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Phone Number</label> 
+        <input v-model="form.phoneNumber" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
         <div className="form-flex-col">
-        <input v-model="form.address" type="text" className="app-modal-form-field w-input"  placeholder="Address"  required/>
+          <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Address</label> 
+        <input v-model="form.address" type="text" className="app-modal-form-field w-input"  placeholder="Type Here" required/>
         </div>
          <div className="form-flex-col">
-        <input v-model="form.branch" type="text" className="app-modal-form-field w-input"  placeholder="Branch"  required/>
+           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Branch</label> 
+         <select v-model="form.branch" id="roles" style="marginBottom: 30px" class="app-select w-select">
+               <option selected>Select a Branch</option> 
+             <option  v-for="(result, index) in branches" :key="index" :value="result.branchNo">{{result.branchName}}</option>     
+            </select>
         </div>
         <div className="form-flex-col">
-        <input v-model="form.productName" type="text" className="app-modal-form-field w-input"  placeholder="Card Product Name"  required/>
+           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Card Product Name</label> 
+        <input v-model="form.productName" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
         <div className="form-flex-col">
-        <input v-model="form.productCode" type="text" className="app-modal-form-field w-input"  placeholder="Card Product Code"  required/>
+           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Card Product Code</label> 
+        <input v-model="form.productCode" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
                </div>
                  <div class="app-modal-heading">
@@ -125,12 +143,14 @@ export default {
             userName: '',
             mobileNo: '',
             rolesId: 0
-          }
+          },
+          branches:[]
       }
   },
     computed:{
     ...mapGetters([
       'getUrl',
+      'getUrl2',
       'getActivities',
       'getRoles'
     ])
@@ -138,8 +158,13 @@ export default {
       created(){
     this.$store.dispatch("getActivities");
     this.$store.dispatch("getRoles");
+    this.getBranch()
   },
   methods: {
+    async getBranch(){
+           const result = await axios.get(this.getUrl2 + 'api/Common/Branch')
+           this.branches = result.data
+    },
     resetState(){
 this.status = false;
     },
