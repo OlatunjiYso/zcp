@@ -1,7 +1,7 @@
 <template>
   <div>
      <Loader v-show="loader"/>
-     <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>
+     <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>s
  <div class="content-header">Card Requests</div>
       <div class="content-sub">Here are the latest report on Paysure Agency</div>
       <div class="app-table-actions">
@@ -16,7 +16,7 @@
           <a href="#" class="table-button">Actions <span class="table-button-icon"></span></a>
         </div> -->
       </div>
-        <table class="app-table2" v-if="!Requests.length <= 0">
+        <table class="app-table2" v-if="!ApprovalRequests.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
                            <th class="app-table2-header">Id</th>
@@ -26,13 +26,13 @@
                            <th class="app-table2-header">Card Type</th>
                            <th class="app-table2-header">Card Product Code</th>
                            <th class="app-table2-header">Status</th>
-                           
+                            <th class="app-table2-header"></th>
                            
                         </tr>
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in Requests" :key="index" class="app-table2-row">
+                              <tr v-for="(result, index) in ApprovalRequests" :key="index" class="app-table2-row">
                             <td class="app-table2-data">{{result.id}}</td>
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
@@ -40,7 +40,9 @@
                             <td class="app-table2-data">-</td>
                             <td class="app-table2-data">{{result.productCode}}</td>  
                             <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : "null"}}</th>
-                            
+                             <td class="app-table2-data">
+                                   <div @click="Approve(result)" style="cursor:pointer" class="table-btn">Approve<span class="table-button-icon"></span></div>
+                            </td> 
                         </tr>
                         
                     </tbody>
@@ -59,7 +61,7 @@ import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
 
 export default {
-  props:['Requests'],
+  props:['ApprovalRequests'],
           components:{
      Loader,
      Status,
@@ -80,7 +82,39 @@ export default {
     ])
   },
   methods: {
-  
+  async  Approve(result){
+       this.loader = true
+         const formData = {
+              "requestId": [result.id],
+              "companyId": 0,
+              "workflowId": 2,
+              "userId": 0
+            }
+         try {
+           
+             const response = await axios.post(this.getUrl + 'api/CardRequest/approveoracknowledge',formData)
+             if(response.status == 200){
+               this.loader = false;
+               this.status = true;
+               this.state = 'success';
+               this.message = 'Operation Sucessful'
+             }
+             else{
+               this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = 'Operation Failed'
+             }
+
+         } catch (error) {
+              console.log(error)
+               this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = 'Operation Failed'
+         }
+            
+    }
   },
 }
 </script>

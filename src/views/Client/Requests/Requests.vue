@@ -7,19 +7,19 @@
         <div class="admin-top-bar">
         <div class="admin-top-bar-left">
         <div class="settings-icon"></div>
-        <div @click = "switchView('card')" class="admin-top-barlinks" :class="[ cardView ? activeClass : '']">Card</div>
-        <!-- <div @click = "switchView('user')" class="admin-top-barlinks" :class="[ userView ? activeClass : '']">User</div> -->
+        <div @click = "switchView('Approval')" class="admin-top-barlinks" :class="[ ApprovalView ? activeClass : '']">Pending Approval</div>
+        <div @click = "switchView('Acknowledge')" class="admin-top-barlinks" :class="[ AcknowledgeView ? activeClass : '']">Pending Acknowledgement</div>
         </div>
          <div class="admin-top-bar-right">
           <div class="admin-topbar-date">October 8th, 2020</div>
         </div>
       </div>
-        <div v-show="cardView">
-        <Card :cardRequests="cardRequests"/> 
+        <div v-show="ApprovalView">
+        <Approval :ApprovalRequests="ApprovalRequests"/> 
         </div>
-            <!-- <div v-show="userView">
-           <User/>       
-            </div> -->
+            <div v-show="AcknowledgeView">
+           <Acknowledge :AcknowledgeRequests="AcknowledgeRequests"/>       
+            </div>
     </div>
       <div class="app-admin-col-3">
               <Rightbar />
@@ -31,8 +31,8 @@
 <script>
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
-import Card from './Card'
-import User from './User'
+import Approval from './Approval'
+import Acknowledge from './Acknowledge'
 import axios from 'axios'
 import {mapGetters} from 'vuex'
 export default {
@@ -40,40 +40,46 @@ export default {
   components: {
     Leftbar,
     Rightbar,
-    Card,
-    User
+    Approval,
+    Acknowledge
   },
   data(){
       return{
         selectedTab: '',
-        cardView: true,
-        userView: false,
+        ApprovalView: true,
+        AcknowledgeView: false,
         activeClass:'admin-active-top-link',
-        cardRequests:[]
+        ApprovalRequests:[],
+        AcknowledgeRequests:[]
       }
   },
   created(){
-      this.fetchCardRequests()
+      this.fetchApprovalRequests();
+      this.fetchAcknowledgeRequests()
   },
       computed:{
     ...mapGetters([ 'getUrl2' ])
     }, 
 methods:{
 
-  async fetchCardRequests(){
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/all/{companyid}')
-           this.cardRequests = result.data
+  async fetchApprovalRequests(){
+ const result = await axios.get(this.getUrl2 + '/api/CardRequest/pendingApproval/7')
+           this.ApprovalRequests = result.data
+  },
+    async fetchAcknowledgeRequests(){
+ const result = await axios.get(this.getUrl2 + 'api/CardRequest/pendingacknowledgement/7')
+           this.AcknowledgeRequests = result.data
   },
     
     switchView( selected ){
 
-        if(selected == "card"){
-         this.cardView = true
-         this.userView = false
+        if(selected == "Approval"){
+         this.ApprovalView = true
+         this.AcknowledgeView = false
         }
-        else if(selected == 'user') {
-         this.cardView = false
-         this.userView = true
+        else if(selected == 'Acknowledge') {
+         this.ApprovalView = false
+         this.AcknowledgeView = true
         }
 
     },

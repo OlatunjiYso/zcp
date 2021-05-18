@@ -10,13 +10,13 @@
             <form id="email-form" name="email-form" data-name="Email Form"><input type="text" class="app-input-search w-input" maxlength="256" name="name" data-name="Name" placeholder="Search..." id="name"></form>
           </div>
         </div>
-        <!-- <div class="app-table-buttons">
+        <div class="app-table-buttons">
           <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>
           <a href="#" class="table-button">Filter <span class="table-button-icon"></span></a>
           <a href="#" class="table-button">Actions <span class="table-button-icon"></span></a>
-        </div> -->
+        </div>
       </div>
-        <table class="app-table2" v-if="!Requests.length <= 0">
+      <table class="app-table2" v-if="!AcknowledgeRequests.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
                            <th class="app-table2-header">Id</th>
@@ -26,13 +26,13 @@
                            <th class="app-table2-header">Card Type</th>
                            <th class="app-table2-header">Card Product Code</th>
                            <th class="app-table2-header">Status</th>
-                           
+                            <th class="app-table2-header"></th>
                            
                         </tr>
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in Requests" :key="index" class="app-table2-row">
+                              <tr v-for="(result, index) in AcknowledgeRequests" :key="index" class="app-table2-row">
                             <td class="app-table2-data">{{result.id}}</td>
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
@@ -40,13 +40,15 @@
                             <td class="app-table2-data">-</td>
                             <td class="app-table2-data">{{result.productCode}}</td>  
                             <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : "null"}}</th>
-                            
+                             <td class="app-table2-data">
+                               <div @click="Acknowledge(result)" style="cursor:pointer" class="table-btn">Acknowledge<span class="table-button-icon"></span></div>
+                            </td> 
                         </tr>
                         
                     </tbody>
           
                 </table>
-                    <Loading v-else/>
+                 <EmptyData v-else/>
   </div>
 </template>
 
@@ -57,9 +59,8 @@ import Status from '../../../components/Status/Status2'
 import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
-
 export default {
-  props:['Requests'],
+  props:['AcknowledgeRequests'],
           components:{
      Loader,
      Status,
@@ -80,7 +81,39 @@ export default {
     ])
   },
   methods: {
-  
+  async  Acknowledge(result){
+       this.loader = true
+         const formData = {
+              "requestId": [result.id],
+              "companyId": 0,
+              "workflowId": 6,
+              "userId": 0
+            }
+         try {
+           
+             const response = await axios.post(this.getUrl + 'api/CardRequest/approveoracknowledge',formData)
+             if(response.status == 200){
+               this.loader = false;
+               this.status = true;
+               this.state = 'success';
+               this.message = 'Operation Sucessful'
+             }
+             else{
+               this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = 'Operation Failed'
+             }
+
+         } catch (error) {
+              console.log(error)
+               this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = 'Operation Failed'
+         }
+            
+    }
   },
 }
 </script>

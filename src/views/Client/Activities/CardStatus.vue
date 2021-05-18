@@ -14,7 +14,7 @@
           <div class="admin-topbar-date">October 8th, 2020</div>
       </div>
       </div>
-               <div class="content-header">Default Pin Generation</div>
+               <div class="content-header">Card Status</div>
       <form @submit.prevent="sendRequest">
               <div class="form-flex">
            <div class="form-flex-col-3">
@@ -78,7 +78,7 @@ this.status = false;
        this.loader = true
          try {
            
-             const response = await axios.post(this.getUrl2 + 'api/CardPin/pinretrieval',this.form)
+             const response = await axios.post(this.getUrl2 + 'api/CardRequest/cardstatus',this.form)
              if(response.status == 200){
                this.loader = false;
                this.status = true;

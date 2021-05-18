@@ -15,6 +15,7 @@ import ChargeBack from '../views/Client/Activities/ChargeBack.vue'
 import TransactionLog from '../views/Client/Activities/TransactionLog.vue'
 import CardDeactivation from '../views/Client/Activities/CardDeactivation.vue'
 import CardActivation from '../views/Client/Activities/CardActivation.vue'
+import CardStatus from '../views/Client/Activities/CardStatus.vue'
 
 
 
@@ -106,6 +107,11 @@ const routes = [
     name: 'CardDeactivation',
     component: CardDeactivation
   },
+  {
+    path: '/client/card-status',
+    name: 'CardStatus',
+    component: CardStatus
+  },
 
 
   {
@@ -124,7 +130,7 @@ const routes = [
     component: Companies2
   },
   {
-    path: '/admin/requests',
+    path: '/admin/requests/:id',
     name: 'Requests2',
     component: Requests2
   },

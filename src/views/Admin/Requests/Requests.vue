@@ -6,20 +6,20 @@
             <div class="app-admin-col-2">
             <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-          <div class="settings-icon"></div>
-          <div @click = "switchView('card')" class="admin-top-barlinks" :class="[ cardView ? activeClass : '']">Card</div>
-          <div @click = "switchView('user')" class="admin-top-barlinks" :class="[ userView ? activeClass : '']">User</div>
+          <router-link to="/admin/companies"><div class="settings-icon"></div></router-link>
+          <!-- <div @click = "switchView('card')" class="admin-top-barlinks" :class="[ cardView ? activeClass : '']">Card</div>
+          <div @click = "switchView('user')" class="admin-top-barlinks" :class="[ userView ? activeClass : '']">User</div> -->
         </div>
          <div class="admin-top-bar-right">
           <div class="admin-topbar-date">October 8th, 2020</div>
         </div>
       </div>
         <div v-show="cardView">
-        <Card/> 
+        <Card :Requests ="Requests"/> 
         </div>
-            <div v-show="userView">
+            <!-- <div v-show="userView">
            <User/>       
-            </div>
+            </div> -->
     </div>
       <div class="app-admin-col-3">
               <Rightbar />
@@ -29,10 +29,12 @@
 
 
 <script>
+import axios from 'axios'
 import Leftbar from '../../../components/Admin/leftbar/leftbar'
 import Rightbar from '../../../components/Admin/rightbar/rightbar'
 import Card from './Card'
 import User from './User'
+import {mapGetters} from 'vuex'
 export default {
   name: "Home",
   components: {
@@ -46,13 +48,24 @@ export default {
         selectedTab: '',
         cardView: true,
         userView: false,
-         activeClass:'admin-active-top-link'
+         activeClass:'admin-active-top-link',
+         Requests:[]
       }
   },
+  created(){
+    this.fetchRequests();
+  },
+          computed:{
+    ...mapGetters([
+      'getUrl2',
+    ])
+  },
 methods:{
-    
+      async fetchRequests(){
+ const result = await axios.get(this.getUrl2 + '/api/CardRequest/all/' + this.$route.params.id)
+           this.Requests = result.data
+  },
     switchView( selected ){
-        console.log("HEEIE")
 
         if(selected == "card"){
             console.log('cardView')
@@ -69,3 +82,8 @@ methods:{
 }
 }
 </script>
+
+
+<style scoped>
+a{text-decoration:none;}
+</style>
