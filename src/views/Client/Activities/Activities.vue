@@ -50,7 +50,8 @@ export default {
                {title :'Card Cancellation', url: "/"}, 
                {title :'Card Activation', url: "card-activation"},
                 {title :'Card Deactivation', url: "card-deactivation"},
-                {title :'Transaction Log', url: "transaction-log"}
+                {title :'Transaction Log', url: "transaction-log"},
+                 {title :'Card Status', url: "card-status"}
                ],
       }
   }
