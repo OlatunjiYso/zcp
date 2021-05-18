@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import { createStore }  from 'vuex'
 import axios from'axios'
 export default createStore({
   state: {
@@ -9,7 +9,8 @@ export default createStore({
     companies:[],
     roles:[],
     permissions:[],
-    companyUsers:[]
+    companyUsers:[],
+    currentDate: "",
   },
   getters:{
    getUrl(state){
@@ -35,7 +36,7 @@ export default createStore({
   },
   getCompanyUsers(state){
     return state.companyUsers
-  }
+  },
   },
   mutations: {
     setActivities(state, payload){

@@ -14,7 +14,7 @@
           <div class="app-login-form-group"><label for="password" class="login-label">Hardware Token</label><input type="password" class="app-login-text-field w-input" placeholder="xxxxxxxxxxxxx" required=""></div>
         </form>
       </div>
-      <router-link to="overview" class="app-login-button">Login into Account</router-link>
+      <button @click="attemptLogin" class="app-login-button">Login into Account</button>
       <div class="app-login-divider"></div>
       <div class="app-login-notice">
         <div class="app-login-notice-col-1"></div>
@@ -25,8 +25,19 @@
 </template>
 
 <script>
-export default {
+import router from "../../../router";
 
+export default {
+  methods:{
+    data:function (){
+      return {
+        errorInfo : String
+      }
+    },
+    attemptLogin:function (){
+        router.push("overview")
+    }
+  }
 }
 </script>
 

@@ -15,7 +15,7 @@
       <div class="content-header">Activities</div>
       <div class="content-sub">Here are the latest reports on the system</div>
       <div class="summary-flexbox">
-        <div class="content-slide-box" v-for="(item, index) in activities" :key="index">
+        <div class="content-slide-box" v-for="(item, index) in activities_computed" :key="index">
           <div class="activity-info-card">
               <div class="activity-card-icon"></div>
                <div class="activity-card-header">{{item.title}}</div>
@@ -52,7 +52,13 @@ export default {
                 {title :'Card Deactivation', url: "card-deactivation"},
                 {title :'Transaction Log', url: "transaction-log"}
                ],
+        last_search_string : "",
       }
+  },
+  computed:{
+    activities_computed:function (){
+      return this.activities;
+    }
   }
 }
 </script>
