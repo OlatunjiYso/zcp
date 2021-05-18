@@ -1,7 +1,7 @@
 <template>
   <div>
      <Loader v-show="loader"/>
-     <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>s
+     <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>
  <div class="content-header">Card Requests</div>
       <div class="content-sub">Here are the latest report on Paysure Agency</div>
       <div class="app-table-actions">

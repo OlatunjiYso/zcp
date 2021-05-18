@@ -124,7 +124,16 @@ export default createStore({
         )
       commit('setCompanyUsers', result.data)
     },
-    
+
+      attemptLogin (context,payload){
+         return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companyusers',
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      }
 
   },
   modules: {
