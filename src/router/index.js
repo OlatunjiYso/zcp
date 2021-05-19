@@ -16,7 +16,7 @@ import TransactionLog from '../views/Client/Activities/TransactionLog.vue'
 import CardDeactivation from '../views/Client/Activities/CardDeactivation.vue'
 import CardActivation from '../views/Client/Activities/CardActivation.vue'
 import CardStatus from '../views/Client/Activities/CardStatus.vue'
-
+import ActivityForm from "../views/Client/Activities/ActivityForm";
 
 
 
@@ -29,6 +29,7 @@ import UserMgmt2 from '../views/Admin/UserMgmt/UserMgmt.vue'
 import CreateRole2 from '../views/Admin/UserMgmt/Roles/CreateRole.vue'
 import EditRole2 from '../views/Admin/UserMgmt/Roles/EditRole.vue'
 import Activities2 from '../views/Admin/Activities/Activities.vue'
+
 
 
 const routes = [
@@ -71,6 +72,11 @@ const routes = [
     path: '/client/card-request',
     name: 'CardRequest',
     component: CardRequest
+  },
+  {
+    path: '/client/activity-form/:slug',
+    name: 'ActivityForm',
+    component: ActivityForm
   },
   {
     path: '/client/pin-generation',

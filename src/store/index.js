@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import { createStore }  from 'vuex'
 import axios from'axios'
 export default createStore({
   state: {
@@ -9,7 +9,11 @@ export default createStore({
     companies:[],
     roles:[],
     permissions:[],
-    companyUsers:[]
+    companyUsers:[],
+    currentDate: "",
+    activeUser:{
+        companyId : 1,
+    }
   },
   getters:{
    getUrl(state){
@@ -35,7 +39,7 @@ export default createStore({
   },
   getCompanyUsers(state){
     return state.companyUsers
-  }
+  },
   },
   mutations: {
     setActivities(state, payload){
@@ -123,7 +127,71 @@ export default createStore({
         )
       commit('setCompanyUsers', result.data)
     },
-    
+
+      attemptLogin (context,payload){
+         return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companyusers',
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+
+      fetchCompanyUsers(context){
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companyusers',
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+      fetchCompanyActivities(context){
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companyactivities',
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+      fetchActivities(context){
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/activities',
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+      fetchRoles(context){
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/roles',
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+      fetchCompanyCardRequests(context,companyId){
+          return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `/api/CardRequest/all/${companyId}`,
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+
+      getClientDashboardData(context,clientId){
+        return Promise.all([
+            context.dispatch("fetchCompanyUsers"),
+            context.dispatch("fetchCompanyActivities"),
+            context.dispatch("fetchCompanyCardRequests",clientId),
+            context.dispatch("fetchRoles"),
+        ]);
+      }
 
   },
   modules: {
