@@ -14,7 +14,8 @@
       </div>
       <div class="content-header">Dashboard Overview</div>
       <div class="content-sub">Here are the latest reports on the system</div>
-      <div class="summary-flexbox">
+      <Loading v-if="isFetchingDashBoard" />
+      <div v-if="!isFetchingDashBoard" class="summary-flexbox">
         <div class="content-slide-box">
           <div class="content-info-card">
             <div class="div-block-2">
@@ -52,7 +53,7 @@
           </div>
         </div>
       </div>
-      <div class="basic-table-card">
+      <div v-if="!isFetchingDashBoard" class="basic-table-card">
         <div class="table-header">
           <div class="content-header-2">Users</div>
           <router-link to="user-management" class="table-view-all" style="text-decoration: none">View all</router-link>
@@ -95,9 +96,11 @@
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
 import {mapState} from "vuex";
+import Loading from "../../../components/Loading/Loading";
 export default {
   name: "Home",
   components: {
+    Loading,
     Leftbar,
     Rightbar
   },
@@ -137,7 +140,7 @@ export default {
           .catch((error)=>{
             alert(`Error : ${error}`)
           })
-          .then(()=>{this.isFetchingDashBoard = true;})
+          .then(()=>{this.isFetchingDashBoard = false;})
     }
   },
   computed:{

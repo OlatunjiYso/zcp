@@ -11,6 +11,9 @@ export default createStore({
     permissions:[],
     companyUsers:[],
     currentDate: "",
+    activeUser:{
+        companyId : 1,
+    }
   },
   getters:{
    getUrl(state){
@@ -146,6 +149,15 @@ export default createStore({
       },
       fetchCompanyActivities(context){
           return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companyactivities',
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+      fetchActivities(context){
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/activities',
               {
                   headers: {
                       "Content-Type": "application/json"

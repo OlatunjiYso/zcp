@@ -1,64 +1,93 @@
 <template>
-            <div class="app-admin-section">
-            <div class="app-admin-col-1">
-            <Leftbar/>
-            </div>
-            <div class="app-admin-col-2">
- <div class="admin-top-bar">
+  <div class="app-admin-section">
+    <div class="app-admin-col-1">
+      <Leftbar/>
+    </div>
+    <div class="app-admin-col-2">
+      <div class="admin-top-bar">
         <div class="admin-top-bar-left">
           <div class="settings-icon"></div>
         </div>
         <div class="admin-top-bar-right">
           <div class="admin-topbar-date">October 8th, 2020</div>
-      </div>
+        </div>
       </div>
       <div class="content-header">Activities</div>
       <div class="content-sub">Here are the latest reports on the system</div>
-      <div class="summary-flexbox">
+      <Loading v-if="isFetchingActivities" />
+      <div v-else class="summary-flexbox">
         <div class="content-slide-box" v-for="(item, index) in activities_computed" :key="index">
           <div class="activity-info-card">
-              <div class="activity-card-icon"></div>
-               <div class="activity-card-header">{{item.title}}</div>
-             <router-link :to="item.url"><div class="activity-btn">Open</div></router-link> 
+            <div class="activity-card-icon"></div>
+            <div class="activity-card-header">{{ item.title }}</div>
+            <router-link :to="item.url">
+              <div class="activity-btn">Open</div>
+            </router-link>
           </div>
         </div>
       </div>
-            </div>
-            <div class="app-admin-col-3">
-              <Rightbar />
-            </div>
-          </div>
+    </div>
+    <div class="app-admin-col-3">
+      <Rightbar/>
+    </div>
+  </div>
 </template>
 
 <script>
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
+import Loading from "../../../components/Loading/Loading";
+
 export default {
   name: "Home",
   components: {
+    Loading,
     Leftbar,
     Rightbar
   },
-  data(){
-      return{
-           activities:[
-               {title :'Instant Card Request', url: "card-request"}, 
-               {title :'Default Pin Generation', url: "pin-generation"},
-               {title :'Pin Re-issue Request', url: "pin-reissue"},
-               {title :'Card Parametization', url: "card-parametization"},
-               {title :'Charge-back Request', url: "chargeback-request"}, 
-               {title :'Card Cancellation', url: "/"}, 
-               {title :'Card Activation', url: "card-activation"},
-                {title :'Card Deactivation', url: "card-deactivation"},
-                {title :'Transaction Log', url: "transaction-log"},
-                 {title :'Card Status', url: "card-status"}
-               ],
-        last_search_string : "",
-      }
+  mounted() {
+    try {
+      this.fetchCompanyActivities();
+    }catch (e){
+      console.log("views/Activities@mounted",e)
+    }
   },
-  computed:{
-    activities_computed:function (){
-      return this.activities;
+  data() {
+    return {
+      activities: [
+        {title: 'Instant Card Request', url: "card-request"},
+      ],
+      companyActivities : [],
+      last_search_string: "",
+      isFetchingActivities : false,
+    }
+  },
+  methods:{
+    fetchCompanyActivities:function (){
+      this.isFetchingActivities = true;
+      Promise.all([
+        this.$store.dispatch("fetchActivities"),
+        this.$store.dispatch("fetchCompanyActivities"),
+      ]).then((response)=>{
+            console.log("Done",response)
+            this.activities = response[0].data;
+            this.companyActivities = response[1].data;
+          })
+          .catch((error)=>{
+            alert(`Error : ${error}`)
+          })
+          .then(()=>{this.isFetchingActivities = false;})
+    }
+  },
+  computed: {
+    activities_computed: function () {
+      return this.companyActivities.filter((ca)=>{ return ca.companyId === 1}).map((ca)=>{
+        let activity = this.activities.find((a)=>{return ca.activitiesId === a.id});
+        return {
+          title : activity.name,
+          url : `activity-form/${activity.id}`
+        }
+      });
     }
   }
 }
@@ -66,23 +95,25 @@ export default {
 
 <style scoped>
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
+
 .activity-card-header {
   margin-bottom: 15px;
   color: #262626;
   font-size: 14px;
   font-weight: 700;
 }
-.activity-btn{
-    background: #c00;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 3px;
-    cursor: pointer;
-    color: white;
-    width: 100px;
+
+.activity-btn {
+  background: #c00;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  cursor: pointer;
+  color: white;
+  width: 100px;
 }
 </style>
