@@ -48,7 +48,7 @@ export default {
             accountNumber : this.accountNumber,
             hardwareToken : this.hardwareToken
           }).then((response)=>{
-           // router.push("overview");
+            router.push("overview");
           })
           .catch((error)=>{
             this.errorInfo = error;

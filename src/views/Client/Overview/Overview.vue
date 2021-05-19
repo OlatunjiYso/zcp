@@ -71,13 +71,13 @@
             </thead>
 
             <tbody>
-            <tr v-for="user_item in users_list_computed" :key="user_item">
-              <td class="app-table-data">Jonny</td>
-              <td class="app-table-data">johndoe@zenithbank.com</td>
-              <td class="app-table-data">09073364526</td>
-              <td class="app-table-data">Super Admin</td>
+            <tr v-for="(user_item) in users_list_computed" :key="user_item.id">
+              <td class="app-table-data">{{user_item.displayName}}</td>
+              <td class="app-table-data">{{user_item.email}}</td>
+              <td class="app-table-data">{{user_item.tel}}</td>
+              <td class="app-table-data">{{user_item.role}}</td>
               <td class="app-table-data">22/03/21</td>
-              <td class="app-table-data table-active">Active</td>
+              <td class="app-table-data table-active">{{user_item.status?"Active":"Disabled"}}</td>
             </tr>
             </tbody>
             
@@ -101,20 +101,58 @@ export default {
     Leftbar,
     Rightbar
   },
+  mounted() {
+    try {
+      this.fetchDashboard()
+    }catch (e){
+      console.log(e)
+    }
+
+  },
   data:function (){
     return {
+      isFetchingDashBoard : false,
       date : "October 8th, 2020",
       users_total : 0,
       activities_total : 0,
       user_requests_total : 0,
       card_requests_total : 0,
-      users_list : ["","","","",""],
+      users_list : [],
+      users_list_sample_count: 4,
+      roles : []
+    }
+  },
+  methods:{
+    fetchDashboard:function (){
+      this.isFetchingDashBoard = true;
+      this.$store.dispatch("getClientDashboardData",1)
+          .then((response)=>{
+            console.log("Done",response)
+            this.users_total = response[0].data.length;
+            this.activities_total = response[1].data.length;
+            this.card_requests_total = response[2].data.length;
+            this.users_list = response[0].data;
+            this.roles = response[3].data;
+          })
+          .catch((error)=>{
+            alert(`Error : ${error}`)
+          })
+          .then(()=>{this.isFetchingDashBoard = true;})
     }
   },
   computed:{
     users_list_computed:function (){
-      return this.users_list;
-    }
+      return this.users_list.slice(0,this.users_list_sample_count).map((user)=>{
+        return {
+          id : user.id,
+          displayName : `${user.firstName} ${user.lastName}`,
+          email : user.emailAddress,
+          tel : user.mobileNo,
+          role : this.roles.find((entry)=>{return user.rolesId === entry.id}).name,
+          status : user.isActive
+        }
+      });
+    },
   }
 }
 </script>

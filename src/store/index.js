@@ -133,6 +133,52 @@ export default createStore({
                   }
               }
           )
+      },
+
+      fetchCompanyUsers(context){
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companyusers',
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+      fetchCompanyActivities(context){
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companyactivities',
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+      fetchRoles(context){
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/roles',
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+      fetchCompanyCardRequests(context,companyId){
+          return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `/api/CardRequest/all/${companyId}`,
+              {
+                  headers: {
+                      "Content-Type": "application/json"
+                  }
+              }
+          )
+      },
+
+      getClientDashboardData(context,clientId){
+        return Promise.all([
+            context.dispatch("fetchCompanyUsers"),
+            context.dispatch("fetchCompanyActivities"),
+            context.dispatch("fetchCompanyCardRequests",clientId),
+            context.dispatch("fetchRoles"),
+        ]);
       }
 
   },
