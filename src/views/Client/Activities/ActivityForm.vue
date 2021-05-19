@@ -11,17 +11,10 @@
           <router-link to="activities"><div class="settings-icon"></div></router-link>
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">October 8th, 2020</div>
+          <div class="admin-topbar-date">October 8th, 2020 </div>
         </div>
       </div>
-        <ActivityForm1 v-if="form === 1" />
-        <ActivityForm1 v-if="form === 2" />
-        <ActivityForm1 v-if="form === 3" />
-        <ActivityForm1 v-if="form === 4" />
-        <ActivityForm1 v-if="form === 5" />
-        <ActivityForm1 v-if="form === 6" />
-        <ActivityForm1 v-if="form === 7" />
-        <ActivityForm1 v-if="form === 8" />
+        <ActivityForm1 v-if="form == 1" />
     </div>
     <div class="app-admin-col-3">
       <Rightbar />
@@ -48,8 +41,8 @@ export default {
      Status
   },
   created() {
-    this.form = this.$router.currentRoute.value.params.slug;
-    console.log("Form ",this.$router.currentRoute.value.params.slug);
+    this.form = this.$route.params.slug;
+    console.log("Form ",this.$route.params.slug);
   },
       computed:{
     ...mapGetters([ 'getUrl2' ])
