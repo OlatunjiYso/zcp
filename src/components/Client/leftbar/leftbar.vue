@@ -1,25 +1,25 @@
 <template>
     <div>
       <div class="app-admin-brand"></div>
-    <router-link to="overview">
+    <router-link to="/client/overview">
      <div class="admin-col-link-div">
         <div class="admin-col-1-links active-link"></div>
         <div class="admin-col-link-text active-link">Dashboard</div>
       </div>
     </router-link> 
-     <router-link to="requests">
+     <router-link to="/client/requests">
         <div class="admin-col-link-div">
         <div class="admin-col-1-links"></div>
         <div class="admin-col-link-text">Requests</div>
       </div>
      </router-link>
-     <router-link to="activities">
+     <router-link to="/client/activities">
        <div class="admin-col-link-div">
         <div class="admin-col-1-links"></div>
         <div class="admin-col-link-text">Activities</div>
       </div>
      </router-link>
-      <router-link to="user-management">
+      <router-link to="/client/user-management">
              <div class="admin-col-link-div">
         <div class="admin-col-1-links"></div>
         <div class="admin-col-link-text">User<br>Management</div>
