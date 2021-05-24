@@ -2,8 +2,8 @@ import { createStore }  from 'vuex'
 import axios from'axios'
 export default createStore({
   state: {
-    url: 'https://cors-zenith.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalSecurityApi/',
-    url2: 'https://cors-zenith.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalOperations/',
+    url: 'https://zenith-cors.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalSecurityApi/',
+    url2: 'https://zenith-cors.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalOperations/',
     activities: [],
     adminUsers:[],
     companies:[],
@@ -16,12 +16,9 @@ export default createStore({
     },
     loader: false,
     loading:false,
-    cardSetup: []
+    cardSetup:[]
   },
   getters:{
-    getCardSetup(state){
-      return state.cardSetup
-    },
     getLoading(state){
       return state.loading
     },
@@ -49,11 +46,11 @@ export default createStore({
   getCompanyUsers(state){
     return state.companyUsers
   },
+  getCardSetup(state){
+    return state.cardSetup
+  },
   },
   mutations: {
-    setCardSetup(state, payload){
-      state.cardSetup = payload;
-    },
     setActivities(state, payload){
       state.activities = payload;
     },
@@ -71,14 +68,22 @@ export default createStore({
     },
     setCompanyUsers(state, payload){
       state.companyUsers = payload;
+    },
+    setCardSetup(state, payload){
+      state.cardSetup = payload;
     }
   },
   actions: {
     async getCardSetup({commit, state}){
-     const result = await axios.get(state.url + 'api/CardProductSetup/FetchCardProductCodeForsetup')
+      const result = await axios.get(state.url2 + 'api/CardProductSetup/FetchCardProductCodeForsetup',
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }
+        )
       commit('setCardSetup', result.data)
     },
-
    async getActivities({commit, state}){
       const result = await axios.get(state.url + 'api/activities',
         {
@@ -90,7 +95,7 @@ export default createStore({
       commit('setActivities', result.data)
     },
 
-    async getAdminUsers({commit, state}, roles){
+    async getAdminUsers({commit, state}){
       state.loading = true
       const result = await axios.get(state.url + 'api/adminusers',
         {
@@ -105,7 +110,7 @@ export default createStore({
          return {
             id: user.id,
             userName: user.userName,
-            rolesId : roles.find((entry)=>{return user.rolesId === entry.id}).name,
+            rolesId : this.state.roles.find((entry)=>{return user.rolesId === entry.id}).name,
             created_at : user.created_at
          }
         })

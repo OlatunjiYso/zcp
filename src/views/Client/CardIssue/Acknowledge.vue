@@ -2,7 +2,7 @@
   <div>
       <Loader v-show="loader"/>
      <Status :state="state" :message = "message" :resetState="resetState" v-if="status"/>
- <div class="content-header">Pending Card Requests Acknowledgements</div>
+ <div class="content-header">Pending Card Reissue Requests Acknowledgements</div>
       <div class="content-sub">Here are the requests that need acknowledgements</div>
       <div class="app-table-actions">
         <div class="app-table-search">
@@ -20,12 +20,13 @@
            <div v-else>
       <table class="app-table2" v-if="!AcknowledgeRequests.length <= 0">
                     <thead>
-                        <tr class="app-table2-row">
-                           <th class="app-table2-header">Id</th>
-                           <th class="app-table2-header">Date</th>
-                          <th class="app-table2-header">Name on Card</th>
+                       <tr class="app-table2-row">
+                           <th class="app-table2-header">S/N</th>
+                           <th class="app-table2-header">Account Name</th>
                           <th class="app-table2-header">Account Number</th>
-                           <th class="app-table2-header">Card Product Type</th>
+                          <th class="app-table2-header">Card Pan</th>
+                           <th class="app-table2-header">New Name</th>
+                           <th class="app-table2-header">Request Date</th>
                             <th class="app-table2-header"></th>
                            
                         </tr>
@@ -33,11 +34,12 @@
             
                         <tbody>
                               <tr v-for="(result, index) in AcknowledgeRequests" :key="index" class="app-table2-row">
-                            <td class="app-table2-data">{{index + 1}}</td>
-                            <td class="app-table2-data">{{result.create_at}}</td>
-                            <td class="app-table2-data">{{result.nameOnCard}}</td>
-                            <td class="app-table2-data">{{result.accountNbr}}</td> 
-                               <td class="app-table2-data">{{ result.productName }}</td>
+                              <td class="app-table2-data">{{index + 1}}</td>
+                            <td class="app-table2-data">{{result.accountName}}</td>
+                            <td class="app-table2-data">{{result.accountNumber}}</td>
+                            <td class="app-table2-data">{{result.cardPan}}</td> 
+                            <td class="app-table2-data">{{result.newNameOfCard}}</td>
+                            <td class="app-table2-data">{{result.requestDate}}</td>
                              <td class="app-table2-data">
                                <div @click="Acknowledge(result)" style="cursor:pointer" class="table-btn">Acknowledge<span class="table-button-icon"></span></div>
                             </td> 
@@ -88,15 +90,16 @@ this.status = false;
   async  Acknowledge(result){
        this.loader = true
         const user = JSON.parse(localStorage.getItem("user-mfb"))
-         const formData = {
+        const formData = {
               "requestId": [result.id],
               "companyId": parseInt(user.companyId),
               "workflowId": 6,
-              "userId": parseInt(user.id)
+              "userId": parseInt(user.id),
+              "clientCode": result.clientCode
             }
          try {
            
-             const response = await axios.post(this.getUrl2 + 'api/CardRequest/approveoracknowledge',formData)
+             const response = await axios.post(this.getUrl2 + 'api/CardReissue/AproveCardReissueRequest',formData)
              if(response.status == 200){
                this.loader = false;
                this.status = true;

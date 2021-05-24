@@ -16,6 +16,8 @@
           <a href="#" class="table-button">Actions <span class="table-button-icon"></span></a>
         </div> -->
       </div>
+      <Loading v-if="loading"/>
+        <div v-else>
         <table class="app-table2" v-if="!Requests.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
@@ -46,7 +48,8 @@
                     </tbody>
           
                 </table>
-                    <Loading v-else/>
+                    <EmptyData v-else/>
+                    </div>
   </div>
 </template>
 
@@ -59,8 +62,8 @@ import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
 
 export default {
-  props:['Requests'],
-          components:{
+  props:['Requests', 'loading'],
+    components:{
      Loader,
      Status,
      EmptyData,

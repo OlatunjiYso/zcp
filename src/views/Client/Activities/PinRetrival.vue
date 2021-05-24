@@ -37,7 +37,7 @@
 <script>
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
-import operationMixen from '../operationMixen.js'
+import operationMixen from '../../operationMixen.js'
 import Loader from '../../../components/Loader/Loader'
 import Status from '../../../components/Status/Status2'
 import axios from 'axios'

@@ -30,8 +30,9 @@
           <div @click="openModal" style="cursor:pointer" className="table-button filter">Add New Company<span className="table-button-icon"></span></div>
         </div>
       </div>
-        <div v-if="!getCompanies.length <= 0">
-              <table class="app-table2">
+      <Loading v-if="getLoading"/>
+        <div v-else>
+              <table class="app-table2" v-if="!getCompanies.length <= 0">
                                   <thead>
                                       <tr class="app-table2-row">
                                          <th class="app-table2-header">Id</th>
@@ -46,7 +47,7 @@
                                   </thead>
                                   <tbody>
                                   <tr v-for="(result, index) in getCompanies" :key="index" class="app-table2-row">
-                                    <td class="app-table2-data">{{result.id}}</td>
+                                    <td class="app-table2-data">{{index + 1}}</td>
                                   <td class="app-table2-data">{{result.name}}</td>
                                       <td class="app-table2-data"> {{result.companyCode}} </td>
                                         <td class="app-table2-data">{{result.emailAddress}}</td>
@@ -62,8 +63,8 @@
                                                                                                
                                   </tbody>
                                   </table> 
-       </div>
-      <Loading v-else/>
+      <EmptyData v-else/>
+      </div>
             </div>
             <div class="app-admin-col-3">
               <Rightbar />
@@ -101,6 +102,7 @@ export default {
   },
   computed:{
   ...mapGetters([
+     'getLoading',
     'getUrl',
     'getCompanies',
   ])

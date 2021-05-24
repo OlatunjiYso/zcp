@@ -17,9 +17,9 @@
         </div>
       </div>
     
-
- <div v-if="!getAdminUsers.length <= 0">
-              <table class="app-table2">
+      <Loading v-if="getLoading"/>
+        <div v-else>
+              <table class="app-table2" v-if="!getAdminUsers.length <= 0">
                                   <thead>
                                       <tr class="app-table2-row">
                                          <th class="app-table2-header">Id</th>
@@ -30,9 +30,9 @@
                                   </thead>
                                   <tbody>
                                   <tr v-for="(result, index) in getAdminUsers" :key="index" class="app-table2-row">
-                                    <td class="app-table2-data">{{result.id}}</td>
+                                    <td class="app-table2-data">{{index + 1}}</td>
                                   <td class="app-table2-data">{{result.userName}}</td>
-                                      <!-- <td class="app-table2-data"> {{result.rolesId}} </td> -->
+                                      <td class="app-table2-data"> {{result.rolesId}} </td>
                             <td class="app-table2-data">
                             <div @click="openEdit(result)" style="cursor:pointer" class="table-btn">Manage User<span class="table-button-icon"></span></div>
                             </td>
@@ -40,9 +40,8 @@
                                                                                                
                                   </tbody>
                                   </table> 
-       </div>
-      <Loading v-else/>
-
+      <EmptyData v-else/>
+   </div>
       </div>
     </template>
 
@@ -69,6 +68,7 @@ export default {
   },
     computed: {
     ...mapGetters([
+       'getLoading',
       'getAdminUsers'
     ])
   },

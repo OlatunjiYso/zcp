@@ -34,7 +34,7 @@
             <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role</label>
           <select v-model="form2.rolesId" id="roles" style="marginBottom: 30px" class="app-select w-select">
                <option selected>Select a Role</option> 
-             <option  v-for="(role, index) in getRoles" :key="index" :value="role.id">{{role.name}}</option>     
+             <option  v-for="(role, index) in mfbRoles" :key="index" :value="role.id">{{role.name}}</option>     
             </select>
          </div>
         </div>
@@ -152,7 +152,10 @@ export default {
       'getUrl2',
       'getActivities',
       'getRoles'
-    ])
+    ]),
+      mfbRoles: function(){
+      return this.getRoles.filter(x => { return x.mfbOrBank == 'mfb' })
+    }
   },
       created(){
     this.$store.dispatch("getActivities");

@@ -7,10 +7,10 @@
         <div class="admin-col-link-text active-link">Dashboard</div>
       </div>
     </router-link> 
-     <router-link to="/client/requests">
+     <router-link to="/client/activity-requests">
         <div class="admin-col-link-div">
         <div class="admin-col-1-links"></div>
-        <div class="admin-col-link-text">Requests</div>
+        <div class="admin-col-link-text">Activity Requests</div>
       </div>
      </router-link>
      <router-link to="/client/activities">

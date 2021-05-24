@@ -85,7 +85,7 @@
               <td class="app-table-data">{{user_item.displayName}}</td>
               <td class="app-table-data">{{user_item.email}}</td>
               <td class="app-table-data">{{user_item.tel}}</td>
-              <!-- <td class="app-table-data">{{user_item.role}}</td> -->
+              <td class="app-table-data">{{user_item.role}}</td>
               <td class="app-table-data">22/03/21</td>
               <td class="app-table-data table-active">{{user_item.status?"Active":"Disabled"}}</td>
             </tr>
@@ -163,7 +163,7 @@ export default {
           displayName : `${user.firstName} ${user.lastName}`,
           email : user.emailAddress,
           tel : user.mobileNo,
-          // role : this.roles.find((entry)=>{return user.rolesId === entry.id}).name,
+          role : this.roles.find((entry)=>{return user.rolesId === entry.id}).name,
           status : user.isActive
         }
       });

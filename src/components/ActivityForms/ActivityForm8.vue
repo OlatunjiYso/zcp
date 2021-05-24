@@ -2,8 +2,8 @@
   <div>
        <Loader v-show="loader"/>
      <Status :state="state"  :message = "message" :resetState="resetState" v-if="status"/>
- <div class="content-header">Card Status</div>
-      <div class="content-sub">Check the status of a card</div>
+ <div class="content-header">Card Activation</div>
+      <div class="content-sub">Search and activate a card</div>
       <div>
         <div>
             <input v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number...">
@@ -41,7 +41,7 @@
                             <td class="app-table2-data">{{result.productCode}}</td>  
                             <td class="app-table2-data">{{result.clientCode}}</td>  
                              <td class="app-table2-data">
-                            <div @click="CheckStatus(result)" style="cursor:pointer" class="table-btn">Card Status<span class="table-button-icon"></span></div>
+                            <div @click="Activate(result)" style="cursor:pointer" class="table-btn">Activate<span class="table-button-icon"></span></div>
                             </td> 
                         </tr>
                         
@@ -114,7 +114,7 @@ this.status = false;
 
          }
     },
-            async CheckStatus(result){
+            async Activate(result){
        this.loader = true
        const user = JSON.parse(localStorage.getItem("user-mfb"))
           const form = {
@@ -124,7 +124,7 @@ this.status = false;
           }
          try {
            
-             const response = await axios.post(this.getUrl2 + 'api/CardRequest/cardstatus',form)
+             const response = await axios.post(this.getUrl2 + 'api/cardactivatedeactivate/activation',form)
              if(response.data.responseCode == "00"){
                this.loader = false;
                this.status = true;
