@@ -1,9 +1,8 @@
 <template>
   <div>
-       <Loader v-show="loader"/>
-     <Status :state="state"  :message = "message" :resetState="resetState" v-if="status"/>
- <div class="content-header">Pending Card Requests</div>
-      <div class="content-sub">Here are the requests that need approval</div>
+     <ViewDetails v-show="viewDetails" :closeModal="closeModal" :viewDetailsData="viewDetailsData" />
+ <div class="content-header">All Request</div>
+      <div class="content-sub">Here are the all the card cancellation request</div>
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
@@ -16,35 +15,42 @@
           <a href="#" class="table-button">Actions <span class="table-button-icon"></span></a>
         </div> -->
       </div>
-           <Loading v-if="approvalLoader"/>
+           <Loading v-if="AllLoader"/>
            <div v-else>
-                     <table class="app-table2" v-if="!ApprovalRequests.length <= 0">
+                     <table class="app-table2" v-if="!AllRequests.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
-                           <th class="app-table2-header">Id</th>
-                           <th class="app-table2-header">Date</th>
-                          <th class="app-table2-header">Name on Card</th>
+                           <th class="app-table2-header">S/N</th>
+                           <th class="app-table2-header">Account Name</th>
                           <th class="app-table2-header">Account Number</th>
-                           <th class="app-table2-header">Card Product Type</th>
-                            <th class="app-table2-header"></th>
-                             <th class="app-table2-header"></th>
-                           
+                          <th class="app-table2-header">Card Pan</th>
+                           <th class="app-table2-header">New Name</th>
+                           <th class="app-table2-header">Request Date</th>
+                             <th class="app-table2-header">Status</th>   
+                               <th class="app-table2-header"></th>                  
                         </tr>
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in ApprovalRequests" :key="index" class="app-table2-row">
+                              <tr v-for="(result, index) in AllRequests" :key="index" class="app-table2-row">
                             <td class="app-table2-data">{{index + 1}}</td>
-                            <td class="app-table2-data">{{result.create_at}}</td>
-                            <td class="app-table2-data">{{result.nameOnCard}}</td>
-                            <td class="app-table2-data">{{result.accountNbr}}</td> 
-                            <td class="app-table2-data">{{result.productName}}</td>
-                             <td class="app-table2-data">
-                                   <div @click="Approve(result)" style="cursor:pointer" class="table-btn">Approve<span class="table-button-icon"></span></div>
+                            <td class="app-table2-data">{{result.accountName}}</td>
+                            <td class="app-table2-data">{{result.accountNumber}}</td>
+                            <td class="app-table2-data">{{result.cardPan}}</td> 
+                            <td class="app-table2-data">{{result.newNameOfCard}}</td>
+                            <td class="app-table2-data">{{result.requestDate}}</td>
+                            <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : 
+                                result.workflowId == 2 ? "Awaiting processing" : 
+                                result.workflowId == 3 ? "Approved" :
+                                 result.workflowId == 4 ? "Awaiting processing" :
+                                  result.workflowId == 5 ? "Processed and Shipped" :
+                                   result.workflowId == 6 ? "Needs Acknowledgement" :
+                                   result.workflowId == 7 ? "Rejected" : "null"
+                                }}</th>
+                                 <td class="app-table2-data">
+                                   <div @click="openModal(result)" style="cursor:pointer" class="table-btn">View<span class="table-button-icon"></span></div>
                             </td> 
-                             <td class="app-table2-data">
-                                   <div @click="Decline(result)" style="cursor:pointer;background:#c00" class="table-btn">Decline<span class="table-button-icon"></span></div>
-                            </td> 
+                          
                         </tr>
                         
                     </tbody>
@@ -63,15 +69,15 @@ import Status from '../../../components/Status/Status2'
 import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
-
-
+import ViewDetails from './ViewDetails'
 export default {
-  props:['ApprovalRequests','approvalLoader'],
+  props:['AllRequests','AllLoader'],
           components:{
      Loader,
      Status,
      EmptyData,
-     Loading
+     Loading,
+     ViewDetails
     },
   data(){
     return{
@@ -80,6 +86,8 @@ export default {
         status: false,
         state: null,
         message: null,
+        viewDetails: false,
+        viewDetailsData:""
     }
   },
         computed:{
@@ -88,6 +96,13 @@ export default {
     ]),
   },
   methods: {
+      openModal(result){
+   this.viewDetailsData = result
+   this.viewDetails = true
+  },
+  closeModal(){
+   this.viewDetails = false
+  },
      resetState(){
 this.status = false;
               location.reload();
@@ -105,41 +120,6 @@ this.status = false;
          try {
            
              const response = await axios.post(this.getUrl2 + 'api/CardRequest/approveoracknowledge',formData)
-             if(response.status == 200){
-               this.loader = false;
-               this.status = true;
-               this.state = 'success';
-               this.message = 'Operation Sucessful'
-             }
-             else{
-               this.loader = false;
-               this.status = true;
-               this.state = 'failed';
-               this.message = 'Operation Failed'
-             }
-
-         } catch (error) {
-              console.log(error)
-               this.loader = false;
-               this.status = true;
-               this.state = 'failed';
-               this.message = 'Operation Failed'
-         }
-            
-    },
-      async  Decline(result){
-       this.loader = true
-       const user = JSON.parse(localStorage.getItem("user-mfb"))
-         const formData = {
-              "requestId": [result.id],
-              "companyId": parseInt(user.companyId),
-              "workflowId": 7,
-              "userId": parseInt(user.id),
-              "clientCode": ""
-            }
-         try {
-           
-             const response = await axios.post(this.getUrl2 + 'api/CardRequest/RejectCardRequest',formData)
              if(response.status == 200){
                this.loader = false;
                this.status = true;

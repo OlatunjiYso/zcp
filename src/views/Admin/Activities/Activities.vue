@@ -42,7 +42,7 @@
                                   </thead>
                                   <tbody>
                                   <tr v-for="(result, index) in getActivities" :key="index" class="app-table2-row">
-                                    <td class="app-table2-data">{{result.id}}</td>
+                                    <td class="app-table2-data">{{index + 1}}</td>
                                   <td class="app-table2-data">{{result.name}}</td>
                                       <td class="app-table2-data"> {{result.description}} </td>
                                         <td class="app-table2-data">{{result.requireMakerChecker}}</td>

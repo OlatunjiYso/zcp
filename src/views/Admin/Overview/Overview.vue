@@ -62,7 +62,7 @@
              <tr v-for="(result, index) in getAdminUsers" :key="index" class="app-table-row">
                                     <td class="app-table-data">{{result.id}}</td>
                                   <td class="app-table-data">{{result.userName}}</td>
-                                      <!-- <td class="app-table-data"> {{result.rolesId}} </td> -->
+                                      <td class="app-table-data"> {{result.rolesId}} </td>
                          
                                   </tr>    
 
@@ -88,13 +88,28 @@ export default {
     Leftbar,
     Rightbar
   },
-  computed:{
-    ...mapGetters(['getAdminUsers', 'getActivities','getCompanies'])
+  data(){
+    return{
+       
+    }
   },
-  created(){
+ async created(){
+   await this.$store.dispatch("getRoles");
    this.$store.dispatch("getCompanies");
     this.$store.dispatch("getActivities");
-     this.$store.dispatch("getAdminUsers");
-  }
+    this.$store.dispatch("getAdminUsers", this.getRoles);
+  },
+    computed:{
+    ...mapGetters(['getAdminUsers', 'getActivities','getCompanies', 'getRoles']),
+    adminUser: function(){
+      return this.getAdminUsers.map( x => {
+        return {
+          id: x.id,
+          userName: x.userName,
+          rolesId: this.getRoles.find(y => { return y.rolesId == x.rolesId }).name
+        }
+      })
+    }
+  },
 }
 </script>

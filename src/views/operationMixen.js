@@ -11,10 +11,16 @@ export default {
         titles:[],
         maritalStatus:[],
         idCardType:[],
-        socioProf:[]
+        socioProf:[],
+        cardSetup:[],
+        reasons:[],
+        branches:[]
         }
     },
-    created(){
+    async created(){
+      console.log("created")
+       this.getBranch()
+       this.fetchReason();
       this.fetchCountries();
       this.fetchStates();
       this.fetchCities();
@@ -22,11 +28,25 @@ export default {
       this.fetchMaritalStatus();
       this.fetchCardType();
       this.fetchSocioProf();
+      this.fetchReason();
+      // this.getCardSetup();
     },
     computed:{
-    ...mapGetters([ 'getUrl2' ])
+    ...mapGetters([ 'getUrl','getUrl2' ])
     }, 
     methods: {
+      // async getCardSetup(){
+      //    const result = await axios.get(this.getUrl + 'api/CardProductSetup/FetchCardProductCodeForsetup')
+      //     this.cardSetup = result.data
+      //  },
+      async getBranch(){
+         const result = await axios.get(this.getUrl2 + 'api/Common/Branch')
+         this.branches = result.data
+  },
+      async fetchReason(){
+         const result = await axios.get(this.getUrl2 + 'api/CardReissue/reissuereason')
+         this.reasons = result.data
+      },
         async fetchCountries(){
            const result = await axios.get(this.getUrl2 + 'api/Common/countries')
            this.countries = result.data
@@ -47,8 +67,7 @@ export default {
           },
           async fetchTitles(){
              const result = await axios.get(this.getUrl2 + 'api/Common/titles')
-            console.log("result>>>",result.data)
-              console.log("100");this.titles = result.data
+              this.titles = result.data
           },
           async fetchMaritalStatus(){
              const result = await axios.get(this.getUrl2 + 'api/Common/martialstatus')

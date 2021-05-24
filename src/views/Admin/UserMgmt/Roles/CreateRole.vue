@@ -3,7 +3,7 @@
         <Loader v-show="loader"/>
      <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>
                     <div class="app-modal-overlay" v-else>
-      <div class="app-modal-div" style="width:50%; height:50%; overflow:auto;">
+      <div class="app-modal-div" style="width:50%; height:60%; overflow:auto;">
       <div class="app-modal-heading">
         <div class="app-modal-header">Add Role</div>
       </div>
@@ -11,12 +11,21 @@
           <form @submit.prevent="createRole">
               <div className="form-flex">
       <div className="form-flex-col">
+        <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role Name</label> 
         <input v-model="form.name" type="text" className="app-modal-form-field w-input"  placeholder="Role Name"  required/>
       </div>
        <div className="form-flex-col">
+         <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Description</label> 
         <input v-model="form.description" type="text" className="app-modal-form-field w-input"  placeholder="Description"  required/>
        </div>
+          <div className="form-flex-col">
+           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Mfb or Bank</label> 
+         <select v-model="form.mfbOrBank" style="marginBottom: 30px" class="app-select w-select">
+             <option  v-for="(result, index) in permType" :key="index" :value="result">{{result}}</option>     
+            </select>
+        </div>
          <div className="form-flex-col">
+            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Permission</label> 
           <select @change="addtoArray($event)" class="app-select w-select">
                <option selected>Select Permission</option> 
              <option  v-for="(perm, index) in getPermissions" :key="index" :value="perm.id">{{perm.name}}::{{perm.id}}</option>        
@@ -55,8 +64,10 @@ export default {
           permAray:[],
           form: {
             name: '',
-            description: ''
-          }
+            description: '',
+            mfbOrBank:''
+          },
+          permType: ['mfb','Bank']
       }
   },
       computed:{
@@ -84,6 +95,7 @@ this.status = false;
                  name: this.form.name,
               description: this.form.description,
               permissions: this.permAray,
+               mfbOrBank: this.form.mfbOrBank,
               isActive: true
          }
          try {

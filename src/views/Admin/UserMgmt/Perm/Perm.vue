@@ -17,6 +17,8 @@
                     </div>
                 </div>
 
+      <Loading v-if="getLoading"/>
+        <div v-else>
  <div v-if="!getPermissions.length <= 0">
               <table class="app-table2">
                                   <thead>
@@ -42,7 +44,8 @@
                                   </tbody>
                                   </table> 
         </div>
-      <Loading v-else/>                           
+      <EmptyData v-else/>  
+      </div>                         
       </div>
     </template>
 
@@ -70,6 +73,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+     'getLoading',
       'getPermissions'
     ])
   },

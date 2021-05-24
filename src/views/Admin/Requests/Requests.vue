@@ -15,7 +15,7 @@
         </div>
       </div>
         <div v-show="cardView">
-        <Card :Requests ="Requests"/> 
+        <Card :loading="loading" :Requests ="Requests"/> 
         </div>
             <!-- <div v-show="userView">
            <User/>       
@@ -45,6 +45,7 @@ export default {
   },
   data(){
       return{
+        loading:false,
         selectedTab: '',
         cardView: true,
         userView: false,
@@ -62,8 +63,10 @@ export default {
   },
 methods:{
       async fetchRequests(){
+        this.loading = true;
  const result = await axios.get(this.getUrl2 + '/api/CardRequest/all/' + this.$route.params.id)
            this.Requests = result.data
+           this.loading = false
   },
     switchView( selected ){
 

@@ -4,22 +4,11 @@ import Login from '../views/Client/Login/Login.vue'
 import Overview from '../views/Client/Overview/Overview.vue'
 import Requests from '../views/Client/Requests/Requests.vue'
 import UserMgmt from '../views/Client/UserMgmt/UserMgmt.vue'
-import CreateRole from '../views/Client/UserMgmt/Roles/CreateRole.vue'
-import EditRole from '../views/Client/UserMgmt/Roles/EditRole.vue'
 import Activities from '../views/Client/Activities/Activities.vue'
-import CardRequest from '../views/Client/Activities/CardRequest.vue'
-import PinGeneration from '../views/Client/Activities/PinGeneration.vue'
-import PinReIssue from '../views/Client/Activities/PinReIssue.vue'
-import CardParam from '../views/Client/Activities/CardParam.vue'
-import ChargeBack from '../views/Client/Activities/ChargeBack.vue'
-import TransactionLog from '../views/Client/Activities/TransactionLog.vue'
-import CardDeactivation from '../views/Client/Activities/CardDeactivation.vue'
-import CardActivation from '../views/Client/Activities/CardActivation.vue'
-import CardStatus from '../views/Client/Activities/CardStatus.vue'
 import ActivityForm from "../views/Client/Activities/ActivityForm";
-
-
-
+import ActivityRequest from "../views/Client/ActivityRequest/ActivityRequest";
+import CardIssue from "../views/Client/CardIssue/CardIssue";
+import CardCancel from "../views/Client/CardCancellation/CardCancel";
 
 import Login2 from '../views/Admin/Login/Login.vue'
 import Overview2 from '../views/Admin/Overview/Overview.vue'
@@ -27,7 +16,6 @@ import Companies2 from '../views/Admin/Companies/Companies.vue'
 import Requests2 from '../views/Admin/Requests/Requests.vue'
 import UserMgmt2 from '../views/Admin/UserMgmt/UserMgmt.vue'
 import CreateRole2 from '../views/Admin/UserMgmt/Roles/CreateRole.vue'
-import EditRole2 from '../views/Admin/UserMgmt/Roles/EditRole.vue'
 import Activities2 from '../views/Admin/Activities/Activities.vue'
 
 
@@ -37,7 +25,7 @@ const routes = [
     path: '/client/login',
     name: 'Login',
     component: Login,
-    meta: { requiresMfbGuest: true }
+    meta: { requiresAdminGuest: true }
   },
   {
     path: '/client/overview',
@@ -46,9 +34,27 @@ const routes = [
     meta: { requiresMfbAuth: true }
   },
   {
-    path: '/client/requests',
+    path: '/client/card-requests',
     name: 'Requests',
     component: Requests,
+    meta: { requiresMfbAuth: true }
+  },
+  {
+    path: '/client/card-issue',
+    name: 'CardIssue',
+    component: CardIssue,
+    meta: { requiresMfbAuth: true }
+  },
+  {
+    path: '/client/card-cancellation',
+    name: 'CardCancel',
+    component: CardCancel,
+    meta: { requiresMfbAuth: true }
+  },
+  {
+    path: '/client/activity-requests',
+    name: 'ActivityRequest',
+    component: ActivityRequest,
     meta: { requiresMfbAuth: true }
   },
   {
@@ -64,66 +70,19 @@ const routes = [
     component: UserMgmt,
     meta: { requiresMfbAuth: true }
   },
-  {
-    path: '/client/card-request',
-    name: 'CardRequest',
-    component: CardRequest,
-    meta: { requiresMfbAuth: true }
-  },
+
   {
     path: '/client/activity-form/:slug',
     name: 'ActivityForm',
     component: ActivityForm,
     meta: { requiresMfbAuth: true }
   },
-  {
-    path: '/client/pin-generation',
-    name: 'PinGeneration',
-    component: PinGeneration,
-    meta: { requiresMfbAuth: true }
-  },
-  {
-    path: '/client/pin-reissue',
-    name: 'PinReIssue',
-    component: PinReIssue,
-    meta: { requiresMfbAuth: true }
-  },
-  {
-    path: '/client/card-parametization',
-    name: 'CardParam',
-    component: CardParam,
-    meta: { requiresMfbAuth: true }
-  },
-  {
-    path: '/client/chargeback-request',
-    name: 'ChargeBack',
-    component: ChargeBack,
-    meta: { requiresMfbAuth: true }
-  },
-  {
-    path: '/client/transaction-log',
-    name: 'TransactionLog',
-    component: TransactionLog,
-    meta: { requiresMfbAuth: true }
-  },
-  {
-    path: '/client/card-activation',
-    name: 'CardActivation',
-    component: CardActivation,
-    meta: { requiresMfbAuth: true }
-  },
-  {
-    path: '/client/card-deactivation',
-    name: 'CardDeactivation',
-    component: CardDeactivation,
-    meta: { requiresMfbAuth: true }
-  },
-  {
-    path: '/client/card-status',
-    name: 'CardStatus',
-    component: CardStatus,
-    meta: { requiresMfbAuth: true }
-  },
+
+
+
+
+
+
 
 
   {

@@ -11,12 +11,21 @@
           <form @submit.prevent="updateRole">
               <div className="form-flex">
       <div className="form-flex-col">
+         <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role Name</label> 
         <input :value="editData.name" type="text" className="app-modal-form-field w-input" id="permname"  placeholder="Role Name"  required/>
       </div>
        <div className="form-flex-col">
+          <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Description</label> 
         <input :value="editData.description" type="text" className="app-modal-form-field w-input" id="description"  placeholder="Description"  required/>
        </div>
          <div className="form-flex-col">
+           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Mfb or Bank (Update: {{editData.mfbOrBank}})</label> 
+         <select v-model="form.mfbOrBank" style="marginBottom: 30px" class="app-select w-select">
+             <option  v-for="(result, index) in permType" :key="index" :value="result">{{result}}</option>     
+            </select>
+        </div>
+         <div className="form-flex-col">
+            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Permission</label> 
           <select @change="addtoArray($event)" class="app-select w-select">
                <option selected>Select Permission</option> 
              <option  v-for="(perm, index) in getPermissions" :key="index" :value="perm.id">{{perm.name}}::{{perm.id}}</option>        
@@ -52,11 +61,12 @@ export default {
         state: null,
         message: null,
           roles:['Super Admin', 'Admin','Support'],
-  
           form: {
             name: '',
-            description: ''
-          }
+            description: '',
+            mfbOrBank: ""
+          },
+            permType: ['mfb','Bank']
       }
   },
       computed:{
@@ -84,6 +94,7 @@ this.status = false;
               id:this.editData.id,
               name: document.getElementById("permname").value,
               description: document.getElementById("description").value,
+               mfbOrBank: this.form.mfbOrBank == "" ? this.editData.mfbOrBank : this.form.mfbOrBank,
               permissions: this.permAray,
               isActive: true
          }

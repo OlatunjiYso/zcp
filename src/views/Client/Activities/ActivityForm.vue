@@ -8,14 +8,19 @@
     <div class="app-admin-col-2">
       <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-          <router-link to="activities"><div class="settings-icon"></div></router-link>
+          <router-link to="/client/activities"><div class="settings-icon"></div></router-link>
         </div>
         <div class="admin-top-bar-right">
           <div class="admin-topbar-date">October 8th, 2020 </div>
         </div>
       </div>
         <ActivityForm1 v-if="form == 1" />
-         <ActivityForm14 v-if="form == 14" />
+         <ActivityForm2 v-else-if="form == 2" />
+         <ActivityForm5 v-else-if="form == 5" />
+         <ActivityForm8 v-else-if="form == 8" />
+           <ActivityForm9 v-else-if="form == 9" />
+           <ActivityForm11 v-else-if="form == 11" />
+         <ActivityForm14 v-else-if="form == 14" />
     </div>
     <div class="app-admin-col-3">
       <Rightbar />
@@ -26,17 +31,26 @@
 <script>
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
-import operationMixen from '../operationMixen.js'
+import operationMixen from '../../operationMixen.js'
 import Loader from '../../../components/Loader/Loader'
 import Status from '../../../components/Status/Status2'
-import axios from 'axios'
 import {mapGetters} from 'vuex'
 import ActivityForm1 from "../../../components/ActivityForms/ActivityForm1";
+import ActivityForm2 from "../../../components/ActivityForms/ActivityForm2";
+import ActivityForm5 from "../../../components/ActivityForms/ActivityForm5";
+import ActivityForm8 from "../../../components/ActivityForms/ActivityForm8";
+import ActivityForm9 from "../../../components/ActivityForms/ActivityForm9";
+import ActivityForm11 from "../../../components/ActivityForms/ActivityForm11";
 import ActivityForm14 from "../../../components/ActivityForms/ActivityForm14";
 export default {
   name: "Home",
   components: {
     ActivityForm1,
+    ActivityForm2,
+    ActivityForm5,
+    ActivityForm8,
+    ActivityForm9,
+    ActivityForm11,
     ActivityForm14,
     Leftbar,
     Rightbar,

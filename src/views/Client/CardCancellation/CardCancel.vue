@@ -9,7 +9,6 @@
         <div class="settings-icon"></div>
         <div @click = "switchView('All')" class="admin-top-barlinks" :class="[ AllView ? activeClass : '']">All Requests</div>
         <div @click = "switchView('Approval')" class="admin-top-barlinks" :class="[ ApprovalView ? activeClass : '']">Pending Approval</div>
-        <div @click = "switchView('Acknowledge')" class="admin-top-barlinks" :class="[ AcknowledgeView ? activeClass : '']">Pending Acknowledgement</div>
         <div @click = "switchView('Rejected')" class="admin-top-barlinks" :class="[ RejectedView ? activeClass : '']">Rejected Requests</div>
         </div>
          <div class="admin-top-bar-right">
@@ -22,9 +21,6 @@
         <div v-show="ApprovalView">
         <Approval :approvalLoader="approvalLoader" :ApprovalRequests="ApprovalRequests"/> 
         </div>
-            <div v-show="AcknowledgeView">
-           <Acknowledge :AcknowledgeLoader="AcknowledgeLoader" :AcknowledgeRequests="AcknowledgeRequests"/>       
-            </div>
              <div v-show="RejectedView">
            <Rejected :RejectLoader="RejectLoader" :RejectRequests="RejectRequests"/>       
             </div>
@@ -37,23 +33,22 @@
 
 
 <script>
+import operationMixen from "../../operationMixen.js";
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
 import Approval from './Approval'
-import Acknowledge from './Acknowledge'
 import All from './All'
 import Rejected from './RejectedRequest'
 import axios from 'axios'
 import {mapGetters} from 'vuex'
 export default {
-  name: "Home",
+    mixins: [operationMixen],
   components: {
     Leftbar,
     Rightbar,
     Approval,
-    Acknowledge,
     All,
-    Rejected
+    Rejected,
   },
   data(){
       return{
@@ -70,11 +65,11 @@ export default {
         AllLoader: false,
         approvalLoader: false,
         AcknowledgeLoader: false,
-        RejectLoader: false
+        RejectLoader: false,
       }
   },
         computed:{
-    ...mapGetters([ 'getUrl2', 'getCardSetup' ]),
+    ...mapGetters([ 'getUrl2']),
     getDate: function(){
       var today = new Date();
       var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -82,77 +77,31 @@ var date = today.getDate() + ', ' + months[today.getMonth()]+ ' ' +today.getFull
       return date
     }
     },
-  async created(){
-     await this.$store.dispatch('getCardSetup')
+   mounted(){
       this.fetchAllRequests()
       this.fetchApprovalRequests();
-      this.fetchAcknowledgeRequests();
       this.fetchRejectedRequests()
   }, 
 methods:{
     async fetchAllRequests(){
         this.AllLoader = true
          const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/all/'+companyId.companyId);
-   const request = result.data.map( x => {
-       return {
-           id: x.id,
-           create_at: x.create_at,
-           nameOnCard: x.nameOnCard,
-           accountNbr: x.accountNbr,
-           productName:this.getCardSetup.find(y =>{ return y.cardProductCode == x.productCode }).description,
-           productCode: x.productCode,
-           workflowId: x.workflowId
-       }
-
-  })
-           this.AllRequests = request;
+ const result = await axios.get(this.getUrl2 + 'api/CardCancellation/'+companyId.companyId);
+           this.AllRequests = result.data;
          this.AllLoader = false;
   },
 
   async fetchApprovalRequests(){
         this.approvalLoader = true
          const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/pendingApproval/'+companyId.companyId)
-    const request = result.data.map( x => {
-       return {
-           id: x.id,
-           create_at: x.create_at,
-           nameOnCard: x.nameOnCard,
-           accountNbr: x.accountNbr,
-           productName:this.getCardSetup.find(y =>{ return y.cardProductCode == x.productCode }).description,
-           productCode: x.productCode,
-           workflowId: x.workflowId
-       }
-
-  })
-           this.ApprovalRequests = request
+ const result = await axios.post(this.getUrl2 + 'api/CardCancellation/pendingapprovals/'+companyId.companyId)
+           this.ApprovalRequests = result.data
          this.approvalLoader = false
-  },
-    async fetchAcknowledgeRequests(){
-          this.AcknowledgeLoader = true
-           const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/pendingacknowledgement/'+companyId.companyId)
-    const request = result.data.map( x => {
-       return {
-           id: x.id,
-           create_at: x.create_at,
-           nameOnCard: x.nameOnCard,
-           accountNbr: x.accountNbr,
-           productName:this.getCardSetup.find(y =>{ return y.cardProductCode == x.productCode }).description,
-           productCode: x.productCode,
-           workflowId: x.workflowId
-       }
-
-  })
-           this.AcknowledgeRequests = request
-               this.AcknowledgeLoader = false
   },
       async fetchRejectedRequests(){
           this.RejectLoader = true
            const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/PendingRejectRequest/'+companyId.companyId)
-    
+ const result = await axios.post(this.getUrl2 + 'api/CardCancellation/rejectedrequest/'+companyId.companyId)
            this.RejectRequests = result.data
                this.RejectLoader = false
   },

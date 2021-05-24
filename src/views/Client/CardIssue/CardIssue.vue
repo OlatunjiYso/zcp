@@ -37,6 +37,7 @@
 
 
 <script>
+import operationMixen from "../../operationMixen.js";
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
 import Approval from './Approval'
@@ -46,14 +47,14 @@ import Rejected from './RejectedRequest'
 import axios from 'axios'
 import {mapGetters} from 'vuex'
 export default {
-  name: "Home",
+    mixins: [operationMixen],
   components: {
     Leftbar,
     Rightbar,
     Approval,
     Acknowledge,
     All,
-    Rejected
+    Rejected,
   },
   data(){
       return{
@@ -70,11 +71,11 @@ export default {
         AllLoader: false,
         approvalLoader: false,
         AcknowledgeLoader: false,
-        RejectLoader: false
+        RejectLoader: false,
       }
   },
         computed:{
-    ...mapGetters([ 'getUrl2', 'getCardSetup' ]),
+    ...mapGetters([ 'getUrl2']),
     getDate: function(){
       var today = new Date();
       var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -82,8 +83,7 @@ var date = today.getDate() + ', ' + months[today.getMonth()]+ ' ' +today.getFull
       return date
     }
     },
-  async created(){
-     await this.$store.dispatch('getCardSetup')
+   mounted(){
       this.fetchAllRequests()
       this.fetchApprovalRequests();
       this.fetchAcknowledgeRequests();
@@ -93,16 +93,24 @@ methods:{
     async fetchAllRequests(){
         this.AllLoader = true
          const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/all/'+companyId.companyId);
+ const result = await axios.get(this.getUrl2 + 'api/CardReissue/all/'+companyId.companyId);
    const request = result.data.map( x => {
        return {
-           id: x.id,
-           create_at: x.create_at,
-           nameOnCard: x.nameOnCard,
-           accountNbr: x.accountNbr,
-           productName:this.getCardSetup.find(y =>{ return y.cardProductCode == x.productCode }).description,
-           productCode: x.productCode,
-           workflowId: x.workflowId
+            id: x.id,
+            pickupBranch: this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName,
+            reason: this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason,
+            requestBranch: this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName,
+            requestDate: x.requestDate,
+            surname_change: x.surname_change,
+            trans_id: x.trans_id,
+            workflowId: x.workflowId,
+            accountName: x.accountName,
+            accountNumber: x.accountNumber,
+            activityBy: x.activityBy,
+            cardPan: x.cardPan,
+            companyId: x.companyId,
+            newNameOfCard: x.newNameOfCard,
+            processedDate: x.processedDate,
        }
 
   })
@@ -113,16 +121,24 @@ methods:{
   async fetchApprovalRequests(){
         this.approvalLoader = true
          const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/pendingApproval/'+companyId.companyId)
+ const result = await axios.get(this.getUrl2 + 'api/CardReissue/PendingApprovalRequest/'+companyId.companyId)
     const request = result.data.map( x => {
        return {
-           id: x.id,
-           create_at: x.create_at,
-           nameOnCard: x.nameOnCard,
-           accountNbr: x.accountNbr,
-           productName:this.getCardSetup.find(y =>{ return y.cardProductCode == x.productCode }).description,
-           productCode: x.productCode,
-           workflowId: x.workflowId
+             id: x.id,
+           pickupBranch: this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName,
+            reason: this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason,
+            requestBranch: this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName,
+            requestDate: x.requestDate,
+            surname_change: x.surname_change,
+            trans_id: x.trans_id,
+            workflowId: x.workflowId,
+            accountName: x.accountName,
+            accountNumber: x.accountNumber,
+            activityBy: x.activityBy,
+            cardPan: x.cardPan,
+            companyId: x.companyId,
+            newNameOfCard: x.newNameOfCard,
+            processedDate: x.processedDate,
        }
 
   })
@@ -132,16 +148,24 @@ methods:{
     async fetchAcknowledgeRequests(){
           this.AcknowledgeLoader = true
            const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/pendingacknowledgement/'+companyId.companyId)
+ const result = await axios.get(this.getUrl2 + 'api/CardReissue/PendingAcknowlegement/'+companyId.companyId)
     const request = result.data.map( x => {
        return {
-           id: x.id,
-           create_at: x.create_at,
-           nameOnCard: x.nameOnCard,
-           accountNbr: x.accountNbr,
-           productName:this.getCardSetup.find(y =>{ return y.cardProductCode == x.productCode }).description,
-           productCode: x.productCode,
-           workflowId: x.workflowId
+             id: x.id,
+            pickupBranch: this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName,
+            reason: this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason,
+            requestBranch: this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName,
+            requestDate: x.requestDate,
+            surname_change: x.surname_change,
+            trans_id: x.trans_id,
+            workflowId: x.workflowId,
+            accountName: x.accountName,
+            accountNumber: x.accountNumber,
+            activityBy: x.activityBy,
+            cardPan: x.cardPan,
+            companyId: x.companyId,
+            newNameOfCard: x.newNameOfCard,
+            processedDate: x.processedDate
        }
 
   })
@@ -151,8 +175,7 @@ methods:{
       async fetchRejectedRequests(){
           this.RejectLoader = true
            const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/PendingRejectRequest/'+companyId.companyId)
-    
+ const result = await axios.get(this.getUrl2 + '/api/CardReissue/PendingRejectRequest/'+companyId.companyId)
            this.RejectRequests = result.data
                this.RejectLoader = false
   },

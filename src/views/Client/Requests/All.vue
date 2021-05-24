@@ -25,32 +25,30 @@
                            <th class="app-table2-header">Date</th>
                           <th class="app-table2-header">Name on Card</th>
                           <th class="app-table2-header">Account Number</th>
-                           <th class="app-table2-header">Card Type</th>
+                           <th class="app-table2-header">Card Product Type</th>
                            <th class="app-table2-header">Card Product Code</th>
                            <th class="app-table2-header">Status</th>
-                            <th class="app-table2-header"></th>
                            
                         </tr>
                     </thead>
             
                         <tbody>
                               <tr v-for="(result, index) in AllRequests" :key="index" class="app-table2-row">
-                            <td class="app-table2-data">{{result.id}}</td>
+                            <td class="app-table2-data">{{index + 1}}</td>
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
-                            <td class="app-table2-data">-</td>
-                            <td class="app-table2-data">{{result.productCode}}</td>  
+                            <td class="app-table2-data">{{result.productName}}</td>
+                            <td class="app-table2-data">{{result.productCode}}</td>
                             <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : 
                                 result.workflowId == 2 ? "Awaiting processing" : 
                                 result.workflowId == 3 ? "Approved" :
                                  result.workflowId == 4 ? "Awaiting processing" :
                                   result.workflowId == 5 ? "Processed and Shipped" :
-                                   result.workflowId == 6 ? "Needs Acknowledgement" : "null"
+                                   result.workflowId == 6 ? "Needs Acknowledgement" :
+                                   result.workflowId == 7 ? "Rejected" : "null"
                                 }}</th>
-                             <td class="app-table2-data">
-                                   <div @click="Approve(result)" style="cursor:pointer" class="table-btn">Approve<span class="table-button-icon"></span></div>
-                            </td> 
+                          
                         </tr>
                         
                     </tbody>
@@ -69,8 +67,6 @@ import Status from '../../../components/Status/Status2'
 import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
-
-
 export default {
   props:['AllRequests','AllLoader'],
           components:{
@@ -91,7 +87,20 @@ export default {
         computed:{
     ...mapGetters([
       'getUrl2',
-    ])
+    ]),
+    newRequest:function(){
+   return this.AllRequests.map( x => {
+       return {
+           id: x.id,
+           create_at: x.create_at,
+           nameOnCard: x.nameOnCard,
+           accountNbr: x.accountNbr,
+           productName:this.cardSetup.find(y =>{ return y.cardProductCode == x.productCode }),
+           productCode: x.productCode,
+           workflowId: x.workflowId
+       }
+   }) 
+    }
   },
   methods: {
      resetState(){

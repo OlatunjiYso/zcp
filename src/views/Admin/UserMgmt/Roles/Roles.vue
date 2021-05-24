@@ -16,7 +16,8 @@
                     <div @click="openAdd" style="cursor:pointer" class="table-view-all">Create Role<span class="table-button-icon"></span></div>
                     </div>
                 </div>
-
+      <Loading v-if="getLoading"/>
+        <div v-else>
  <div v-if="!getRoles.length <= 0">
               <table class="app-table2">
                                   <thead>
@@ -24,14 +25,16 @@
                                          <th class="app-table2-header">Id</th>
                                       <th class="app-table2-header">Role</th>
                                       <th class="app-table2-header">Description</th>
+                                      <th class="app-table2-header">Mfb Or Bank</th>
                                       <th class="app-table2-header"></th>
                                   </tr>
                                   </thead>
                                   <tbody>
                                   <tr v-for="(result, index) in getRoles" :key="index" class="app-table2-row">
-                                    <td class="app-table2-data">{{result.id}}</td>
+                                    <td class="app-table2-data">{{index + 1}}</td>
                                   <td class="app-table2-data">{{result.name}}</td>
                                       <td class="app-table2-data"> {{result.description}} </td>
+                                        <td class="app-table2-data"> {{result.mfbOrBank}} </td>
                                         <td class="app-table2-data">
               <div  @click="openEdit(result)" style="cursor:pointer" class="table-btn">Update Role<span class="table-button-icon"></span></div>
                             </td>
@@ -40,7 +43,8 @@
                                   </tbody>
                                   </table> 
         </div>
-      <Loading v-else/>                           
+      <EmptyData v-else/>   
+        </div>                        
       </div>
     </template>
 
@@ -68,6 +72,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'getLoading',
       'getRoles'
     ])
   },

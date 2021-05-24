@@ -33,7 +33,7 @@
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role</label> 
             <select @change="assignRole($event)" style="marginBottom: 30px" class="app-select w-select">
-            <option  v-for="(role, index) in getRoles" :key="index" :value="role.id">{{role.name}}</option>        
+            <option  v-for="(role, index) in mfbRoles" :key="index" :value="role.id">{{role.name}}</option>        
         </select>
          </div>
         </div>
@@ -80,7 +80,10 @@ export default {
     ...mapGetters([
       'getUrl',
       'getRoles',
-    ])
+    ]),
+          mfbRoles: function(){
+      return this.getRoles.filter(x => { return x.mfbOrBank == 'mfb' })
+    }
   },
     created(){
    this.$store.dispatch("getRoles");
