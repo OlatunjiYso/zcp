@@ -15,38 +15,20 @@
       <div class="content-header">Activity Requests</div>
       <div class="content-sub">Here are the activity requests on the system</div>
       <div class="summary-flexbox">
-        <div class="content-slide-box">
+        <div class="content-slide-box" v-for="(item,index) in filterArray" :key="index">
           <div class="activity-info-card">
             <div class="activity-card-icon"></div>
-            <div class="activity-card-header">Card Requests</div>
-            <router-link to="/client/card-requests">
-              <div class="activity-btn">Open</div>
-            </router-link>
-          </div>
-        </div>
-        <div class="content-slide-box">
-          <div class="activity-info-card">
-            <div class="activity-card-icon"></div>
-            <div class="activity-card-header">Card Issue</div>
-            <router-link to="/client/card-issue">
-              <div class="activity-btn">Open</div>
-            </router-link>
-          </div>
-        </div>
-                <div class="content-slide-box">
-          <div class="activity-info-card">
-            <div class="activity-card-icon"></div>
-            <div class="activity-card-header">Card Cancellation</div>
-            <router-link to="/client/card-cancellation">
-              <div class="activity-btn">Open</div>
+            <div class="activity-card-header">{{item.name}}</div>
+            <router-link :to="item.url">
+              <div  class="activity-btn">Open</div>
             </router-link>
           </div>
         </div>
       </div>
     </div>
-    <div class="app-admin-col-3">
+    <!-- <div class="app-admin-col-3">
       <Rightbar/>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -54,7 +36,7 @@
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
 import Loading from "../../../components/Loading/Loading";
-
+import { mapGetters } from 'vuex'
 export default {
   name: "Home",
   components: {
@@ -62,51 +44,68 @@ export default {
     Leftbar,
     Rightbar
   },
-  mounted() {
-    try {
-      this.fetchCompanyActivities();
-    }catch (e){
-      console.log("views/Activities@mounted",e)
-    }
-  },
-  data() {
-    return {
-      activities: [
-        {title: 'Instant Card Request', url: "card-request"},
-      ],
-      companyActivities : [],
-      last_search_string: "",
-      isFetchingActivities : false,
-    }
-  },
-  methods:{
-    fetchCompanyActivities:function (){
-      this.isFetchingActivities = true;
-       const companyId = JSON.parse(localStorage.getItem("user-mfb"))
-      Promise.all([
-        this.$store.dispatch("fetchActivities"),
-        this.$store.dispatch("fetchCompanyActivities",companyId.companyId),
-      ]).then((response)=>{
-            console.log("Done",response)
-            this.activities = response[0].data;
-            this.companyActivities = response[1].data;
-          })
-          .catch((error)=>{
-            alert(`Error : ${error}`)
-          })
-          .then(()=>{this.isFetchingActivities = false;})
-    }
-  },
-  computed: {
-    activities_computed: function () {
-      return this.companyActivities.map((activity)=>{
-        return {
-          title : activity.name,
-          url : `activity-form/${activity.id}`
-        }
-      });
-    }
+  data(){
+  return{
+    url:'/client/go',
+    requests:[
+      {
+        id:1,
+        name:"Card Requests",
+        url:"/client/card-requests"
+      },
+       {
+        id:11,
+        name:"Card Reissue",
+        url:"/client/card-issue"
+      },
+      {
+        id:2,
+        name:"Card Cancellation",
+        url:"/client/card-cancellation"
+      },
+            {
+        id:7,
+        name:"Dispute Requests",
+        url:"/client/dispute-requests"
+      },
+      {
+        id:12,
+        name:"Card Parameterization",
+        url:"/client/card-param"
+      },
+       {
+        id:6,
+        name:"Pin Reissue",
+        url:"/client/pin-reissue"
+      },
+
+    ],
+    activities:[]
   }
+  },
+  computed:{
+    ...mapGetters([ 'getActivities']),
+    filterArray(){
+    var matches = [];
+    let a  = this.activities
+    let b  = this.requests
+    for ( var i = 0; i < this.activities.length; i++ ) {
+        for ( var e = 0; e < this.requests.length; e++ ) {
+            if ( this.activities[i].id == this.requests[e].id ) {
+              matches.push(this.requests[e])
+            }
+            
+        }
+    }
+    return matches;
+      }
+  },
+  created(){
+    const companyId = JSON.parse(localStorage.getItem("user-mfb"))
+      this.$store.dispatch("fetchCompanyActivities",companyId.companyId).then( response => {
+        this.activities = response.data
+      })
+  },
 }
 </script>
 

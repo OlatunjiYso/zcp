@@ -76,9 +76,6 @@ export default {
       'getRoles'
     ])
   },
-  created(){
-   this.$store.dispatch("getRoles");
-  },
   methods: {
      closeAdd(){
            this.AddRoleModal = false

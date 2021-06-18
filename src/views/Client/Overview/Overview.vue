@@ -61,6 +61,15 @@
             <div class="slide-card-icon purple"></div>
           </div>
         </div>
+         <div class="content-slide-box">
+          <div class="content-info-card">
+            <div class="div-block-2">
+              <div class="slide-card-header">Rejected Requests</div>
+              <div class="slide-card-value">{{rejected}}</div>
+            </div>
+            <div class="slide-card-icon purple"></div>
+          </div>
+        </div>
       </div>
       <div v-if="!isFetchingDashBoard" class="basic-table-card">
         <div class="table-header">
@@ -75,7 +84,6 @@
               <th class="app-table-header">Email Address</th>
               <th class="app-table-header">Phone Number</th>
               <th class="app-table-header">Roles</th>
-              <th class="app-table-header">Last seen</th>
               <th class="app-table-header">Status</th>
             </tr>
             </thead>
@@ -86,7 +94,6 @@
               <td class="app-table-data">{{user_item.email}}</td>
               <td class="app-table-data">{{user_item.tel}}</td>
               <td class="app-table-data">{{user_item.role}}</td>
-              <td class="app-table-data">22/03/21</td>
               <td class="app-table-data table-active">{{user_item.status?"Active":"Disabled"}}</td>
             </tr>
             </tbody>
@@ -95,9 +102,9 @@
             </table>
       </div>
             </div>
-            <div class="app-admin-col-3">
+            <!-- <div class="app-admin-col-3">
               <Rightbar />
-            </div>
+            </div> -->
           </div>
 </template>
 
@@ -147,7 +154,8 @@ export default {
             this.card_requests_total = response[2].data.length;
              this.pending_approval_total = response[3].data.length;
              this.pending_acknowledgement_total = response[4].data.length
-            this.roles = response[5].data;
+              this.rejected = response[5].data.length
+            this.roles = response[6].data;
           })
           .catch((error)=>{
             alert(`Error : ${error}`)

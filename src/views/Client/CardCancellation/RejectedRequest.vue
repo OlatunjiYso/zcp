@@ -1,12 +1,13 @@
 <template>
   <div>
-<ReprocessRequest v-show="reprocessView" :requestData="requestData" :closeModal="closeModal" :closeModalReload="closeModalReload"/>
+                    <Loader v-show="loader"/>
+     <Status :state="state" :closeModal = "closeModalReload" :message = "message" :resetState="resetState" v-if="status"/>
  <div class="content-header">Rejected Card Reissue Requests</div>
       <div class="content-sub">Here are the requests that were rejected</div>
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-            <form id="email-form" name="email-form" data-name="Email Form"><input type="text" class="app-input-search w-input" maxlength="256" name="name" data-name="Name" placeholder="Search..." id="name"></form>
+ <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Client Code" id="name">       
           </div>
         </div>
         <!-- <div class="app-table-buttons">
@@ -17,30 +18,28 @@
       </div>
            <Loading v-if="RejectLoader"/>
            <div v-else>
-                     <table class="app-table2" v-if="!RejectRequests.length <= 0">
+                     <table class="app-table2" v-if="!resultQuery.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
-                           <th class="app-table2-header">S/N</th>
-                           <th class="app-table2-header">Account Name</th>
-                          <th class="app-table2-header">Account Number</th>
-                          <th class="app-table2-header">Card Pan</th>
-                           <th class="app-table2-header">New Name</th>
-                           <th class="app-table2-header">Request Date</th>
+                          <th class="app-table2-header">S/N</th>
+                            <th class="app-table2-header">Client Code</th>
+                          <th class="app-table2-header">Request Date</th>
+                           <th class="app-table2-header">Processed Date</th>
+                             <th class="app-table2-header">Reason</th>  
                             <th class="app-table2-header"></th>
                            
                         </tr>
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in RejectRequests" :key="index" class="app-table2-row">
-                              <td class="app-table2-data">{{index + 1}}</td>
-                            <td class="app-table2-data">{{result.accountName}}</td>
-                            <td class="app-table2-data">{{result.accountNumber}}</td>
-                            <td class="app-table2-data">{{result.cardPan}}</td> 
-                            <td class="app-table2-data">{{result.newNameOfCard}}</td>
+                              <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
+                             <td class="app-table2-data">{{index + 1}}</td>
+                            <td class="app-table2-data">{{result.clientCode}}</td> 
                             <td class="app-table2-data">{{result.requestDate}}</td>
+                            <td class="app-table2-data">{{result.processedDate}}</td>
+                            <th class="app-table2-data">{{ result.reason}}</th>
                              <td class="app-table2-data">
-                                   <div @click="openModal(result)" style="cursor:pointer" class="table-btn">Reprocess<span class="table-button-icon"></span></div>
+                                   <div @click="sendRequest(result)" style="cursor:pointer" class="table-btn">Reprocess<span class="table-button-icon"></span></div>
                             </td> 
                         </tr>
                         
@@ -59,8 +58,7 @@ import Status from '../../../components/Status/Status2'
 import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
-import ReprocessRequest from './Reprocess'
-
+import axios from "axios";
 export default {
   props:['RejectRequests','RejectLoader'],
           components:{
@@ -68,7 +66,6 @@ export default {
      Status,
      EmptyData,
      Loading,
-     ReprocessRequest
     },
   data(){
     return{
@@ -79,45 +76,65 @@ export default {
         state: null,
         message: null,
         reprocessView: false,
-        RejectRequests2:[{
-    "id": 19,
-    "companyId": 13,
-    "title": "MR",
-    "firstName": "John",
-    "middleName": "Ekal",
-    "lastName": "Mutumbie",
-    "gender": "Male",
-    "maritalStatus": "MARRIED",
-    "mobileNo": "07082079883",
-    "email": "aliasgbolly@gmail.com",
-    "dateOfBirth": "2021-05-18",
-    "addressLine1": "Lagos",
-    "addressLine2": "Lagos",
-    "cityCode": "99371",
-    "regionCode": "019",
-    "countryCode": "044",
-    "legalID": "8924894",
-    "idCardTypeCode": "02",
-    "documentIssueDate": "2021-05-12",
-    "expiryDateOfDoc": "2021-05-18",
-    "accountNbr": "0229377919",
-    "nameOnCard": "John Mutumbie",
-    "branchNo": "114",
-    "socioProfCode": "006",
-    "uniqueReference": null,
-    "productCode": "520",
-    "workflowId": 7,
-    "clientCode": null,
-    "create_at": "0001-01-01T00:00:00"
-  }]
+         searchQuery: '',
+    
     }
   },
         computed:{
     ...mapGetters([
       'getUrl2',
     ]),
+            resultQuery(){
+      if(this.searchQuery){
+      return this.RejectRequests.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.clientCode.toLowerCase().includes(v))
+      })
+      }else{
+        return this.RejectRequests;
+      }
+    },
   },
   methods: {
+      resetState(){
+    this.status =false
+             location.reload();
+         return false;
+      },
+          async sendRequest(result){
+       this.loader = true
+       const user = JSON.parse(localStorage.getItem("user-mfb"))
+          const form = {
+              "id": result.id,
+              "companyId": user.companyId,
+              "userId": user.id,
+              "clientCode": result.clientCode,
+              "workflowId": 1,
+          }
+         try {
+           
+             const response = await axios.post(this.getUrl2 + 'api/CardCancellation/initialcardandreprocess',form)
+             if(response.data.responseCode == "00"){
+               this.loader = false;
+               this.status = true;
+               this.state = 'success';
+               this.message = 'Operation Sucessful'
+             }
+             else if(response.data.responseCode == "01"){
+               this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = response.data.responseMessage
+             }
+
+         } catch (error) {
+              console.log(error)
+               this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = 'Operation Failed'
+         }
+            
+      },
            closeModal(){
          this.reprocessView = false 
        },

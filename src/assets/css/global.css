@@ -34,6 +34,7 @@
  color:white;
  cursor:pointer;
  transition: all .2s;
+ font-size: 12px;
 }
 
 .table-btn:hover {
@@ -173,7 +174,7 @@ flex-wrap: wrap;
  }
 
  .form-flex-col-3 {
-  flex-basis: 33.3%;
+  flex-basis: 25%;
   margin-bottom: 10px;
   padding-right: 20px;
  }
@@ -192,7 +193,7 @@ flex-wrap: wrap;
   padding:4px 10px;
   border-radius: 3px;
   color: white;
-  font-size: 13px;
+  font-size: 11px;
   cursor: pointer;
   width: 100px;
   float: right;
@@ -231,4 +232,8 @@ flex-wrap: wrap;
   color: #6a6a6a;
   font-size: 13px;
   font-weight: 400;
+}
+
+.app-table-select{
+  display: flex;
 }

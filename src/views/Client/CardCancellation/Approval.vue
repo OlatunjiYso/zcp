@@ -7,7 +7,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-            <form id="email-form" name="email-form" data-name="Email Form"><input type="text" class="app-input-search w-input" maxlength="256" name="name" data-name="Name" placeholder="Search..." id="name"></form>
+ <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Client Code" id="name">         
           </div>
         </div>
         <!-- <div class="app-table-buttons">
@@ -18,15 +18,14 @@
       </div>
            <Loading v-if="approvalLoader"/>
            <div v-else>
-                     <table class="app-table2" v-if="!ApprovalRequests.length <= 0">
+                     <table class="app-table2" v-if="!resultQuery.length <= 0">
                     <thead>
                          <tr class="app-table2-row">
-                           <th class="app-table2-header">S/N</th>
-                           <th class="app-table2-header">Account Name</th>
-                          <th class="app-table2-header">Account Number</th>
-                          <th class="app-table2-header">Card Pan</th>
-                           <th class="app-table2-header">New Name</th>
-                           <th class="app-table2-header">Request Date</th>
+                                                    <th class="app-table2-header">S/N</th>
+                           <th class="app-table2-header">Client Code</th>
+                          <th class="app-table2-header">Request Date</th>
+                           <th class="app-table2-header">Processed Date</th>
+                             <th class="app-table2-header">Reason</th>  
                             <th class="app-table2-header"></th>
                              <th class="app-table2-header"></th>
                            
@@ -34,13 +33,12 @@
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in ApprovalRequests" :key="index" class="app-table2-row">
-                             <td class="app-table2-data">{{index + 1}}</td>
-                            <td class="app-table2-data">{{result.accountName}}</td>
-                            <td class="app-table2-data">{{result.accountNumber}}</td>
-                            <td class="app-table2-data">{{result.cardPan}}</td> 
-                            <td class="app-table2-data">{{result.newNameOfCard}}</td>
+                              <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
+                            <td class="app-table2-data">{{index + 1}}</td>
+                            <td class="app-table2-data">{{result.clientCode}}</td> 
                             <td class="app-table2-data">{{result.requestDate}}</td>
+                            <td class="app-table2-data">{{result.processedDate}}</td>
+                            <th class="app-table2-data"> <input v-model="reason[result.id]" type="text" class="app-input-search w-input" placeholder="Type here" id="name"></th>
                              <td class="app-table2-data">
                                    <div @click="Approve(result)" style="cursor:pointer" class="table-btn">Approve<span class="table-button-icon"></span></div>
                             </td> 
@@ -65,8 +63,6 @@ import Status from '../../../components/Status/Status2'
 import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
-
-
 export default {
   props:['ApprovalRequests','approvalLoader'],
           components:{
@@ -82,12 +78,23 @@ export default {
         status: false,
         state: null,
         message: null,
+        reason:[],
+        searchQuery: '',
     }
   },
         computed:{
     ...mapGetters([
       'getUrl2',
     ]),
+            resultQuery(){
+      if(this.searchQuery){
+      return this.ApprovalRequests.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.clientCode.toLowerCase().includes(v))
+      })
+      }else{
+        return this.ApprovalRequests;
+      }
+    },
   },
   methods: {
      resetState(){
@@ -103,12 +110,13 @@ this.status = false;
               "companyId": parseInt(user.companyId),
               "workflowId": 2,
               "userId": parseInt(user.id),
-              "clientCode": result.clientCode
+              "clientCode": result.clientCode,
+              "reason": this.reason[result.id]
             }
          try {
            
-             const response = await axios.post(this.getUrl2 + 'api/CardReissue/AproveCardReissueRequest',formData)
-             if(response.status == 200){
+             const response = await axios.post(this.getUrl2 + 'api/CardCancellation/approvecardcancellation',formData)
+            if(response.status == 200 && response.data == true){
                this.loader = false;
                this.status = true;
                this.state = 'success';
@@ -136,14 +144,15 @@ this.status = false;
         const formData = {
               "requestId": [result.id],
               "companyId": parseInt(user.companyId),
-              "workflowId": 7,
+              "workflowId": 0,
               "userId": parseInt(user.id),
-              "clientCode": result.clientCode
+              "clientCode": result.clientCode,
+              "reason": this.reason[result.id]
             }
          try {
            
-             const response = await axios.post(this.getUrl2 + 'api/CardReissue/RejectCardReissueRequest',formData)
-             if(response.status == 200){
+             const response = await axios.post(this.getUrl2 + 'api/CardCancellation/rejectcardcancellation',formData)
+            if(response.status == 200 && response.data == true){
                this.loader = false;
                this.status = true;
                this.state = 'success';

@@ -72,7 +72,8 @@ export default {
       'getAdminUsers'
     ])
   },
-  created(){
+  async created(){
+    await this.$store.dispatch("getRoles");
    this.$store.dispatch("getAdminUsers");
   },
   methods: {

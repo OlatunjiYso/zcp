@@ -6,7 +6,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-            <form id="email-form" name="email-form" data-name="Email Form"><input type="text" class="app-input-search w-input" maxlength="256" name="name" data-name="Name" placeholder="Search..." id="name"></form>
+          <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Account Number" id="name">
           </div>
         </div>
         <!-- <div class="app-table-buttons">
@@ -17,27 +17,23 @@
       </div>
            <Loading v-if="AllLoader"/>
            <div v-else>
-                     <table class="app-table2" v-if="!AllRequests.length <= 0">
+                     <table class="app-table2" v-if="!resultQuery.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
                            <th class="app-table2-header">S/N</th>
-                           <th class="app-table2-header">Account Name</th>
-                          <th class="app-table2-header">Account Number</th>
-                          <th class="app-table2-header">Card Pan</th>
-                           <th class="app-table2-header">New Name</th>
-                           <th class="app-table2-header">Request Date</th>
+                           <th class="app-table2-header">Account Number</th>
+                          <th class="app-table2-header">Request Date</th>
+                           <th class="app-table2-header">Processed Date</th>
                              <th class="app-table2-header">Status</th>   
                                <th class="app-table2-header"></th>                  
                         </tr>
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in AllRequests" :key="index" class="app-table2-row">
+                              <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
                             <td class="app-table2-data">{{index + 1}}</td>
-                            <td class="app-table2-data">{{result.accountName}}</td>
-                            <td class="app-table2-data">{{result.accountNumber}}</td>
-                            <td class="app-table2-data">{{result.cardPan}}</td> 
-                            <td class="app-table2-data">{{result.newNameOfCard}}</td>
+                            <td class="app-table2-data">{{result.accountNo}}</td> 
+                            <td class="app-table2-data">{{result.requestDate}}</td>
                             <td class="app-table2-data">{{result.requestDate}}</td>
                             <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : 
                                 result.workflowId == 2 ? "Awaiting processing" : 
@@ -45,11 +41,11 @@
                                  result.workflowId == 4 ? "Awaiting processing" :
                                   result.workflowId == 5 ? "Processed and Shipped" :
                                    result.workflowId == 6 ? "Needs Acknowledgement" :
-                                   result.workflowId == 7 ? "Rejected" : "null"
+                                   result.workflowId == 0 ? "Rejected" : "null"
                                 }}</th>
-                                 <td class="app-table2-data">
+                                 <!-- <td class="app-table2-data">
                                    <div @click="openModal(result)" style="cursor:pointer" class="table-btn">View<span class="table-button-icon"></span></div>
-                            </td> 
+                            </td>  -->
                           
                         </tr>
                         
@@ -87,13 +83,23 @@ export default {
         state: null,
         message: null,
         viewDetails: false,
-        viewDetailsData:""
+        viewDetailsData:"",
+         searchQuery: '',
     }
   },
         computed:{
     ...mapGetters([
       'getUrl2',
     ]),
+        resultQuery(){
+      if(this.searchQuery){
+      return this.AllRequests.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.accountNo.toLowerCase().includes(v))
+      })
+      }else{
+        return this.AllRequests;
+      }
+    },
   },
   methods: {
       openModal(result){
@@ -108,40 +114,7 @@ this.status = false;
               location.reload();
          return false; 
     },
-  async  Approve(result){
-       this.loader = true
-       const user = JSON.parse(localStorage.getItem("user-mfb"))
-         const formData = {
-              "requestId": [result.id],
-              "companyId": parseInt(user.companyId),
-              "workflowId": 2,
-              "userId": parseInt(user.id)
-            }
-         try {
-           
-             const response = await axios.post(this.getUrl2 + 'api/CardRequest/approveoracknowledge',formData)
-             if(response.status == 200){
-               this.loader = false;
-               this.status = true;
-               this.state = 'success';
-               this.message = 'Operation Sucessful'
-             }
-             else{
-               this.loader = false;
-               this.status = true;
-               this.state = 'failed';
-               this.message = 'Operation Failed'
-             }
-
-         } catch (error) {
-              console.log(error)
-               this.loader = false;
-               this.status = true;
-               this.state = 'failed';
-               this.message = 'Operation Failed'
-         }
-            
-    }
+ 
   },
 }
 </script>

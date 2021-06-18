@@ -2,43 +2,69 @@
     <div>
       <div class="app-admin-brand"></div>
     <router-link to="/admin/overview">
-     <div class="admin-col-link-div">
-        <div class="admin-col-1-links active-link"></div>
-        <div class="admin-col-link-text active-link">Dashboard</div>
+     <div class="admin-col-link-div" @click="changeNav(1)">
+        <div class="admin-col-1-links" :class="[getCurrentAdminNav == 1 ? activeNav : '']"></div>
+        <div class="admin-col-link-text" :class="[getCurrentAdminNav == 1 ? activeNav : '']">Dashboard</div>
       </div>
     </router-link> 
-    <router-link to="/admin/companies">
-       <div class="admin-col-link-div">
-        <div class="admin-col-1-links"></div>
-        <div class="admin-col-link-text">Companies</div>
+    <router-link to="/admin/companies" v-show="checkPermAdmin('Admin_Onboarding')">
+       <div class="admin-col-link-div" @click="changeNav(2)">
+        <div class="admin-col-1-links" :class="[getCurrentAdminNav == 2 ? activeNav : '']"></div>
+        <div class="admin-col-link-text" :class="[getCurrentAdminNav == 2 ? activeNav : '']">Companies</div>
       </div>
     </router-link>
-     <!-- <router-link to="requests">
-        <div class="admin-col-link-div">
-        <div class="admin-col-1-links"></div>
-        <div class="admin-col-link-text">Requests</div>
-      </div>
-     </router-link> -->
-     <router-link to="/admin/activities">
-       <div class="admin-col-link-div">
-        <div class="admin-col-1-links"></div>
-        <div class="admin-col-link-text">Activities</div>
+     <router-link to="/admin/activities" v-show="checkPermAdmin('Admin_Onboarding')">
+       <div class="admin-col-link-div" @click="changeNav(3)">
+        <div class="admin-col-1-links" :class="[getCurrentAdminNav == 3 ? activeNav : '']"></div>
+        <div class="admin-col-link-text" :class="[getCurrentAdminNav == 3 ? activeNav : '']">Activities</div>
       </div>
      </router-link>
-      <router-link to="/admin/user-management">
-             <div class="admin-col-link-div">
-        <div class="admin-col-1-links"></div>
-        <div class="admin-col-link-text">User<br>Management</div>
+           <router-link to="/admin/card-status" v-show="checkPermAdmin('Admin_View_CardStatus')">
+       <div class="admin-col-link-div" @click="changeNav(4)">
+        <div class="admin-col-1-links" :class="[getCurrentAdminNav == 4 ? activeNav : '']"></div>
+        <div class="admin-col-link-text" :class="[getCurrentAdminNav == 4 ? activeNav : '']">Card Status</div>
+      </div>
+     </router-link>
+               <router-link to="/admin/audit" v-show="checkPermAdmin('Admin_Audit_Trail')">
+       <div class="admin-col-link-div" @click="changeNav(5)">
+        <div class="admin-col-1-links" :class="[getCurrentAdminNav == 5 ? activeNav : '']"></div>
+        <div class="admin-col-link-text" :class="[getCurrentAdminNav == 5 ? activeNav : '']">Audit</div>
+      </div>
+               </router-link>
+      <router-link to="/admin/user-management" v-show="checkPermAdmin('Admin_User_Management')">
+             <div class="admin-col-link-div" @click="changeNav(6)">
+        <div class="admin-col-1-links" :class="[getCurrentAdminNav == 6 ? activeNav : '']"></div>
+        <div class="admin-col-link-text" :class="[getCurrentAdminNav == 6 ? activeNav : '']">User<br>Management</div>
       </div> 
       </router-link>
 
-      <div class="admin-col-logout"><span class="text-span-3"></span> Logout</div>
+      <div @click="Logout" style="cursor:pointer" class="admin-col-logout"><span class="text-span-3"></span> Logout</div>
     </div>
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
+import global from '../../../views/operationMixen'
 export default {
-
+  mixins:[global],
+data(){
+  return{
+ activeNav: 'active-link'
+  }
+},
+computed:{
+  ...mapGetters(['getCurrentAdminNav'])
+},
+methods: {
+    changeNav(nav){
+  this.$store.commit('setAdminNav',nav)
+  },
+  Logout(){
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
+    this.$router.push('/admin/login')
+  }
+},
 }
 </script>
 

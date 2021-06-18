@@ -6,8 +6,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-            <form id="email-form" name="email-form" data-name="Email Form"><input type="text" class="app-input-search w-input" maxlength="256" name="name" data-name="Name" placeholder="Search..." id="name"></form>
-          </div>
+ <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Account Number" id="name">          </div>
         </div>
         <!-- <div class="app-table-buttons">
           <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>
@@ -17,7 +16,7 @@
       </div>
            <Loading v-if="RejectLoader"/>
            <div v-else>
-                     <table class="app-table2" v-if="!RejectRequests.length <= 0">
+                     <table class="app-table2" v-if="!resultQuery.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
                            <th class="app-table2-header">Id</th>
@@ -25,20 +24,20 @@
                           <th class="app-table2-header">Name on Card</th>
                           <th class="app-table2-header">Account Number</th>
                            <th class="app-table2-header">Card Product Code</th>
-                           <th class="app-table2-header">Status</th>
+                           <th class="app-table2-header">Reason</th>
                             <th class="app-table2-header"></th>
                            
                         </tr>
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in RejectRequests" :key="index" class="app-table2-row">
+                              <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
                             <td class="app-table2-data">{{index + 1}}</td>
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
                             <td class="app-table2-data">{{result.productCode}}</td>
-                            <th class="app-table2-data">{{ result.workflowId == 7 ? "Rejected" : "null"}}</th>
+                            <td class="app-table2-data">{{result.reason}}</td>
                              <td class="app-table2-data">
                                    <div @click="openModal(result)" style="cursor:pointer" class="table-btn">Reprocess<span class="table-button-icon"></span></div>
                             </td> 
@@ -72,50 +71,29 @@ export default {
     },
   data(){
     return{
+      searchQuery: '',
          requestData: "",
          loading:false,
          loader: false,
         status: false,
         state: null,
         message: null,
-        reprocessView: false,
-        RejectRequests2:[{
-    "id": 19,
-    "companyId": 13,
-    "title": "MR",
-    "firstName": "John",
-    "middleName": "Ekal",
-    "lastName": "Mutumbie",
-    "gender": "Male",
-    "maritalStatus": "MARRIED",
-    "mobileNo": "07082079883",
-    "email": "aliasgbolly@gmail.com",
-    "dateOfBirth": "2021-05-18",
-    "addressLine1": "Lagos",
-    "addressLine2": "Lagos",
-    "cityCode": "99371",
-    "regionCode": "019",
-    "countryCode": "044",
-    "legalID": "8924894",
-    "idCardTypeCode": "02",
-    "documentIssueDate": "2021-05-12",
-    "expiryDateOfDoc": "2021-05-18",
-    "accountNbr": "0229377919",
-    "nameOnCard": "John Mutumbie",
-    "branchNo": "114",
-    "socioProfCode": "006",
-    "uniqueReference": null,
-    "productCode": "520",
-    "workflowId": 7,
-    "clientCode": null,
-    "create_at": "0001-01-01T00:00:00"
-  }]
+        reprocessView: false
     }
   },
         computed:{
     ...mapGetters([
       'getUrl2',
     ]),
+        resultQuery(){
+      if(this.searchQuery){
+      return this.RejectRequests.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.accountNbr.toLowerCase().includes(v))
+      })
+      }else{
+        return this.RejectRequests;
+      }
+    },
   },
   methods: {
            closeModal(){

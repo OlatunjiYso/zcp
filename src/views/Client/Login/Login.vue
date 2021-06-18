@@ -14,7 +14,7 @@
         <form @submit.prevent="Login">
           <div class="app-login-form-group">
             <label for="Email-address" class="login-label">User Name</label>
-            <input v-model="form.userName" type="text" class="app-login-text-field w-input"  placeholder="012929292" required></div>
+            <input v-model="form.userName" type="text" class="app-login-text-field w-input"  placeholder="username" required></div>
           <div class="app-login-form-group">
             <label for="password" class="login-label">Hardware Token</label>
             <input v-model="form.password" type="password" class="app-login-text-field w-input" placeholder="xxxxxxxxxxxxx" required>
@@ -80,7 +80,7 @@ this.status = false;
    return result.join('');
     },
     async Login(){
-      this.GenerateToken(20);
+      this.GenerateToken(50);
        this.loader = true;
        this.isAttemptingLogin = true;
          const formData = {

@@ -6,7 +6,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-            <form id="email-form" name="email-form" data-name="Email Form"><input type="text" class="app-input-search w-input" maxlength="256" name="name" data-name="Name" placeholder="Search..." id="name"></form>
+ <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Account Number" id="name">  
           </div>
         </div>
         <!-- <div class="app-table-buttons">
@@ -17,7 +17,7 @@
       </div>
            <Loading v-if="RejectLoader"/>
            <div v-else>
-                     <table class="app-table2" v-if="!RejectRequests.length <= 0">
+                     <table class="app-table2" v-if="!resultQuery.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
                            <th class="app-table2-header">S/N</th>
@@ -26,19 +26,21 @@
                           <th class="app-table2-header">Card Pan</th>
                            <th class="app-table2-header">New Name</th>
                            <th class="app-table2-header">Request Date</th>
+                           <th class="app-table2-header">Reason</th>
                             <th class="app-table2-header"></th>
                            
                         </tr>
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in RejectRequests" :key="index" class="app-table2-row">
+                              <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
                               <td class="app-table2-data">{{index + 1}}</td>
                             <td class="app-table2-data">{{result.accountName}}</td>
                             <td class="app-table2-data">{{result.accountNumber}}</td>
                             <td class="app-table2-data">{{result.cardPan}}</td> 
                             <td class="app-table2-data">{{result.newNameOfCard}}</td>
                             <td class="app-table2-data">{{result.requestDate}}</td>
+                            <td class="app-table2-data">{{result.reason}}</td>
                              <td class="app-table2-data">
                                    <div @click="openModal(result)" style="cursor:pointer" class="table-btn">Reprocess<span class="table-button-icon"></span></div>
                             </td> 
@@ -72,6 +74,7 @@ export default {
     },
   data(){
     return{
+      searchQuery: '',
          requestData: "",
          loading:false,
          loader: false,
@@ -116,6 +119,15 @@ export default {
     ...mapGetters([
       'getUrl2',
     ]),
+            resultQuery(){
+      if(this.searchQuery){
+      return this.RejectRequests.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.accountNumber.toLowerCase().includes(v))
+      })
+      }else{
+        return this.RejectRequests;
+      }
+    },
   },
   methods: {
            closeModal(){

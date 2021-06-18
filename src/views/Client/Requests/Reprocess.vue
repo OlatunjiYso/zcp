@@ -14,7 +14,7 @@
       <div class="form-flex-col-3">
         <label class="login-label">Title<span style="color:red">*</span></label>
         <select v-model="requestData.title" style="marginBottom: 30px" class="app-select w-select">
-          <option  v-for="(result, index) in titles" :key="index" :value="result.titleName">{{result.titleName}}</option>
+          <option  v-for="(result, index) in titles" :key="index" :value="result.titleCode">{{result.titleName}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
@@ -32,18 +32,18 @@
       <div class="form-flex-col-3">
         <label class="login-label">Gender<span style="color:red">*</span></label>
         <select v-model="requestData.gender" style="marginBottom: 30px" class="app-select w-select">
-          <option  v-for="(result, index) in gender" :key="index" :value="result">{{result}}</option>
+          <option  v-for="(result, index) in gender" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Marital Status<span style="color:red">*</span></label>
         <select v-model="requestData.maritalStatus" style="marginBottom: 30px" class="app-select w-select">
-          <option  v-for="(result, index) in maritalStatus" :key="index" :value="result.name">{{result.name}}</option>
+          <option  v-for="(result, index) in maritalStatus" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Mobile No<span style="color:red">*</span></label>
-        <input v-model="requestData.mobileNo" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input minlength="13" maxlength="13" v-model="requestData.mobileNo" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Email Address<span style="color:red">*</span></label>
@@ -51,7 +51,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Date of Birth<span style="color:red">*</span></label>
-        <input v-model="requestData.dateOfBirth" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.dateOfBirth" type="date" max="2005-12-31" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
 
       <div class="form-flex-col-3">
@@ -101,7 +101,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input v-model="requestData.accountNbr" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input minlength="10" maxlength="10" v-model="requestData.accountNbr" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Name on Card<span style="color:red">*</span></label>
@@ -129,7 +129,7 @@
 <script>
 import operationMixen from "../../operationMixen.js";
 import Loader from "../../../components/Loader/Loader";
-import Status from "../../../components/Status/Status2";
+import Status from "../../../components/Status/Status";
 import {mapGetters} from "vuex";
 import axios from "axios";
 export default {
@@ -215,6 +215,7 @@ this.status = false;
       const companyProduct = await axios.get(this.getUrl + '/api/CardProductSetup')
      const product = await companyProduct.data.find(x => { return x.companyId == parseInt(user.companyId) })
        const formData ={
+         "id": this.requestData.id,
         "productCode": product.cardProductCode,
         "branchNo": company.data.branch,
         "companyId": parseInt(user.companyId),
