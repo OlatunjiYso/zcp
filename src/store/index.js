@@ -1,24 +1,39 @@
 import { createStore }  from 'vuex'
 import axios from'axios'
+
 export default createStore({
   state: {
     url: 'https://cors-zenith.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalSecurityApi/',
     url2: 'https://cors-zenith.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalOperations/',
+    url3: 'https://cors-zenith.herokuapp.com/https://newwebservicetest.zenithbank.com/disputeresolutionthirdpartyapi/api/Dispute/',
     activities: [],
     adminUsers:[],
     companies:[],
     roles:[],
-    permissions:[],
-    companyUsers:[],
+    companyUsers:["1"],
     currentDate: "",
-    activeUser:{
-        companyId : 1,
-    },
+    activeUser:{ companyId : 1},
     loader: false,
     loading:false,
-    cardSetup: []
+    cardSetup: [],
+    permissions: localStorage.getItem("user-mfb")? JSON.parse(localStorage.getItem("user-mfb")).permissions : '',
+    AdminPermissions: localStorage.getItem("user")? JSON.parse(localStorage.getItem("user")).permissions : '',
+    currentNav:1,
+    currentAdminNav:1
   },
   getters:{
+    getCurrentAdminNav(state){
+      return state.currentAdminNav
+    },
+    getCurrentNav(state){
+      return state.currentNav
+    },
+    getAdminPermissions(state){
+      return state.AdminPermissions
+     },
+    getPermissions(state){
+     return state.permissions
+    },
     getCardSetup(state){
       return state.cardSetup
     },
@@ -30,6 +45,9 @@ export default createStore({
    },
    getUrl2(state){
     return state.url2;
+  },
+  getUrl3(state){
+    return state.url3;
   },
    getActivities(state){
      return state.activities
@@ -43,14 +61,20 @@ export default createStore({
   getRoles(state){
     return state.roles
   },
-  getPermissions(state){
-    return state.permissions
-  },
   getCompanyUsers(state){
     return state.companyUsers
   },
   },
   mutations: {
+    setAdminNav(state, payload){
+      state.currentAdminNav = payload
+    },
+    setNav(state, payload){
+      state.currentNav = payload
+    },
+    setCompUsers(state, payload){
+      state.companyUsers = payload;
+    },
     setCardSetup(state, payload){
       state.cardSetup = payload;
     },
@@ -69,11 +93,17 @@ export default createStore({
     setPermissions(state, payload){
       state.permissions = payload;
     },
-    setCompanyUsers(state, payload){
-      state.companyUsers = payload;
-    }
   },
   actions: {
+    getPermissions({commit, state}){
+      commit('setPermission')
+    },
+    Logout(){
+     localStorage.removeItem('user-mfb')
+     localStorage.removeItem('token-mfb')
+     localStorage.removeItem('user')
+     localStorage.removeItem('token')
+    },
     async getCardSetup({commit, state}){
      const result = await axios.get(state.url + 'api/CardProductSetup/FetchCardProductCodeForsetup')
       commit('setCardSetup', result.data)
@@ -90,7 +120,7 @@ export default createStore({
       commit('setActivities', result.data)
     },
 
-    async getAdminUsers({commit, state}, roles){
+    async getAdminUsers({commit, state}){
       state.loading = true
       const result = await axios.get(state.url + 'api/adminusers',
         {
@@ -105,7 +135,7 @@ export default createStore({
          return {
             id: user.id,
             userName: user.userName,
-            rolesId : roles.find((entry)=>{return user.rolesId === entry.id}).name,
+            rolesId : state.roles.find((entry)=>{return user.rolesId === entry.id}).name,
             created_at : user.created_at
          }
         })
@@ -152,15 +182,17 @@ export default createStore({
       commit('setPermissions', result.data)
     },
 
-    async getCompanyUsers({commit, state}){
-      const result = await axios.get(state.url + 'api/companyusers',
+    async getCompanyUsers({commit,state}, companyId){
+
+      const result = await axios.get(state.url + '/api/companies/CompanyUsers/' + companyId,
         {
           headers: {
             "Content-Type": "application/json"
           }
         }
         )
-      commit('setCompanyUsers', result.data)
+      commit('setCompUsers', result.data)
+      
     },
 
       attemptLogin (context,payload){
@@ -240,6 +272,16 @@ export default createStore({
       )
   },
 
+  fetchCompanyRejected(context,companyId){
+    return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `/api/CardRequest/PendingRejectRequest/${companyId}`,
+        {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+    )
+},
+
       getClientDashboardData(context,companyId){
         return Promise.all([
             context.dispatch("fetchCompanyUsers",companyId),
@@ -247,6 +289,7 @@ export default createStore({
             context.dispatch("fetchCompanyCardRequests",companyId),
             context.dispatch("fetchCompanyPendingApproval",companyId),
             context.dispatch("fetchCompanyPendingAcknowledgement",companyId),
+            context.dispatch("fetchCompanyRejected",companyId),
             context.dispatch("fetchRoles"),
         ]);
       }

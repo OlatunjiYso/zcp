@@ -15,16 +15,20 @@
         </div>
       </div>
         <ActivityForm1 v-if="form == 1" />
+        <ActivityForm3 v-else-if="form == 3" />
          <ActivityForm2 v-else-if="form == 2" />
          <ActivityForm5 v-else-if="form == 5" />
+          <ActivityForm6 v-else-if="form == 6" />
+          <ActivityForm7 v-else-if="form == 7" />
          <ActivityForm8 v-else-if="form == 8" />
            <ActivityForm9 v-else-if="form == 9" />
            <ActivityForm11 v-else-if="form == 11" />
+           <ActivityForm12 v-else-if="form == 12" />
          <ActivityForm14 v-else-if="form == 14" />
     </div>
-    <div class="app-admin-col-3">
+    <!-- <div class="app-admin-col-3">
       <Rightbar />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -37,20 +41,28 @@ import Status from '../../../components/Status/Status2'
 import {mapGetters} from 'vuex'
 import ActivityForm1 from "../../../components/ActivityForms/ActivityForm1";
 import ActivityForm2 from "../../../components/ActivityForms/ActivityForm2";
+import ActivityForm3 from "../../../components/ActivityForms/ActivityForm3";
 import ActivityForm5 from "../../../components/ActivityForms/ActivityForm5";
+import ActivityForm6 from "../../../components/ActivityForms/ActivityForm6";
+import ActivityForm7 from "../../../components/ActivityForms/ActivityForm7";
 import ActivityForm8 from "../../../components/ActivityForms/ActivityForm8";
 import ActivityForm9 from "../../../components/ActivityForms/ActivityForm9";
 import ActivityForm11 from "../../../components/ActivityForms/ActivityForm11";
+import ActivityForm12 from "../../../components/ActivityForms/ActivityForm12";
 import ActivityForm14 from "../../../components/ActivityForms/ActivityForm14";
 export default {
   name: "Home",
   components: {
     ActivityForm1,
     ActivityForm2,
+    ActivityForm3,
     ActivityForm5,
+    ActivityForm6,
+    ActivityForm7,
     ActivityForm8,
     ActivityForm9,
     ActivityForm11,
+    ActivityForm12,
     ActivityForm14,
     Leftbar,
     Rightbar,

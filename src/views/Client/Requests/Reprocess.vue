@@ -14,7 +14,7 @@
       <div class="form-flex-col-3">
         <label class="login-label">Title<span style="color:red">*</span></label>
         <select v-model="requestData.title" style="marginBottom: 30px" class="app-select w-select">
-          <option  v-for="(result, index) in titles" :key="index" :value="result.titleName">{{result.titleName}}</option>
+          <option  v-for="(result, index) in titles" :key="index" :value="result.titleCode">{{result.titleName}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
@@ -32,13 +32,13 @@
       <div class="form-flex-col-3">
         <label class="login-label">Gender<span style="color:red">*</span></label>
         <select v-model="requestData.gender" style="marginBottom: 30px" class="app-select w-select">
-          <option  v-for="(result, index) in gender" :key="index" :value="result">{{result}}</option>
+          <option  v-for="(result, index) in gender" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Marital Status<span style="color:red">*</span></label>
         <select v-model="requestData.maritalStatus" style="marginBottom: 30px" class="app-select w-select">
-          <option  v-for="(result, index) in maritalStatus" :key="index" :value="result.name">{{result.name}}</option>
+          <option  v-for="(result, index) in maritalStatus" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
@@ -129,7 +129,7 @@
 <script>
 import operationMixen from "../../operationMixen.js";
 import Loader from "../../../components/Loader/Loader";
-import Status from "../../../components/Status/Status2";
+import Status from "../../../components/Status/Status";
 import {mapGetters} from "vuex";
 import axios from "axios";
 export default {
@@ -215,6 +215,7 @@ this.status = false;
       const companyProduct = await axios.get(this.getUrl + '/api/CardProductSetup')
      const product = await companyProduct.data.find(x => { return x.companyId == parseInt(user.companyId) })
        const formData ={
+         "id": this.requestData.id,
         "productCode": product.cardProductCode,
         "branchNo": company.data.branch,
         "companyId": parseInt(user.companyId),

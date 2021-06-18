@@ -10,7 +10,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input  minlength="10" maxlength="10" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Name<span style="color:red">*</span></label>
@@ -134,7 +134,7 @@ export default {
           this.loader = false;
           this.status = true;
           this.state = 'failed';
-          this.message = 'Operation Failed'
+          this.message = response.data.responseMessage
         }
 
       } catch (error) {
@@ -142,7 +142,7 @@ export default {
         this.loader = false;
         this.status = true;
         this.state = 'failed';
-        this.message = 'Operation Failed'
+         this.message = error.message
       }
 
     },

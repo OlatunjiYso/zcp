@@ -14,7 +14,7 @@
         <form @submit.prevent="Login">
           <div class="app-login-form-group">
             <label for="Email-address" class="login-label">User Name</label>
-            <input v-model="form.userName" type="text" class="app-login-text-field w-input"  placeholder="012929292" required></div>
+            <input v-model="form.userName" type="text" class="app-login-text-field w-input"  placeholder="john.doe" required></div>
           <div class="app-login-form-group">
             <label for="password" class="login-label">Hardware Token</label>
             <input v-model="form.password" type="password" class="app-login-text-field w-input" placeholder="xxxxxxxxxxxxx" required>
@@ -72,15 +72,12 @@ this.status = false;
     var result           = [];
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
-    for ( var i = 0; i < length; i++ ) {
-      result.push(characters.charAt(Math.floor(Math.random() * 
- charactersLength)));
-   }
+    for ( var i = 0; i < length; i++ ) {result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));}
    this.token =  result.join(''); 
    return result.join('');
     },
-    async Login(){
-      this.GenerateToken(20);
+      async Login(){
+      this.GenerateToken(50);
        this.loader = true;
        this.isAttemptingLogin = true;
          const formData = {
@@ -91,10 +88,6 @@ this.status = false;
            
              const response = await axios.post(this.getUrl + 'api/Login/banklogin',formData
              )
-             console.log("data11>>>", response.data.userName)
-             console.log("data33>>>", response.data)
-             console.log("data33>>>", response)
-              console.log("data22>>>", response.userName)
              if(response.status == 200 && response.data.userName != null){
               await localStorage.setItem('token', this.token)
               await localStorage.setItem('user', JSON.stringify(response.data))

@@ -6,10 +6,10 @@
         <div class="app-admin-col-2">
         <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-        <div class="settings-icon"></div>
+        <router-link to="/client/activity-requests"><div class="settings-icon"></div></router-link>
         <div @click = "switchView('All')" class="admin-top-barlinks" :class="[ AllView ? activeClass : '']">All Requests</div>
-        <div @click = "switchView('Approval')" class="admin-top-barlinks" :class="[ ApprovalView ? activeClass : '']">Pending Approval</div>
-        <div @click = "switchView('Rejected')" class="admin-top-barlinks" :class="[ RejectedView ? activeClass : '']">Rejected Requests</div>
+        <div v-show="checkPerm('Activity_Requests')" @click = "switchView('Approval')" class="admin-top-barlinks" :class="[ ApprovalView ? activeClass : '']">Pending Approval</div>
+        <div  v-show="checkPerm('Make_Requests')" @click = "switchView('Rejected')" class="admin-top-barlinks" :class="[ RejectedView ? activeClass : '']">Rejected Requests</div>
         </div>
          <div class="admin-top-bar-right">
           <div class="admin-topbar-date">{{getDate}}</div>
@@ -25,9 +25,9 @@
            <Rejected :RejectLoader="RejectLoader" :RejectRequests="RejectRequests"/>       
             </div>
     </div>
-      <div class="app-admin-col-3">
+      <!-- <div class="app-admin-col-3">
               <Rightbar />
-            </div>
+            </div> -->
 </div>
 </template>
 
@@ -94,14 +94,14 @@ methods:{
   async fetchApprovalRequests(){
         this.approvalLoader = true
          const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.post(this.getUrl2 + 'api/CardCancellation/pendingapprovals/'+companyId.companyId)
+ const result = await axios.get(this.getUrl2 + 'api/CardCancellation/pendingapprovals/'+companyId.companyId)
            this.ApprovalRequests = result.data
          this.approvalLoader = false
   },
       async fetchRejectedRequests(){
           this.RejectLoader = true
            const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.post(this.getUrl2 + 'api/CardCancellation/rejectedrequest/'+companyId.companyId)
+ const result = await axios.get(this.getUrl2 + 'api/CardCancellation/rejectedrequest/'+companyId.companyId)
            this.RejectRequests = result.data
                this.RejectLoader = false
   },
@@ -138,3 +138,6 @@ methods:{
 }
 }
 </script>
+<style scoped>
+a{text-decoration: none;}
+</style>

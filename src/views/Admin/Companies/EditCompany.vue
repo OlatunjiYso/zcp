@@ -51,16 +51,17 @@
       </div>
                <div className="form-flex">
                          <div className="form-flex-col-x" v-for="(perm, index) in editActivities" :key="index">      
-             <label :for="perm.name"><input disabled="disabled" checked="checked" style="margin-right:20px" :id="`A${perm.id}`" type="checkbox" value="test" />{{perm.name}}::{{perm.id}}</label>
+             <label :for="perm.name"><input disabled="disabled" checked="checked" style="margin-right:20px" :id="`C${perm.id}`" type="checkbox" value="test" />{{perm.name}}::{{perm.id}}</label>
         </div>
                </div>
       <br>
                        <div class="app-modal-heading">
         <div class="app-modal-header">Add Activities</div>
       </div>
+       <label><input @click="selectAll" style="margin-right:20px" id="select-all2" type="checkbox" />Select All</label>
                <div className="form-flex">
                          <div className="form-flex-col-x" v-for="(perm, index) in getActivities" :key="index">      
-             <label :for="perm.name"><input @click="addToActivity(perm, index)" style="margin-right:20px" :id="`A${perm.id}`" type="checkbox" value="test" />{{perm.name}}::{{perm.id}}</label>
+             <label :for="perm.name"><input @click="addToActivity(perm, index)" style="margin-right:20px" :id="`E${perm.id}`" type="checkbox" value="test" />{{perm.name}}::{{perm.id}}</label>
         </div>
                </div>
           <button type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Update Company</button>
@@ -164,6 +165,7 @@ this.status = false;
          }
             
       },
+
            async addActivities(companyId){
                  const response2 = await axios.post(this.getUrl + 'api/companyactivities/update', {
                  activitiesId: this.activityArray,
@@ -206,10 +208,36 @@ this.status = false;
                this.message = 'Operation Failed'
              }
       },
+
+
+
+                  selectAll(){
+      var checkbox = document.getElementById("select-all2");
+      
+     this.activityArray = []
+          if (checkbox.checked == true){
+for(var i = 0; i < this.getActivities.length; i++) {
+
+    console.log("checked") ;
+      this.activityArray.push(parseInt(this.getActivities[i].id));
+      document.getElementById(`E${this.getActivities[i].id}`).checked = true;
+  }
+          }
+  else{
+      console.log("unchecked")
+     this.activityArray = []
+     for(var i = 0; i < this.getActivities.length; i++) {
+      document.getElementById(`E${this.getActivities[i].id}`).checked = false;
+  }
+      }
+
+      },
+
+
  async addToActivity(activity, index){
         let Avalue = await parseInt(activity.id)
-        console.log(`A${activity.id}`)
-      var checkbox = document.getElementById(`A${activity.id}`);
+        console.log(`E${activity.id}`)
+      var checkbox = document.getElementById(`E${activity.id}`);
        const state = await this.activityArray.some(activity => { return activity == Avalue })
        console.log(state)
       if (state == false && checkbox.checked == true){

@@ -7,8 +7,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-            <form id="email-form" name="email-form" data-name="Email Form"><input type="text" class="app-input-search w-input" maxlength="256" name="name" data-name="Name" placeholder="Search..." id="name"></form>
-          </div>
+ <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search..." id="name">          </div>
         </div>
         <!-- <div class="app-table-buttons">
           <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>
@@ -18,14 +17,14 @@
       </div>
            <Loading v-if="approvalLoader"/>
            <div v-else>
-                     <table class="app-table2" v-if="!ApprovalRequests.length <= 0">
+                     <table class="app-table2" v-if="!resultQuery.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
                            <th class="app-table2-header">Id</th>
                            <th class="app-table2-header">Date</th>
                           <th class="app-table2-header">Name on Card</th>
                           <th class="app-table2-header">Account Number</th>
-                           <th class="app-table2-header">Card Product Type</th>
+                           <th class="app-table2-header">Card Product Code</th>
                             <th class="app-table2-header"></th>
                              <th class="app-table2-header"></th>
                            
@@ -33,12 +32,12 @@
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in ApprovalRequests" :key="index" class="app-table2-row">
+                              <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
                             <td class="app-table2-data">{{index + 1}}</td>
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
-                            <td class="app-table2-data">{{result.productName}}</td>
+                                  <td class="app-table2-data">{{result.productCode}}</td>
                              <td class="app-table2-data">
                                    <div @click="Approve(result)" style="cursor:pointer" class="table-btn">Approve<span class="table-button-icon"></span></div>
                             </td> 
@@ -80,13 +79,24 @@ export default {
         status: false,
         state: null,
         message: null,
+        searchQuery: ''
     }
   },
         computed:{
     ...mapGetters([
       'getUrl2',
     ]),
+        resultQuery(){
+      if(this.searchQuery){
+      return this.ApprovalRequests.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.accountNbr.toLowerCase().includes(v))
+      })
+      }else{
+        return this.ApprovalRequests;
+      }
+    },
   },
+  
   methods: {
      resetState(){
 this.status = false;
@@ -105,7 +115,7 @@ this.status = false;
          try {
            
              const response = await axios.post(this.getUrl2 + 'api/CardRequest/approveoracknowledge',formData)
-             if(response.status == 200){
+             if(response.status == 200 && response.data == true){
                this.loader = false;
                this.status = true;
                this.state = 'success';
@@ -133,14 +143,14 @@ this.status = false;
          const formData = {
               "requestId": [result.id],
               "companyId": parseInt(user.companyId),
-              "workflowId": 7,
+              "workflowId": 0,
               "userId": parseInt(user.id),
               "clientCode": ""
             }
          try {
            
              const response = await axios.post(this.getUrl2 + 'api/CardRequest/RejectCardRequest',formData)
-             if(response.status == 200){
+            if(response.status == 200 && response.data == true){
                this.loader = false;
                this.status = true;
                this.state = 'success';

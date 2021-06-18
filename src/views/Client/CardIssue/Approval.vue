@@ -108,7 +108,7 @@ this.status = false;
          try {
            
              const response = await axios.post(this.getUrl2 + 'api/CardReissue/AproveCardReissueRequest',formData)
-             if(response.status == 200){
+           if(response.status == 200 && response.data == true){
                this.loader = false;
                this.status = true;
                this.state = 'success';
@@ -136,14 +136,14 @@ this.status = false;
         const formData = {
               "requestId": [result.id],
               "companyId": parseInt(user.companyId),
-              "workflowId": 7,
+              "workflowId": 0,
               "userId": parseInt(user.id),
               "clientCode": result.clientCode
             }
          try {
            
              const response = await axios.post(this.getUrl2 + 'api/CardReissue/RejectCardReissueRequest',formData)
-             if(response.status == 200){
+            if(response.status == 200 && response.data == true){
                this.loader = false;
                this.status = true;
                this.state = 'success';

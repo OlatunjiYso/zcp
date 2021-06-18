@@ -1,6 +1,7 @@
 <template>
   <div>
-<ReprocessRequest v-show="reprocessView" :requestData="requestData" :closeModal="closeModal" :closeModalReload="closeModalReload"/>
+                    <Loader v-show="loader"/>
+     <Status :state="state" :closeModal = "closeModalReload" :message = "message" :resetState="resetState" v-if="status"/>
  <div class="content-header">Rejected Card Reissue Requests</div>
       <div class="content-sub">Here are the requests that were rejected</div>
       <div class="app-table-actions">
@@ -20,12 +21,11 @@
                      <table class="app-table2" v-if="!RejectRequests.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
-                           <th class="app-table2-header">S/N</th>
-                           <th class="app-table2-header">Account Name</th>
-                          <th class="app-table2-header">Account Number</th>
-                          <th class="app-table2-header">Card Pan</th>
-                           <th class="app-table2-header">New Name</th>
-                           <th class="app-table2-header">Request Date</th>
+                          <th class="app-table2-header">S/N</th>
+                            <th class="app-table2-header">Client Code</th>
+                          <th class="app-table2-header">Request Date</th>
+                           <th class="app-table2-header">Processed Date</th>
+                             <th class="app-table2-header">Status</th>  
                             <th class="app-table2-header"></th>
                            
                         </tr>
@@ -33,14 +33,20 @@
             
                         <tbody>
                               <tr v-for="(result, index) in RejectRequests" :key="index" class="app-table2-row">
-                              <td class="app-table2-data">{{index + 1}}</td>
-                            <td class="app-table2-data">{{result.accountName}}</td>
-                            <td class="app-table2-data">{{result.accountNumber}}</td>
-                            <td class="app-table2-data">{{result.cardPan}}</td> 
-                            <td class="app-table2-data">{{result.newNameOfCard}}</td>
+                             <td class="app-table2-data">{{index + 1}}</td>
+                            <td class="app-table2-data">{{result.clientCode}}</td> 
                             <td class="app-table2-data">{{result.requestDate}}</td>
+                            <td class="app-table2-data">{{result.processedDate}}</td>
+                            <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : 
+                                result.workflowId == 2 ? "Awaiting processing" : 
+                                result.workflowId == 3 ? "Approved" :
+                                 result.workflowId == 4 ? "Awaiting processing" :
+                                  result.workflowId == 5 ? "Processed and Shipped" :
+                                   result.workflowId == 6 ? "Needs Acknowledgement" :
+                                   result.workflowId == 0 ? "Rejected" : "null"
+                                }}</th>
                              <td class="app-table2-data">
-                                   <div @click="openModal(result)" style="cursor:pointer" class="table-btn">Reprocess<span class="table-button-icon"></span></div>
+                                   <div @click="sendRequest(result)" style="cursor:pointer" class="table-btn">Reprocess<span class="table-button-icon"></span></div>
                             </td> 
                         </tr>
                         
@@ -59,8 +65,7 @@ import Status from '../../../components/Status/Status2'
 import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
-import ReprocessRequest from './Reprocess'
-
+import axios from "axios";
 export default {
   props:['RejectRequests','RejectLoader'],
           components:{
@@ -68,7 +73,6 @@ export default {
      Status,
      EmptyData,
      Loading,
-     ReprocessRequest
     },
   data(){
     return{
@@ -79,37 +83,7 @@ export default {
         state: null,
         message: null,
         reprocessView: false,
-        RejectRequests2:[{
-    "id": 19,
-    "companyId": 13,
-    "title": "MR",
-    "firstName": "John",
-    "middleName": "Ekal",
-    "lastName": "Mutumbie",
-    "gender": "Male",
-    "maritalStatus": "MARRIED",
-    "mobileNo": "07082079883",
-    "email": "aliasgbolly@gmail.com",
-    "dateOfBirth": "2021-05-18",
-    "addressLine1": "Lagos",
-    "addressLine2": "Lagos",
-    "cityCode": "99371",
-    "regionCode": "019",
-    "countryCode": "044",
-    "legalID": "8924894",
-    "idCardTypeCode": "02",
-    "documentIssueDate": "2021-05-12",
-    "expiryDateOfDoc": "2021-05-18",
-    "accountNbr": "0229377919",
-    "nameOnCard": "John Mutumbie",
-    "branchNo": "114",
-    "socioProfCode": "006",
-    "uniqueReference": null,
-    "productCode": "520",
-    "workflowId": 7,
-    "clientCode": null,
-    "create_at": "0001-01-01T00:00:00"
-  }]
+    
     }
   },
         computed:{
@@ -118,6 +92,46 @@ export default {
     ]),
   },
   methods: {
+      resetState(){
+    this.status =false
+             location.reload();
+         return false;
+      },
+          async sendRequest(result){
+       this.loader = true
+       const user = JSON.parse(localStorage.getItem("user-mfb"))
+          const form = {
+              "id": result.id,
+              "companyId": user.companyId,
+              "userId": user.id,
+              "clientCode": result.clientCode,
+              "workflowId": 1,
+          }
+         try {
+           
+             const response = await axios.post(this.getUrl2 + 'api/CardCancellation/initialcardandreprocess',form)
+             if(response.data.responseCode == "00"){
+               this.loader = false;
+               this.status = true;
+               this.state = 'success';
+               this.message = 'Operation Sucessful'
+             }
+             else if(response.data.responseCode == "01"){
+               this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = response.data.responseMessage
+             }
+
+         } catch (error) {
+              console.log(error)
+               this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = 'Operation Failed'
+         }
+            
+      },
            closeModal(){
          this.reprocessView = false 
        },

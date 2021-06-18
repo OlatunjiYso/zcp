@@ -6,11 +6,11 @@
         <div class="app-admin-col-2">
         <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-        <div class="settings-icon"></div>
-        <div @click = "switchView('All')" class="admin-top-barlinks" :class="[ AllView ? activeClass : '']">All Requests</div>
-        <div @click = "switchView('Approval')" class="admin-top-barlinks" :class="[ ApprovalView ? activeClass : '']">Pending Approval</div>
-        <div @click = "switchView('Acknowledge')" class="admin-top-barlinks" :class="[ AcknowledgeView ? activeClass : '']">Pending Acknowledgement</div>
-        <div @click = "switchView('Rejected')" class="admin-top-barlinks" :class="[ RejectedView ? activeClass : '']">Rejected Requests</div>
+        <router-link to="/client/activity-requests"><div class="settings-icon"></div></router-link>
+        <div  @click = "switchView('All')" class="admin-top-barlinks" :class="[ AllView ? activeClass : '']">All Requests</div>
+        <div v-show="checkPerm('Activity_Requests')" @click = "switchView('Approval')" class="admin-top-barlinks" :class="[ ApprovalView ? activeClass : '']">Pending Approval</div>
+        <div v-show="checkPerm('Activity_Requests')" @click = "switchView('Acknowledge')" class="admin-top-barlinks" :class="[ AcknowledgeView ? activeClass : '']">Pending Acknowledgement</div>
+        <div v-show="checkPerm('Make_Requests')" @click = "switchView('Rejected')" class="admin-top-barlinks" :class="[ RejectedView ? activeClass : '']">Rejected Requests</div>
         </div>
          <div class="admin-top-bar-right">
           <div class="admin-topbar-date">{{getDate}}</div>
@@ -29,9 +29,9 @@
            <Rejected :RejectLoader="RejectLoader" :RejectRequests="RejectRequests"/>       
             </div>
     </div>
-      <div class="app-admin-col-3">
+      <!-- <div class="app-admin-col-3">
               <Rightbar />
-            </div>
+            </div> -->
 </div>
 </template>
 
@@ -212,3 +212,7 @@ methods:{
 }
 }
 </script>
+
+<style scoped>
+a{text-decoration: none;}
+</style>

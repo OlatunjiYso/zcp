@@ -45,7 +45,7 @@
                                  result.workflowId == 4 ? "Awaiting processing" :
                                   result.workflowId == 5 ? "Processed and Shipped" :
                                    result.workflowId == 6 ? "Needs Acknowledgement" :
-                                   result.workflowId == 7 ? "Rejected" : "null"
+                                   result.workflowId == 0 ? "Rejected" : "null"
                                 }}</th>
                                  <td class="app-table2-data">
                                    <div @click="openModal(result)" style="cursor:pointer" class="table-btn">View<span class="table-button-icon"></span></div>

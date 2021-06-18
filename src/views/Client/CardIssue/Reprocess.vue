@@ -13,39 +13,39 @@
     <div class="form-flex">
           <div class="form-flex-col-3">
         <label class="login-label">Surname Change<span style="color:red">*</span></label>
-        <input v-model="form.surname_change" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.surname_change" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Name<span style="color:red">*</span></label>
-        <input v-model="form.accountName" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.accountName" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Pickup Branch<span style="color:red">*</span></label>
-        <select v-model="form.pickupBranch" style="marginBottom: 30px" class="app-select w-select">
+        <select v-model="requestData.pickupBranch" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in branches" :key="index" :value="result.branchNo">{{result.branchName}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Card Pan<span style="color:red">*</span></label>
-        <input v-model="form.cardPan" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.cardPan" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Reason<span style="color:red">*</span></label>
-        <select v-model="form.reason" style="marginBottom: 30px" class="app-select w-select">
+        <select v-model="requestData.reason" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in reasons" :key="index" :value="result.reasonId">{{result.reissueReason}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Activity By<span style="color:red">*</span></label>
-        <input v-model="form.activityBy" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.activityBy" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">New Name of Card<span style="color:red">*</span></label>
-        <input v-model="form.newNameOfCard" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.newNameOfCard" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
     </div>
     <br><br>
@@ -62,7 +62,7 @@
 <script>
 import operationMixen from "../../operationMixen.js";
 import Loader from "../../../components/Loader/Loader";
-import Status from "../../../components/Status/Status2";
+import Status from "../../../components/Status/Status";
 import {mapGetters} from "vuex";
 import axios from "axios";
 export default {
@@ -101,13 +101,13 @@ export default {
 this.status = false;
     },
     clearForm(){
-    this.form.accountName= "";
-      this.form.accountNumber= "";
-      this.form.pickupBranch= "";
-      this.form.cardPan= "";
-      this.form.surname_change= "";
-      this.form.newNameOfCard= "";
-      this.form.activityBy="";
+    this.requestData.accountName= "";
+      this.requestData.accountNumber= "";
+      this.requestData.pickupBranch= "";
+      this.requestData.cardPan= "";
+      this.requestData.surname_change= "";
+      this.requestData.newNameOfCard= "";
+      this.requestData.activityBy="";
     },
     resetState(){
       this.status = false;
@@ -117,18 +117,19 @@ this.status = false;
             const user = JSON.parse(localStorage.getItem("user-mfb"))
      const company = await axios.get(this.getUrl + 'api/companies/' + parseInt(user.companyId))
        const formData ={
+          "id": this.requestData.id,
         "userId": parseInt(user.id),
         "companyId": parseInt(user.companyId),
-        "accountNumber": this.form.accountNumber,
-        "accountName": this.form.accountName,
+        "accountNumber": this.requestData.accountNumber,
+        "accountName": this.requestData.accountName,
         "requestBranch": parseInt(company.data.branch),
-        "pickupBranch": parseInt(this.form.pickupBranch),
-        "cardPan": this.form.cardPan,
+        "pickupBranch": parseInt(this.requestData.pickupBranch),
+        "cardPan": this.requestData.cardPan,
         "workflowId": 1,
-        "reason": this.form.reason,
-        "newNameOfCard": this.form.newNameOfCard,
-         "activityBy": this.form.activityBy,
-        "surname_change":this.form.surname_change,
+        "reason": this.requestData.reason,
+        "newNameOfCard": this.requestData.newNameOfCard,
+         "activityBy": this.requestData.activityBy,
+        "surname_change":this.requestData.surname_change,
        }
       try {
         const response = await axios.post(this.getUrl2 + '/api/CardReissue/ReprocessrejectedRequest',formData)

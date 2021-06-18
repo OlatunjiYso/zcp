@@ -9,6 +9,11 @@ import ActivityForm from "../views/Client/Activities/ActivityForm";
 import ActivityRequest from "../views/Client/ActivityRequest/ActivityRequest";
 import CardIssue from "../views/Client/CardIssue/CardIssue";
 import CardCancel from "../views/Client/CardCancellation/CardCancel";
+import Dispute from "../views/Client/Dispute/Dispute";
+import CardParam from "../views/Client/CardParam/Requests";
+import PinReissue from "../views/Client/PinReissue/PinReissue";
+import Audit from '../views/Client/Audit/Audit.vue'
+import CardStatus from '../views/Client/CardStatus/CardStatus'
 
 import Login2 from '../views/Admin/Login/Login.vue'
 import Overview2 from '../views/Admin/Overview/Overview.vue'
@@ -17,20 +22,30 @@ import Requests2 from '../views/Admin/Requests/Requests.vue'
 import UserMgmt2 from '../views/Admin/UserMgmt/UserMgmt.vue'
 import CreateRole2 from '../views/Admin/UserMgmt/Roles/CreateRole.vue'
 import Activities2 from '../views/Admin/Activities/Activities.vue'
-
-
+import Audit2 from '../views/Admin/Audit/Audit.vue'
+import CardStatus2 from '../views/Admin/CardStatus/CardStatus'
 
 const routes = [
+  {
+    path: '/:pathMatch(.*)*',
+    redirect : '/client/login'
+  },
   {
     path: '/client/login',
     name: 'Login',
     component: Login,
-    meta: { requiresAdminGuest: true }
+    meta: { requiresMfbGuest: true }
   },
   {
     path: '/client/overview',
     name: 'Overview',
     component: Overview,
+    meta: { requiresMfbAuth: true }
+  },
+  {
+    path: '/client/audit',
+    name: 'Audit',
+    component: Audit,
     meta: { requiresMfbAuth: true }
   },
   {
@@ -46,9 +61,27 @@ const routes = [
     meta: { requiresMfbAuth: true }
   },
   {
+    path: '/client/card-param',
+    name: 'CardParam',
+    component: CardParam,
+    meta: { requiresMfbAuth: true }
+  },
+  {
+    path: '/client/pin-reissue',
+    name: 'PinReissue',
+    component: PinReissue,
+    meta: { requiresMfbAuth: true }
+  },
+  {
     path: '/client/card-cancellation',
     name: 'CardCancel',
     component: CardCancel,
+    meta: { requiresMfbAuth: true }
+  },
+  {
+    path: '/client/dispute-requests',
+    name: 'Dispute',
+    component: Dispute,
     meta: { requiresMfbAuth: true }
   },
   {
@@ -77,13 +110,29 @@ const routes = [
     component: ActivityForm,
     meta: { requiresMfbAuth: true }
   },
+  {
+    path: '/client/card-status',
+    name: 'CardStatus',
+    component: CardStatus,
+    meta: { requiresMfbAuth: true }
+  },
 
 
 
 
+  {
+    path: '/admin/card-status',
+    name: 'CardStatus2',
+    component: CardStatus2,
+    meta: { requiresAdminAuth: true }
+  },
 
-
-
+  {
+    path: '/admin/audit',
+    name: 'Audit2',
+    component: Audit2,
+    meta: { requiresAdminAuth: true }
+  },
 
   {
     path: '/admin/login',

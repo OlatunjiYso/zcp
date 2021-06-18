@@ -3,7 +3,8 @@ import {mapGetters} from 'vuex'
 export default {
     data(){
         return{
-            gender:['Male','Female'],
+           message:"Hii",
+        gender:[{code:'M',name:'Male'},{code:'F',name:'Female'}],
         countries:[],
         states:[],
         cities:[],
@@ -32,9 +33,17 @@ export default {
       // this.getCardSetup();
     },
     computed:{
-    ...mapGetters([ 'getUrl','getUrl2' ])
+    ...mapGetters([ 'getUrl','getUrl2','getPermissions','getAdminPermissions'])
     }, 
     methods: {
+      checkPermAdmin(result){
+         const response = this.getAdminPermissions.some( x=>{ return x.name == result })
+         return response 
+      },
+    checkPerm(result){
+      const response = this.getPermissions.some( x=>{ return x.name == result })
+      return response 
+     },
       // async getCardSetup(){
       //    const result = await axios.get(this.getUrl + 'api/CardProductSetup/FetchCardProductCodeForsetup')
       //     this.cardSetup = result.data

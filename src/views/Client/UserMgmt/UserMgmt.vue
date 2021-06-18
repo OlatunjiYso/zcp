@@ -21,9 +21,9 @@
            <Roles/>       
             </div> -->
     </div>
-      <div class="app-admin-col-3">
+      <!-- <div class="app-admin-col-3">
               <Rightbar />
-            </div>
+            </div> -->
 </div>
 </template>
 

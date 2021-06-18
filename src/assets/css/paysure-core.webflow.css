@@ -231,7 +231,7 @@ body {
   -webkit-box-flex: 0;
   -webkit-flex: 0 20%;
   -ms-flex: 0 20%;
-  flex: 0 20%;
+  flex: 0 17%;
   background-color: #fff;
   box-shadow: -1px 1px 11px 0 #d2d2d2;
 }
@@ -400,8 +400,8 @@ body {
 }
 
 .profile-photo {
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
   margin-bottom: 14px;
   border-radius: 0px;
   background-image: url('../images/logo-white.svg');
@@ -581,9 +581,9 @@ body {
   -ms-flex-align: center;
   align-items: center;
   -webkit-box-flex: 0;
-  -webkit-flex: 0 33.3%;
-  -ms-flex: 0 33.3%;
-  flex: 0 33.3%;
+  -webkit-flex: 0 25%;
+  -ms-flex: 0 25%;
+  flex: 0 25%;
 }
 
 .content-info-card {
@@ -1120,7 +1120,7 @@ body {
 .app-modal-close {
   position: absolute;
   left: auto;
-  top: 5%;
+  top: 7%;
   right: 10%;
   bottom: auto;
   font-family: Ionicons, sans-serif;

@@ -21,12 +21,11 @@
                      <table class="app-table2" v-if="!ApprovalRequests.length <= 0">
                     <thead>
                          <tr class="app-table2-row">
-                           <th class="app-table2-header">S/N</th>
-                           <th class="app-table2-header">Account Name</th>
-                          <th class="app-table2-header">Account Number</th>
-                          <th class="app-table2-header">Card Pan</th>
-                           <th class="app-table2-header">New Name</th>
-                           <th class="app-table2-header">Request Date</th>
+                                                    <th class="app-table2-header">S/N</th>
+                           <th class="app-table2-header">Client Code</th>
+                          <th class="app-table2-header">Request Date</th>
+                           <th class="app-table2-header">Processed Date</th>
+                             <th class="app-table2-header">Status</th>  
                             <th class="app-table2-header"></th>
                              <th class="app-table2-header"></th>
                            
@@ -35,12 +34,18 @@
             
                         <tbody>
                               <tr v-for="(result, index) in ApprovalRequests" :key="index" class="app-table2-row">
-                             <td class="app-table2-data">{{index + 1}}</td>
-                            <td class="app-table2-data">{{result.accountName}}</td>
-                            <td class="app-table2-data">{{result.accountNumber}}</td>
-                            <td class="app-table2-data">{{result.cardPan}}</td> 
-                            <td class="app-table2-data">{{result.newNameOfCard}}</td>
+                            <td class="app-table2-data">{{index + 1}}</td>
+                            <td class="app-table2-data">{{result.clientCode}}</td> 
                             <td class="app-table2-data">{{result.requestDate}}</td>
+                            <td class="app-table2-data">{{result.processedDate}}</td>
+                            <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : 
+                                result.workflowId == 2 ? "Awaiting processing" : 
+                                result.workflowId == 3 ? "Approved" :
+                                 result.workflowId == 4 ? "Awaiting processing" :
+                                  result.workflowId == 5 ? "Processed and Shipped" :
+                                   result.workflowId == 6 ? "Needs Acknowledgement" :
+                                   result.workflowId == 0 ? "Rejected" : "null"
+                                }}</th>
                              <td class="app-table2-data">
                                    <div @click="Approve(result)" style="cursor:pointer" class="table-btn">Approve<span class="table-button-icon"></span></div>
                             </td> 
@@ -65,8 +70,6 @@ import Status from '../../../components/Status/Status2'
 import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
-
-
 export default {
   props:['ApprovalRequests','approvalLoader'],
           components:{
@@ -107,8 +110,8 @@ this.status = false;
             }
          try {
            
-             const response = await axios.post(this.getUrl2 + 'api/CardReissue/AproveCardReissueRequest',formData)
-             if(response.status == 200){
+             const response = await axios.post(this.getUrl2 + 'api/CardCancellation/approvecardcancellation',formData)
+            if(response.status == 200 && response.data == true){
                this.loader = false;
                this.status = true;
                this.state = 'success';
@@ -136,14 +139,14 @@ this.status = false;
         const formData = {
               "requestId": [result.id],
               "companyId": parseInt(user.companyId),
-              "workflowId": 7,
+              "workflowId": 0,
               "userId": parseInt(user.id),
               "clientCode": result.clientCode
             }
          try {
            
-             const response = await axios.post(this.getUrl2 + 'api/CardReissue/RejectCardReissueRequest',formData)
-             if(response.status == 200){
+             const response = await axios.post(this.getUrl2 + 'api/CardCancellation/rejectcardcancellation',formData)
+            if(response.status == 200 && response.data == true){
                this.loader = false;
                this.status = true;
                this.state = 'success';

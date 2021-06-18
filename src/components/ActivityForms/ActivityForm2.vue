@@ -6,7 +6,7 @@
      <div class="content-sub">Search and cancel a card</div>
       <div>
         <div>
-            <input v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number...">
+            <input  maxlength="10" v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number...">
           </div>
         <!-- <div class="app-table-buttons">
           <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>
@@ -23,7 +23,7 @@
                            <th class="app-table2-header">Date</th>
                           <th class="app-table2-header">Name on Card</th>
                           <th class="app-table2-header">Account Number</th>
-                           <th class="app-table2-header">Product Type</th>
+                           <!-- <th class="app-table2-header">Product Type</th> -->
                            <th class="app-table2-header"> Product Code</th>
                            <th class="app-table2-header">Client Code</th>
                             <th class="app-table2-header"></th>
@@ -37,7 +37,7 @@
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
-                            <td class="app-table2-data">{{result.productName}}</td>
+                            <!-- <td class="app-table2-data">{{result.productName}}</td> -->
                             <td class="app-table2-data">{{result.productCode}}</td>  
                             <td class="app-table2-data">{{result.clientCode}}</td>  
                              <td class="app-table2-data">
@@ -127,12 +127,13 @@ this.status = false;
            
              const response = await axios.post(this.getUrl2 + 'api/CardCancellation/initialcardandreprocess',form)
              if(response.data.responseCode == "00"){
+               this.cardData = []
                this.loader = false;
                this.status = true;
                this.state = 'success';
                this.message = 'Operation Sucessful'
              }
-             else if(response.data.responseCode == "01"){
+             else{
                this.loader = false;
                this.status = true;
                this.state = 'failed';
@@ -144,7 +145,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'failed';
-               this.message = 'Operation Failed'
+               this.message = error.message
          }
             
       },
