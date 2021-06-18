@@ -6,7 +6,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
- <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search..." id="name">          </div>
+ <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Account Number" id="name">          </div>
         </div>
         <!-- <div class="app-table-buttons">
           <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>
@@ -24,7 +24,7 @@
                           <th class="app-table2-header">Name on Card</th>
                           <th class="app-table2-header">Account Number</th>
                            <th class="app-table2-header">Card Product Code</th>
-                           <th class="app-table2-header">Status</th>
+                           <th class="app-table2-header">Reason</th>
                             <th class="app-table2-header"></th>
                            
                         </tr>
@@ -37,7 +37,7 @@
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
                             <td class="app-table2-data">{{result.productCode}}</td>
-                            <th class="app-table2-data">{{ result.workflowId == 0 ? "Rejected" : "null"}}</th>
+                            <td class="app-table2-data">{{result.reason}}</td>
                              <td class="app-table2-data">
                                    <div @click="openModal(result)" style="cursor:pointer" class="table-btn">Reprocess<span class="table-button-icon"></span></div>
                             </td> 

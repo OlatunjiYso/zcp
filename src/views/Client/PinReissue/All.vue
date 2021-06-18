@@ -6,7 +6,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-             <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search..." id="name">
+             <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Client Code" id="name">
           </div>
         </div>
         <!-- <div class="app-table-buttons">
@@ -40,8 +40,7 @@
                                 result.workflowId == 2 ? "Awaiting processing" : 
                                 result.workflowId == 3 ? "Approved" :
                                  result.workflowId == 4 ? "Awaiting processing" :
-                                  result.workflowId == 5 ? "Processed and Shipped" :
-                                   result.workflowId == 6 ? "Needs Acknowledgement" :
+                                  result.workflowId == 5 ? "Processed":
                                    result.workflowId == 0 ? "Rejected" : "null"
                                 }}</th>
                                  <td class="app-table2-data">
@@ -84,7 +83,8 @@ export default {
         state: null,
         message: null,
         viewDetails: false,
-        viewDetailsData:""
+        viewDetailsData:"",
+        searchQuery: '',
     }
   },
         computed:{

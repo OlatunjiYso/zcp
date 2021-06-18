@@ -6,7 +6,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-            <form id="email-form" name="email-form" data-name="Email Form"><input type="text" class="app-input-search w-input" maxlength="256" name="name" data-name="Name" placeholder="Search..." id="name"></form>
+ <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Account Number" id="name">         
           </div>
         </div>
         <!-- <div class="app-table-buttons">
@@ -17,7 +17,7 @@
       </div>
            <Loading v-if="RejectLoader"/>
            <div v-else>
-                     <table class="app-table2" v-if="!RejectRequests.length <= 0">
+                     <table class="app-table2" v-if="!resultQuery.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
                            <th class="app-table2-header">Id</th>
@@ -26,21 +26,21 @@
                           <th class="app-table2-header">Client Code</th>
                            <th class="app-table2-header">Parameter Type</th>
                            <th class="app-table2-header">Daily Amount/Count</th>
-                           <!-- <th class="app-table2-header">Monthly Amount/Count</th> -->
+                           <th class="app-table2-header">Reason</th>
                             <th class="app-table2-header"></th>
                            
                         </tr>
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in RejectRequests" :key="index" class="app-table2-row">
+                              <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
                             <td class="app-table2-data">{{index + 1}}</td>
                             <td class="app-table2-data">{{result.createdAt}}</td>
                             <td class="app-table2-data">{{result.accountNo}}</td>
                             <td class="app-table2-data">{{result.clientCode}}</td> 
                             <td class="app-table2-data">{{result.channelId}}</td>
-                            <td class="app-table2-data">{{result.dailyAmount}} - {{result.dailyCount}}</td>
-                            <!-- <td class="app-table2-data">{{result.monthlyAmount}} - {{result.monthlyCount}}</td> -->
+                               <td class="app-table2-data">{{result.dailyAmount}} - {{result.dailyCount}}</td>
+                            <!-- <td class="app-table2-data">{{result.reason}}</td> -->
                              <td class="app-table2-data">
                                    <div @click="openModal(result)" style="cursor:pointer" class="table-btn">Reprocess<span class="table-button-icon"></span></div>
                             </td> 
@@ -81,6 +81,7 @@ export default {
         state: null,
         message: null,
         reprocessView: false,
+        searchQuery: '',
         RejectRequests2:[{
     "id": 19,
     "companyId": 13,
@@ -118,6 +119,15 @@ export default {
     ...mapGetters([
       'getUrl2',
     ]),
+                resultQuery(){
+      if(this.searchQuery){
+      return this.RejectRequests.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.accountNo.toLowerCase().includes(v))
+      })
+      }else{
+        return this.RejectRequests;
+      }
+    }
   },
   methods: {
            closeModal(){

@@ -7,7 +7,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
- <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search..." id="name">          </div>
+ <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Account Number" id="name">          </div>
         </div>
         <!-- <div class="app-table-buttons">
           <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>

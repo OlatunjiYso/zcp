@@ -43,7 +43,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Mobile No<span style="color:red">*</span></label>
-        <input v-model="requestData.mobileNo" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input minlength="13" maxlength="13" v-model="requestData.mobileNo" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Email Address<span style="color:red">*</span></label>
@@ -51,7 +51,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Date of Birth<span style="color:red">*</span></label>
-        <input v-model="requestData.dateOfBirth" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.dateOfBirth" type="date" max="2005-12-31" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
 
       <div class="form-flex-col-3">
@@ -101,7 +101,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input v-model="requestData.accountNbr" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input minlength="10" maxlength="10" v-model="requestData.accountNbr" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Name on Card<span style="color:red">*</span></label>

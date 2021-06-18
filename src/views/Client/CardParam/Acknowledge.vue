@@ -7,7 +7,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-            <form id="email-form" name="email-form" data-name="Email Form"><input type="text" class="app-input-search w-input" maxlength="256" name="name" data-name="Name" placeholder="Search..." id="name"></form>
+ <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Account Number" id="name">  
           </div>
         </div>
         <!-- <div class="app-table-buttons">
@@ -18,7 +18,7 @@
       </div>
                  <Loading v-if="AcknowledgeLoader"/>
            <div v-else>
-      <table class="app-table2" v-if="!AcknowledgeRequests.length <= 0">
+      <table class="app-table2" v-if="!resultQuery.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
                            <th class="app-table2-header">Id</th>
@@ -32,7 +32,7 @@
                     </thead>
             
                         <tbody>
-                              <tr v-for="(result, index) in AcknowledgeRequests" :key="index" class="app-table2-row">
+                              <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
                             <td class="app-table2-data">{{index + 1}}</td>
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
@@ -72,12 +72,22 @@ export default {
         status: false,
         state: null,
         message: null,
+        searchQuery: ''
     }
   },
         computed:{
     ...mapGetters([
       'getUrl2',
-    ])
+    ]),
+            resultQuery(){
+      if(this.searchQuery){
+      return this.AcknowledgeRequests.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.accountNbr.toLowerCase().includes(v))
+      })
+      }else{
+        return this.AcknowledgeRequests;
+      }
+    },
   },
   methods: {
          resetState(){

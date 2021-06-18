@@ -7,7 +7,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-          <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search..." id="name"> 
+          <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Client Code" id="name"> 
           </div>
         </div>
         <!-- <div class="app-table-buttons">
@@ -25,7 +25,7 @@
                            <th class="app-table2-header">Client Code</th>
                           <th class="app-table2-header">Request Date</th>
                            <th class="app-table2-header">Processed Date</th>
-                             <th class="app-table2-header">Status</th>  
+                              <th class="app-table2-header">Reason</th>
                             <th class="app-table2-header"></th>
                              <th class="app-table2-header"></th>
                            
@@ -38,14 +38,9 @@
                             <td class="app-table2-data">{{result.clientCode}}</td> 
                             <td class="app-table2-data">{{result.requestDate}}</td>
                             <td class="app-table2-data">{{result.processedDate}}</td>
-                            <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : 
-                                result.workflowId == 2 ? "Awaiting processing" : 
-                                result.workflowId == 3 ? "Approved" :
-                                 result.workflowId == 4 ? "Awaiting processing" :
-                                  result.workflowId == 5 ? "Processed and Shipped" :
-                                   result.workflowId == 6 ? "Needs Acknowledgement" :
-                                   result.workflowId == 0 ? "Rejected" : "null"
-                                }}</th>
+                              <td class="app-table2-data">
+                               <input v-model="reason[result.id]" type="text" class="app-input-search w-input" placeholder="Type here" id="name">
+                            </td> 
                              <td class="app-table2-data">
                                    <div @click="Approve(result)" style="cursor:pointer" class="table-btn">Approve<span class="table-button-icon"></span></div>
                             </td> 
@@ -85,6 +80,8 @@ export default {
         status: false,
         state: null,
         message: null,
+        reason:[],
+                searchQuery: '',
     }
   },
         computed:{
@@ -115,7 +112,8 @@ this.status = false;
               "companyId": parseInt(user.companyId),
               "workflowId": 2,
               "userId": parseInt(user.id),
-              "clientCode": result.clientCode
+              "clientCode": result.clientCode,
+              "reason": this.reason[result.id]
             }
          try {
            
@@ -150,7 +148,8 @@ this.status = false;
               "companyId": parseInt(user.companyId),
               "workflowId": 0,
               "userId": parseInt(user.id),
-              "clientCode": result.clientCode
+              "clientCode": result.clientCode,
+              "reason": this.reason[result.id]
             }
          try {
            

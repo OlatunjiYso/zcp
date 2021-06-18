@@ -5,7 +5,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-             <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search..." id="name">          </div>
+             <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Client Code" id="name">          </div>
         </div>
         <!-- <div class="app-table-buttons">
           <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>
@@ -21,7 +21,7 @@
                             <th class="app-table2-header">Client Code</th>
                           <th class="app-table2-header">Request Date</th>
                            <th class="app-table2-header">Processed Date</th>
-                             <th class="app-table2-header">Status</th>  
+                             <th class="app-table2-header">Reason</th>  
                             <!-- <th class="app-table2-header"></th> -->
                            
                         </tr>
@@ -33,14 +33,7 @@
                             <td class="app-table2-data">{{result.clientCode}}</td> 
                             <td class="app-table2-data">{{result.requestDate}}</td>
                             <td class="app-table2-data">{{result.processedDate}}</td>
-                            <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : 
-                                result.workflowId == 2 ? "Awaiting processing" : 
-                                result.workflowId == 3 ? "Approved" :
-                                 result.workflowId == 4 ? "Awaiting processing" :
-                                  result.workflowId == 5 ? "Processed and Shipped" :
-                                   result.workflowId == 6 ? "Needs Acknowledgement" :
-                                   result.workflowId == 0 ? "Rejected" : "null"
-                                }}</th>
+                            <th class="app-table2-data">{{ result.reason}}</th>
                              <!-- <td class="app-table2-data">
                                    <div @click="sendRequest(result)" style="cursor:pointer" class="table-btn">Reprocess<span class="table-button-icon"></span></div>
                             </td>  -->
@@ -79,6 +72,7 @@ export default {
         state: null,
         message: null,
         reprocessView: false,
+                searchQuery: '',
     
     }
   },

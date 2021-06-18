@@ -8,7 +8,7 @@
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-          <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search..." id="name">
+          <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Account Number" id="name">
           </div>
         </div>
           <form @submit.prevent="filterArray" className="app-table-select">
