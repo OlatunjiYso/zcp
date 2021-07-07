@@ -84,23 +84,30 @@ this.status = false;
                  userName: this.form.userName,
                  password: this.form.password,
          }
+         var today = new Date();         
+          var myHour = new Date();
+          myHour.setHours(today.getHours() + 6); //six hour from now
          try {
            
              const response = await axios.post(this.getUrl + 'api/Login/banklogin',formData
              )
              if(response.status == 200 && response.data.userName != null){
+                localStorage.setItem('et', myHour)
               await localStorage.setItem('token', this.token)
               await localStorage.setItem('user', JSON.stringify(response.data))
+            
+
                this.loader = false;
                 this.isAttemptingLogin = true;
-               this.$router.push('/admin/overview')
+                window.location = "/admin/overview";
+              //  this.$router.push('/admin/overview')
              }
              else{
               this.isAttemptingLogin = false;
                this.loader = false;
                this.status = true;
                this.state = 'failed';
-               this.message = response.data.responseMessage
+               this.message = "Invalid Credentials"
              }
 
          } catch (error) {

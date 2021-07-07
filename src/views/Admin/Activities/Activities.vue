@@ -15,21 +15,21 @@
           <div class="settings-icon"></div>
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">October 8th, 2020</div>
+          <div class="admin-topbar-date">{{getDate2}}</div>
         </div>
       </div>
 <div class="content-header">Activities</div>
       <div class="content-sub">Here are the list of activities available</div>
                <div class="app-table-actions">
                     <div class="app-table-search">
-                        <input  type="text" class="app-input-search w-input" placeholder="Search..." id="name" />
+                         <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search" id="name">
                     </div>
                     <div class="app-table-buttons">
                       <div @click="openModal" style="cursor:pointer" class="table-view-all">Create Activity<span class="table-button-icon"></span></div>
                     </div>
                 </div>
                 
-       <div v-if="!getActivities.length <= 0">
+       <div v-if="!resultQuery.length <= 0">
               <table class="app-table2">
                                   <thead>
                                       <tr class="app-table2-row">
@@ -41,7 +41,7 @@
                                   </tr>
                                   </thead>
                                   <tbody>
-                                  <tr v-for="(result, index) in getActivities" :key="index" class="app-table2-row">
+                                  <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
                                     <td class="app-table2-data">{{index + 1}}</td>
                                   <td class="app-table2-data">{{result.name}}</td>
                                       <td class="app-table2-data"> {{result.description}} </td>
@@ -70,8 +70,10 @@ import EditActivity from './EditActivity'
 import { mapGetters } from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
+import Global from '../../../views/global.js'
 export default {
   name: "Home",
+    mixins:[Global],
   components: {
     Leftbar,
     Rightbar,
@@ -84,13 +86,23 @@ export default {
     return{
       AddActivity: false,
       EditActivity:false,
-      editData:""
+      editData:"",
+      searchQuery: '',
     }
   },
   computed: {
     ...mapGetters([
       'getActivities'
-    ])
+    ]),
+        resultQuery(){
+      if(this.searchQuery){
+      return this.getActivities.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v))
+      })
+      }else{
+        return this.getActivities;
+      }
+    },
   },
   created(){
    this.$store.dispatch("getActivities");

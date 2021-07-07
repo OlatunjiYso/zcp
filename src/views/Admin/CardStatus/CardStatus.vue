@@ -11,14 +11,24 @@
         <router-link to="/client/activity-requests"><div class="settings-icon"></div></router-link>
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">October 8th, 2020</div>
+          <div class="admin-topbar-date">{{getDate2}}</div>
       </div>
       </div>
   <div class="content-header">Card Status</div>
       <div class="content-sub">Check the status of a card</div>
       <div>
         <div>
-            <input  maxlength="10" v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number...">
+          <form @submit.prevent="searchCardAdmin">
+             <div class="form-flex-col-3" style="display:inline-block">
+        <label class="login-label">Select a Company<span style="color:red">*</span></label>
+        <select required v-model="companyId" style="marginBottom: 30px" class="app-select w-select">
+           <option v-for="(item,index) in getCompanies" :key="index" :value="item.id">{{item.name}}</option>            
+            </select>
+          </div>
+       <input required  maxlength="10" v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number">
+       <button type="submit" style="margin-top:-15px;margin-left:20px;font-size:15px;cursor:pointer;height:40px;background:#1b1b1b" className="app-icon table-button filter"><span className="table-button-icon"></span></button>        
+          </form>
+          
           </div>
         <!-- <div class="app-table-buttons">
           <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>
@@ -35,8 +45,7 @@
                            <th class="app-table2-header">Date</th>
                           <th class="app-table2-header">Name on Card</th>
                           <th class="app-table2-header">Account Number</th>
-                           <!-- <th class="app-table2-header">Product Type</th> -->
-                           <th class="app-table2-header"> Product Code</th>
+                           <th class="app-table2-header">Product Type</th>
                            <th class="app-table2-header">Client Code</th>
                             <th class="app-table2-header"></th>
                            
@@ -49,7 +58,6 @@
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
-                            <!-- <td class="app-table2-data">{{result.productName}}</td> -->
                             <td class="app-table2-data">{{result.productCode}}</td>  
                             <td class="app-table2-data">{{result.clientCode}}</td>  
                              <td class="app-table2-data">
@@ -70,6 +78,7 @@
 </template>
 
 <script>
+import Global from '../../../views/global.js'
 import Leftbar from "../../../components/Admin/leftbar/leftbar";
 import Rightbar from "../../../components/Admin/rightbar/rightbar";
 import Loader from "../../../components/Loader/Loader";
@@ -85,6 +94,7 @@ export default {
     Status
     
   },
+      mixins:[Global],
   data(){
     return{
          loading:false,
@@ -102,12 +112,21 @@ export default {
             clientCode: "93930"
         }],
         accountNbr:'',
-        cardData:[]
+        cardData:[],
+        cardSetup:[],
+        companyId:0
     }
+  },
+
+  created(){
+   this.$store.dispatch('getCardSetup')
+     this.$store.dispatch('getCompanies')
   },
         computed:{
     ...mapGetters([
       'getUrl2',
+      'getCardSetup',
+      'getCompanies'
     ])
   },
   methods: {
@@ -115,25 +134,48 @@ export default {
 this.status = false;
     },
    async searchForCard(e){
-        const user = JSON.parse(localStorage.getItem("user-mfb"))
-         if (e.keyCode === 13) {
+        const user = JSON.parse(localStorage.getItem("user"))
+   if (e.keyCode === 13) {
            this.loading = true
-   const response = await axios.get(this.getUrl2 + 'api/CardRequest/cardbyaccountNo/'+  user.companyId + "/" + this.accountNbr)
+   const response = await axios.get(this.getUrl2 + 'api/CardRequest/cardbyaccountNo/'+  this.companyId + "/" + this.accountNbr)
    if(response.status == 200){
-         this.loading = false
-   this.cardData = response.data
+     const requests = response.data.map(x => { 
+         return {
+           ...x,
+             productCode :  this.getCardSetup.length > 0 ? this.getCardSetup.find((entry)=>{return x.productCode === entry.cardProductCode}).description : null
+         }
+        })
+   this.loading = false
+   this.cardData = requests
    }
    else{
        this.loading = false
    }
-
          }
     },
+        async searchCardAdmin(e){
+      const user = JSON.parse(localStorage.getItem("user-mfb"))
+         this.loading = true
+ const response = await axios.get(this.getUrl2 + 'api/CardRequest/cardbyaccountNo/'+  this.companyId + "/" + this.accountNbr)
+ if(response.status == 200){
+  const requests = response.data.map(x => { 
+    return {
+      ...x,
+        productCode :  this.getCardSetup.length > 0 ? this.getCardSetup.find((entry)=>{return x.productCode === entry.cardProductCode}).description : null
+    }
+   })
+this.loading = false
+this.cardData = requests
+ }
+ else{
+     this.loading = false
+ }
+  },
             async CheckStatus(result){
        this.loader = true
-       const user = JSON.parse(localStorage.getItem("user-mfb"))
+       const user = JSON.parse(localStorage.getItem("user"))
           const form = {
-              "companyId": user.companyId,
+              "companyId": this.companyId,
               "userId": user.id,
               "clientCode": result.clientCode
           }

@@ -20,7 +20,7 @@
         </div>
          <div className="form-flex-col">
                <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Email Address</label>
-        <input v-model="form2.emailAddress" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
+        <input v-model="form2.emailAddress" type="email" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Username</label>
@@ -28,7 +28,7 @@
         </div>
          <div className="form-flex-col">
             <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Phone Number</label>
-        <input v-model="form2.mobileNo" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
+        <input  maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form2.mobileNo" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
          <div className="form-flex-col">
             <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role</label>
@@ -53,7 +53,7 @@
         </div>
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Account Number</label> 
-        <input v-model="form.accountNumber" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
+        <input  maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.accountNumber" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
          <div className="form-flex-col">
            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Company Code</label> 
@@ -61,11 +61,11 @@
         </div>
           <div className="form-flex-col">
               <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Email Address</label> 
-        <input v-model="form.emailAddress" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
+        <input v-model="form.emailAddress" type="email" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
         <div className="form-flex-col">
            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Phone Number</label> 
-        <input v-model="form.phoneNumber" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
+        <input maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.phoneNumber" type="text" className="app-modal-form-field w-input"  placeholder="Type Here"  required/>
         </div>
         <div className="form-flex-col">
           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Address</label> 
@@ -73,14 +73,14 @@
         </div>
          <div className="form-flex-col">
            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Branch</label> 
-         <select v-model="form.branch" id="roles" style="marginBottom: 30px" class="app-select w-select">
+         <select required v-model="form.branch" id="roles" style="marginBottom: 30px" class="app-select w-select">
                <option selected>Select a Branch</option> 
              <option  v-for="(result, index) in branches" :key="index" :value="result.branchNo">{{result.branchName}}</option>     
             </select>
         </div>
          <div className="form-flex-col">
            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Card Product</label> 
-         <select @change="savecardSetup($event)" style="marginBottom: 30px" class="app-select w-select">
+         <select required @change="savecardSetup($event)" style="marginBottom: 30px" class="app-select w-select">
                <option selected>Select a Card Product</option> 
              <option  v-for="(result, index) in cardSetup" :key="index" :value="result.cardProductCode">{{result.description}}</option>     
             </select>
@@ -92,7 +92,7 @@
        <label><input @click="selectAll" style="margin-right:20px" id="select-all" type="checkbox" />Select All</label>
                <div className="form-flex">
                          <div className="form-flex-col-x" v-for="(perm, index) in getActivities" :key="index">      
-             <label :for="perm.name"><input @click="addToActivity(perm, index)" style="margin-right:20px" :id="`A${perm.id}`" type="checkbox" value="test" />{{perm.name}}::{{perm.id}}</label>
+             <label :for="perm.name"><input @click="addToActivity(perm, index)" style="margin-right:20px" :id="`A${perm.id}`" type="checkbox" value="test" />{{perm.name}}</label>
         </div>
                </div>
           <button type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Add Company</button>
@@ -129,7 +129,7 @@ export default {
           companyCode: "",
           address: "",
           emailAddress: "",
-          phoneNumber: "",
+          phoneNumber: "234",
           accountNumber: "",
           branch: "",
           productName:"",
@@ -140,7 +140,7 @@ export default {
             lastName: '',
             emailAddress: '',
             userName: '',
-            mobileNo: '',
+            mobileNo: '234',
             rolesId: 0
           },
           branches:[],
@@ -200,7 +200,7 @@ this.status = false;
              const response = await axios.post(this.getUrl + 'api/companies',formData)
 
              if(response.status == 200){
-               console.log("Company created")
+               
                this.addActivities(response.data.id);
              }
              else{
@@ -227,7 +227,7 @@ this.status = false;
                       })
 
                if(response2.status == 200){    
-                  console.log("Actvities created")
+                 
                   this.addProduct(companyId)
                 }
 
@@ -247,7 +247,7 @@ this.status = false;
                       })
                       
                if(response3.status == 200){ 
-                  console.log("Company created")
+                 
                 this.companyId = companyId
                this.isCompanyCreated = true   
               this.loader = false;
@@ -276,11 +276,11 @@ this.status = false;
            
              const response = await axios.post(this.getUrl + 'api/companyusers',formData)
              if(response.status == 200){
-                console.log("User Added")
+          
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'Company was created successfully'
              }
              else{
                this.loader = false;

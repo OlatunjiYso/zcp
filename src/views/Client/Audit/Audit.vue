@@ -47,13 +47,13 @@
          <button @click="reload" style="font-size:15px;cursor:pointer;height:40px;" className="app-icon table-button filter"><span className="table-button-icon"></span></button> 
           </form>
       </div> -->
-   <table class="app-table2">
+   <table class="app-table2" v-if="!auditData.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
                            <th class="app-table2-header">S/N</th>
                            <th class="app-table2-header">Activity Name</th>
                            <th class="app-table2-header">Activity Requests</th>
-                           <th class="app-table2-header">Workflow Name</th>
+                           <th class="app-table2-header">Status</th>
                            <th class="app-table2-header">Date</th>
                         </tr>
                     </thead>
@@ -70,6 +70,7 @@
                     </tbody>
           
                 </table>
+                <div v-else style="text-align:center;font-size:18px;font-weight:600">No Data Found</div>
                 <br><br>
     </div>
         </div>
@@ -88,6 +89,7 @@ import {mapGetters} from "vuex";
 import axios from "axios";
 import ViewDetails from './ViewAudit'
 import moment from 'moment'
+import Global from '../../../views/global.js'
 export default {
   components: {
     Leftbar,
@@ -96,6 +98,7 @@ export default {
     Status,
     ViewDetails
   },
+   mixins:[Global],
   data(){
     return{
       loader: false,
@@ -121,7 +124,8 @@ export default {
     ...mapGetters([ 'getUrl2','getCompanyUsers', 'getUrl' ])
   },
   created(){
-      this.$store.dispatch('getCompanyUsers')
+     const user = JSON.parse(localStorage.getItem("user-mfb"))
+      this.$store.dispatch('getCompanyUsers',user.companyId)
   },
   methods: {
           reload(){

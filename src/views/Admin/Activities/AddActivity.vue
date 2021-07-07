@@ -81,7 +81,7 @@ export default {
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'Activity Created'
              }
              else{
                this.loader = false;

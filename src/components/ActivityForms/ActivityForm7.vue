@@ -7,15 +7,15 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input  minlength="10" maxlength="10" v-model="form.accountNumber" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
+        <input  maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.accountNumber" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Last 6 Digits of Card<span style="color:red">*</span></label>
-        <input v-model="form.last_6_digits_of_card" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
+        <input maxlength="6" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.last_6_digits_of_card" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Amount<span style="color:red">*</span></label>
-        <input v-model="form.amount" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
+        <input v-model="form.amount" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
       </div>
             <div class="form-flex-col-3">
         <label class="login-label">Start Date<span style="color:red">*</span></label>

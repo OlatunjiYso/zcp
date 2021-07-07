@@ -3,9 +3,9 @@ import axios from'axios'
 
 export default createStore({
   state: {
-    url: 'https://cors-zenith.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalSecurityApi/',
-    url2: 'https://cors-zenith.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalOperations/',
-    url3: 'https://cors-zenith.herokuapp.com/https://newwebservicetest.zenithbank.com/disputeresolutionthirdpartyapi/api/Dispute/',
+    url: 'https://webservicestest.zenithbank.com:8443/CardPortalSecurityApi/',
+    url2: 'https://webservicestest.zenithbank.com:8443/CardPortalOperations/',
+    url3: 'https://newwebservicetest.zenithbank.com/disputeresolutionthirdpartyapi/api/Dispute/',
     activities: [],
     adminUsers:[],
     companies:[],
@@ -18,8 +18,8 @@ export default createStore({
     cardSetup: [],
     permissions: localStorage.getItem("user-mfb")? JSON.parse(localStorage.getItem("user-mfb")).permissions : '',
     AdminPermissions: localStorage.getItem("user")? JSON.parse(localStorage.getItem("user")).permissions : '',
-    currentNav:1,
-    currentAdminNav:1
+    currentNav: localStorage.getItem("c-CN")? parseInt(JSON.parse(localStorage.getItem('c-CN'))) : 1,
+    currentAdminNav: localStorage.getItem('c-AN') ? parseInt(JSON.parse(localStorage.getItem('c-AN'))) : 1
   },
   getters:{
     getCurrentAdminNav(state){
@@ -135,11 +135,12 @@ export default createStore({
          return {
             id: user.id,
             userName: user.userName,
-            rolesId : state.roles.find((entry)=>{return user.rolesId === entry.id}).name,
+            rolesName : state.roles.find((entry)=>{return user.rolesId === entry.id}).name,
+            rolesId: user.rolesId,
             created_at : user.created_at
          }
         })
-        console.log(adminUsers)
+       
       commit('setAdminUsers', adminUsers)
     },
 

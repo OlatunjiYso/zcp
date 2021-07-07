@@ -9,7 +9,7 @@
           <div class="settings-icon"></div>
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">{{date}}</div>
+          <div class="admin-topbar-date">{{getDate}}</div>
         </div>
       </div>
       <div class="content-header">Dashboard Overview</div>
@@ -74,7 +74,7 @@
       <div v-if="!isFetchingDashBoard" class="basic-table-card">
         <div class="table-header">
           <div class="content-header-2">Users</div>
-          <router-link to="user-management" class="table-view-all" style="text-decoration: none">View all</router-link>
+          <router-link to="/client/user-management" class="table-view-all" style="text-decoration: none">View all</router-link>
         </div>
         
         <table class="app-table">
@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import Global from '../../../views/global.js'
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
 import {mapState} from "vuex";
@@ -120,6 +121,7 @@ export default {
     Leftbar,
     Rightbar
   },
+    mixins:[Global],
   mounted() {
     try {
       this.fetchDashboard()
@@ -147,7 +149,6 @@ export default {
      const companyId = JSON.parse(localStorage.getItem("user-mfb"))
       this.$store.dispatch("getClientDashboardData",companyId.companyId)
           .then((response)=>{
-            console.log("Done",response)
             this.users_list = response[0].data;
             this.users_total = response[0].data.length;
             this.activities_total = response[1].data.length;

@@ -94,7 +94,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'Permission updated Sucessfully'
              }
              else{
                this.loader = false;

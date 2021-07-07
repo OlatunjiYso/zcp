@@ -7,7 +7,7 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input  minlength="10" maxlength="10" @focus="clearError" @blur = "searchForCard" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" @focus="clearError" @blur = "searchForCard" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
         <p v-show="accError" style="color:red;font-size:12px">Invalid Account Number</p>
       </div>
        <div class="form-flex-col-3">
@@ -16,7 +16,7 @@
       </div>
          <div class="form-flex-col-3">
         <label class="login-label">Channel Type<span style="color:red">*</span></label>
-        <select v-model="form.parammeterType" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.parammeterType" style="marginBottom: 30px" class="app-select w-select">
              <option v-for="(item,index) in channels" :key="index" :value="item.id">{{item.name}}</option>           
             </select>
           </div>
@@ -180,7 +180,7 @@ export default {
            this.loader = false;
           this.status = true;
           this.state = 'success';
-          this.message = 'Operation Sucessful'
+          this.message = 'Request submitted Sucessfully'
         }
         else{
           this.loader = false;

@@ -11,7 +11,7 @@
           <!-- <div @click = "switchView('roles')" class="admin-top-barlinks" :class="[ rolesView ? activeClass : '']">Roles</div> -->
         </div>
          <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">{{Date.now()}}</div>
+          <div class="admin-topbar-date">{{getDate}}</div>
         </div>
       </div>
         <div v-show="userView">
@@ -29,6 +29,7 @@
 
 
 <script>
+import Global from '../../../views/global.js'
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
 import User from './Users.vue'
@@ -41,6 +42,7 @@ export default {
     Roles,
     User
   },
+        mixins:[Global],
   data(){
       return{
         selectedTab: '',

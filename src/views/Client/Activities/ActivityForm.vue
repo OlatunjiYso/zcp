@@ -11,12 +11,12 @@
           <router-link to="/client/activities"><div class="settings-icon"></div></router-link>
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">October 8th, 2020 </div>
+          <div class="admin-topbar-date">{{getDate}}</div>
         </div>
       </div>
         <ActivityForm1 v-if="form == 1" />
+          <ActivityForm2 com="iii" :searchCard="searchCard" v-else-if="form == 2" />
         <ActivityForm3 v-else-if="form == 3" />
-         <ActivityForm2 v-else-if="form == 2" />
          <ActivityForm5 v-else-if="form == 5" />
           <ActivityForm6 v-else-if="form == 6" />
           <ActivityForm7 v-else-if="form == 7" />
@@ -35,7 +35,6 @@
 <script>
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
-import operationMixen from '../../operationMixen.js'
 import Loader from '../../../components/Loader/Loader'
 import Status from '../../../components/Status/Status2'
 import {mapGetters} from 'vuex'
@@ -50,8 +49,9 @@ import ActivityForm9 from "../../../components/ActivityForms/ActivityForm9";
 import ActivityForm11 from "../../../components/ActivityForms/ActivityForm11";
 import ActivityForm12 from "../../../components/ActivityForms/ActivityForm12";
 import ActivityForm14 from "../../../components/ActivityForms/ActivityForm14";
+import Global from '../../global.js'
 export default {
-  name: "Home",
+      mixins:[Global],
   components: {
     ActivityForm1,
     ActivityForm2,
@@ -76,7 +76,6 @@ export default {
       computed:{
     ...mapGetters([ 'getUrl2' ])
     }, 
-  mixins: [operationMixen],
   data(){
       return{
         form : 0,

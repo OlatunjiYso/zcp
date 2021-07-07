@@ -13,7 +13,7 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Title<span style="color:red">*</span></label>
-        <select v-model="requestData.title" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.title" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in titles" :key="index" :value="result.titleCode">{{result.titleName}}</option>
         </select>
       </div>
@@ -31,13 +31,13 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Gender<span style="color:red">*</span></label>
-        <select v-model="requestData.gender" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.gender" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in gender" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Marital Status<span style="color:red">*</span></label>
-        <select v-model="requestData.maritalStatus" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.maritalStatus" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in maritalStatus" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
@@ -64,20 +64,20 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Country<span style="color:red">*</span></label>
-        <select v-model="requestData.countryCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.countryCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in countries" :key="index" :value="result.countryCode">{{result.counrtyName}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">State<span style="color:red">*</span></label>
-        <select v-model="requestData.regionCode" @change="fetchStateCities($event)" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.regionCode" @change="fetchStateCities($event)" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in states" :key="index" :value="result.code">{{result.name}}</option>
           <option value="0">Married</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">City<span style="color:red">*</span></label>
-        <select v-model="requestData.cityCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.cityCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in stateCities" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
@@ -87,7 +87,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">ID Type<span style="color:red">*</span></label>
-        <select v-model="requestData.idCardTypeCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.idCardTypeCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in idCardType" :key="index" :value="result.code">{{result.description}}</option>
         </select>
       </div>
@@ -109,7 +109,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Socio Prof Code<span style="color:red">*</span></label>
-        <select v-model="requestData.socioProfCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.socioProfCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in socioProf" :key="index" :value="result.socioCode">{{result.description}}</option>
         </select>
       </div>
@@ -248,7 +248,7 @@ this.status = false;
           this.loader = false;
           this.status = true;
           this.state = 'success';
-          this.message = 'Operation Sucessful'
+          this.message = 'Request submited Sucessfully'
           this.clearForm();
         }
         else{

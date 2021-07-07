@@ -6,7 +6,10 @@
      <div class="content-sub">Search and deactivate a card</div>
       <div>
         <div>
-            <input  maxlength="10" v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number...">
+           <form @submit.prevent="searchCard">
+       <input required  maxlength="13" v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number">
+       <button type="submit" style="margin-top:-15px;margin-left:20px;font-size:15px;cursor:pointer;height:40px;background:#1b1b1b" className="app-icon table-button filter"><span className="table-button-icon"></span></button>        
+          </form>
           </div>
         <!-- <div class="app-table-buttons">
           <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>
@@ -62,8 +65,9 @@ import {mapGetters} from 'vuex'
 import EmptyData from '../../components/EmptyData/EmptyData'
 import Loading from '../../components/Loading/Loading'
 
-
+import Global from '../../views/global'
 export default {
+      mixins:[Global],
           components:{
      Loader,
      Status,
@@ -129,7 +133,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'Cardd deactivated Sucessfully'
              }
              else{
                               this.cardData = []

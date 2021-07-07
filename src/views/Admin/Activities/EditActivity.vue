@@ -79,7 +79,7 @@ export default {
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'Activity Updated'
              }
              else{
                this.loader = false;

@@ -13,26 +13,28 @@ export default {
     }
   },
   created(){
-    axios.interceptors.response.use(undefined, function (err) {
-    return new Promise(function (resolve, reject) {
-      if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
-        if(localStorage.getItem(token-mfb)){
-           // if you ever get an unauthorized, logout the user
-        this.$store.dispatch('Logout')
-        return router.push('/client/login')
-      // you can also redirect to /login if needed !
-        }
-        else if(localStorage.getItem(token)){
-                 // if you ever get an unauthorized, logout the user
-        this.$store.dispatch('Logout')
-        return router.push('/admin/login')
-        }
-     
-      }
-      throw err;
-    });
-  });
-  }
+    this.checkExpiration()
+  },
+  methods: {
+    checkExpiration (){ 
+    //check if past expiration date
+        var values = localStorage.getItem('et');
+    //check "my hour" index here
+    if (values < new Date()) {
+      localStorage.removeItem("et")
+       localStorage.removeItem("user-mfb") 
+       localStorage.removeItem("token-mfb")
+       localStorage.removeItem("user")
+       localStorage.removeItem("token")
+        //  localStorage.getItem("et") ? localStorage.removeItem("et") : null
+        //   localStorage.getItem("user-mfb") ? localStorage.removeItem("user-mfb") : null
+        //    localStorage.getItem("token-mfb") ? localStorage.removeItem("token-mfb") : null
+        //     localStorage.getItem("user") ? localStorage.removeItem("user") : null
+        //      localStorage.getItem("token") ? localStorage.removeItem("token") : null
+
+    }
+}
+  },
 }
 </script>
 

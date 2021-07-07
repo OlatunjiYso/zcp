@@ -27,7 +27,7 @@
                            <th class="app-table2-header">Date</th>
                           <th class="app-table2-header">Name on Card</th>
                           <th class="app-table2-header">Account Number</th>
-                           <th class="app-table2-header">Card Product Code</th>
+                           <th class="app-table2-header">Branch</th>
                            <th class="app-table2-header">Status</th>
                            <th class="app-table2-header"></th> 
                            
@@ -40,7 +40,7 @@
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
-                            <td class="app-table2-data">{{result.productCode}}</td>
+                            <td class="app-table2-data">{{result.socioProfCode}}</td>
                             <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : 
                                 result.workflowId == 2 ? "Awaiting processing" : 
                                 result.workflowId == 3 ? "Approved" :
@@ -72,8 +72,10 @@ import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
 import ViewDetails from './ViewDetails'
+import global from '../../../views/operationMixen'
 export default {
   props:['AllRequests','AllLoader'],
+
           components:{
      Loader,
      Status,

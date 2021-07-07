@@ -1119,10 +1119,8 @@ body {
 
 .app-modal-close {
   position: absolute;
-  left: auto;
-  top: 7%;
-  right: 10%;
-  bottom: auto;
+  top: 15px;
+  right: 15px;
   font-family: Ionicons, sans-serif;
   color: #161616;
   font-size: 20px;

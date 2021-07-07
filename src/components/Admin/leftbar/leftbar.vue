@@ -44,7 +44,7 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import global from '../../../views/operationMixen'
+import global from '../../../views/global'
 export default {
   mixins:[global],
 data(){
@@ -58,6 +58,7 @@ computed:{
 methods: {
     changeNav(nav){
   this.$store.commit('setAdminNav',nav)
+  localStorage.setItem('c-AN',nav)
   },
   Logout(){
     localStorage.removeItem('token')

@@ -4,6 +4,7 @@
             <Leftbar/>
             </div>
         <div class="app-admin-col-2">
+          <Loader v-show="globalLoader"/>
         <div class="admin-top-bar">
         <div class="admin-top-bar-left">
          <router-link to="/client/activity-requests"><div class="settings-icon"></div></router-link>
@@ -45,7 +46,8 @@ import All from './All'
 import Rejected from './RejectedRequest'
 import axios from 'axios'
 import {mapGetters} from 'vuex'
-import global from '../../../views/operationMixen'
+import global from '../../../views/common.js'
+import Loader from '../../../components/Loader/Loader'
 export default {
   mixins:[global],
   name: "Home",
@@ -55,7 +57,8 @@ export default {
     Approval,
     Acknowledge,
     All,
-    Rejected
+    Rejected,
+    Loader
   },
   data(){
       return{
@@ -72,7 +75,8 @@ export default {
         AllLoader: false,
         approvalLoader: false,
         AcknowledgeLoader: false,
-        RejectLoader: false
+        RejectLoader: false,
+        globalLoader:false
       }
   },
         computed:{
@@ -85,8 +89,22 @@ var date = today.getDate() + ', ' + months[today.getMonth()]+ ' ' +today.getFull
     }
     },
   async created(){
+     this.globalLoader = true;
      await this.$store.dispatch('getCardSetup')
-      this.fetchAllRequests()
+            await this.$store.dispatch('getRoles')
+      await this.getBranch()
+      await this.fetchReason();
+      await this.fetchCountries();
+      await this.fetchStates();
+      await this.fetchCities();
+      await this.fetchTitles();
+      await this.fetchMaritalStatus();
+      await this.fetchCardType();
+      await this.fetchSocioProf();
+      await this.fetchReason();
+      await this.fetchCardSetup();
+      this.globalLoader = false;
+            this.fetchAllRequests()
       this.fetchApprovalRequests();
       this.fetchAcknowledgeRequests();
       this.fetchRejectedRequests()
@@ -102,7 +120,22 @@ methods:{
         this.AllLoader = true
          const companyId = JSON.parse(localStorage.getItem("user-mfb"))
  const result = await axios.get(this.getUrl2 + 'api/CardRequest/all/'+companyId.companyId);
-           this.AllRequests = result.data;
+       const requests = result.data.map(x => { 
+         return {
+           ...x,
+            branchNo : this.branches.length > 0 ? this.branches.find((entry)=>{return x.branchNo === entry.branchNo}).branchName : null,
+            cityCode : this.cities.length > 0 ? this.cities.find((entry)=>{return x.cityCode === entry.code}).name : null,
+             gender : this.gender.length > 0 ? this.gender.find((entry)=>{return x.gender === entry.code}).name : null,
+            countryCode : this.countries.length > 0 ? this.countries.find((entry)=>{return x.countryCode === entry.countryCode}).counrtyName : null,
+            regionCode : this.states.length > 0 ? this.states.find((entry)=>{return x.regionCode === entry.code}).name : null,
+            idCardTypeCode : this.idCardType.length > 0 ? this.idCardType.find((entry)=>{return x.idCardTypeCode === entry.code}).description : null,
+            maritalStatus : this.maritalStatus.length > 0 ? this.maritalStatus.find((entry)=>{return x.maritalStatus === entry.code}).name : null,
+             productCode :  this.getCardSetup.length > 0 ? this.getCardSetup.find((entry)=>{return x.productCode === entry.cardProductCode}).description : null,
+              socioProfCode : this.socioProf.length > 0 ? this.socioProf.find((entry)=>{return x.socioProfCode === entry.socioCode}).description : null,
+               title : this.titles.length > 0 ? this.titles.find((entry)=>{return x.title === entry.titleCode}).titleName : null,
+         }
+        })
+           this.AllRequests = requests;
          this.AllLoader = false;
   },
 
@@ -110,24 +143,66 @@ methods:{
         this.approvalLoader = true
          const companyId = JSON.parse(localStorage.getItem("user-mfb"))
  const result = await axios.get(this.getUrl2 + 'api/CardRequest/pendingApproval/'+companyId.companyId)
-
-           this.ApprovalRequests = result.data;
+ const requests = result.data.map(x => { 
+         return {
+           ...x,
+            branchNo : this.branches.length > 0 ? this.branches.find((entry)=>{return x.branchNo === entry.branchNo}).branchName : null,
+            cityCode : this.cities.length > 0 ? this.cities.find((entry)=>{return x.cityCode === entry.code}).name : null,
+             gender : this.gender.length > 0 ? this.gender.find((entry)=>{return x.gender === entry.code}).name : null,
+            countryCode : this.countries.length > 0 ? this.countries.find((entry)=>{return x.countryCode === entry.countryCode}).counrtyName : null,
+            regionCode : this.states.length > 0 ? this.states.find((entry)=>{return x.regionCode === entry.code}).name : null,
+            idCardTypeCode : this.idCardType.length > 0 ? this.idCardType.find((entry)=>{return x.idCardTypeCode === entry.code}).description : null,
+            maritalStatus : this.maritalStatus.length > 0 ? this.maritalStatus.find((entry)=>{return x.maritalStatus === entry.code}).name : null,
+             productCode :  this.cardSetup.length > 0 ? this.cardSetup.find((entry)=>{return x.productCode === entry.cardProductCode}).description : null,
+              socioProfCode : this.socioProf.length > 0 ? this.socioProf.find((entry)=>{return x.socioProfCode === entry.socioCode}).description : null,
+               title : this.titles.length > 0 ? this.titles.find((entry)=>{return x.title === entry.titleCode}).titleName : null,
+         }
+        })
+           this.ApprovalRequests = requests;
          this.approvalLoader = false
   },
     async fetchAcknowledgeRequests(){
           this.AcknowledgeLoader = true
            const companyId = JSON.parse(localStorage.getItem("user-mfb"))
  const result = await axios.get(this.getUrl2 + 'api/CardRequest/pendingacknowledgement/'+companyId.companyId)
-
-           this.AcknowledgeRequests = result.data;
+ const requests = result.data.map(x => { 
+         return {
+           ...x,
+            branchNo : this.branches.length > 0 ? this.branches.find((entry)=>{return x.branchNo === entry.branchNo}).branchName : null,
+            cityCode : this.cities.length > 0 ? this.cities.find((entry)=>{return x.cityCode === entry.code}).name : null,
+             gender : this.gender.length > 0 ? this.gender.find((entry)=>{return x.gender === entry.code}).name : null,
+            countryCode : this.countries.length > 0 ? this.countries.find((entry)=>{return x.countryCode === entry.countryCode}).counrtyName : null,
+            regionCode : this.states.length > 0 ? this.states.find((entry)=>{return x.regionCode === entry.code}).name : null,
+            idCardTypeCode : this.idCardType.length > 0 ? this.idCardType.find((entry)=>{return x.idCardTypeCode === entry.code}).description : null,
+            maritalStatus : this.maritalStatus.length > 0 ? this.maritalStatus.find((entry)=>{return x.maritalStatus === entry.code}).name : null,
+             productCode :  this.cardSetup.length > 0 ? this.cardSetup.find((entry)=>{return x.productCode === entry.cardProductCode}).description : null,
+              socioProfCode : this.socioProf.length > 0 ? this.socioProf.find((entry)=>{return x.socioProfCode === entry.socioCode}).description : null,
+               title : this.titles.length > 0 ? this.titles.find((entry)=>{return x.title === entry.titleCode}).titleName : null,
+         }
+        })
+           this.AcknowledgeRequests = requests;
                this.AcknowledgeLoader = false
   },
       async fetchRejectedRequests(){
           this.RejectLoader = true
            const companyId = JSON.parse(localStorage.getItem("user-mfb"))
  const result = await axios.get(this.getUrl2 + 'api/CardRequest/PendingRejectRequest/'+companyId.companyId)
-    
-           this.RejectRequests = result.data
+     const requests = result.data.map(x => { 
+         return {
+           ...x,
+            branchNo : this.branches.length > 0 ? this.branches.find((entry)=>{return x.branchNo === entry.branchNo}).branchName : null,
+            cityCode : this.cities.length > 0 ? this.cities.find((entry)=>{return x.cityCode === entry.code}).name : null,
+             gender : this.gender.length > 0 ? this.gender.find((entry)=>{return x.gender === entry.code}).name : null,
+            countryCode : this.countries.length > 0 ? this.countries.find((entry)=>{return x.countryCode === entry.countryCode}).counrtyName : null,
+            regionCode : this.states.length > 0 ? this.states.find((entry)=>{return x.regionCode === entry.code}).name : null,
+            idCardTypeCode : this.idCardType.length > 0 ? this.idCardType.find((entry)=>{return x.idCardTypeCode === entry.code}).description : null,
+            maritalStatus : this.maritalStatus.length > 0 ? this.maritalStatus.find((entry)=>{return x.maritalStatus === entry.code}).name : null,
+             productCode :  this.cardSetup.length > 0 ? this.cardSetup.find((entry)=>{return x.productCode === entry.cardProductCode}).description : null,
+              socioProfCode : this.socioProf.length > 0 ? this.socioProf.find((entry)=>{return x.socioProfCode === entry.socioCode}).description : null,
+               title : this.titles.length > 0 ? this.titles.find((entry)=>{return x.title === entry.titleCode}).titleName : null,
+         }
+        })
+           this.RejectRequests = requests
                this.RejectLoader = false
   },
     

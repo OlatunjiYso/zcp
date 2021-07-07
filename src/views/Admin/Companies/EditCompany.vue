@@ -16,7 +16,7 @@
         </div>
          <div className="form-flex-col">
                 <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Account Number</label> 
-        <input :value="editData.accountNumber" type="text" className="app-modal-form-field w-input"  placeholder="Account Number" id="accountNumber"  required/>
+        <input :value="editData.accountNumber" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" type="text" className="app-modal-form-field w-input"  placeholder="Account Number" id="accountNumber"  required/>
         </div>
          <div className="form-flex-col">
             <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Company Code</label> 
@@ -28,7 +28,7 @@
         </div>
         <div className="form-flex-col">
           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Phone Number</label> 
-        <input :value="editData.phoneNumber" type="text" className="app-modal-form-field w-input"  placeholder="Phone Number" id="phoneNumber"  required/>
+        <input :value="editData.phoneNumber" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" type="text" className="app-modal-form-field w-input"  placeholder="Phone Number" id="phoneNumber"  required/>
         </div>
         <div className="form-flex-col">
            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Address</label> 
@@ -51,17 +51,17 @@
       </div>
                <div className="form-flex">
                          <div className="form-flex-col-x" v-for="(perm, index) in editActivities" :key="index">      
-             <label :for="perm.name"><input disabled="disabled" checked="checked" style="margin-right:20px" :id="`C${perm.id}`" type="checkbox" value="test" />{{perm.name}}::{{perm.id}}</label>
+             <label :for="perm.name"><input disabled="disabled" checked="checked" style="margin-right:20px" :id="`C${perm.id}`" type="checkbox" value="test" />{{perm.name}}</label>
         </div>
                </div>
       <br>
                        <div class="app-modal-heading">
-        <div class="app-modal-header">Add Activities</div>
+        <div class="app-modal-header">Update Activities</div>
       </div>
        <label><input @click="selectAll" style="margin-right:20px" id="select-all2" type="checkbox" />Select All</label>
                <div className="form-flex">
                          <div className="form-flex-col-x" v-for="(perm, index) in getActivities" :key="index">      
-             <label :for="perm.name"><input @click="addToActivity(perm, index)" style="margin-right:20px" :id="`E${perm.id}`" type="checkbox" value="test" />{{perm.name}}::{{perm.id}}</label>
+             <label :for="perm.name"><input @click="addToActivity(perm, index)" style="margin-right:20px" :id="`E${perm.id}`" type="checkbox" value="test" />{{perm.name}}</label>
         </div>
                </div>
           <button type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Update Company</button>
@@ -174,7 +174,7 @@ this.status = false;
                       })
 
                if(response2.status == 200){    
-                  console.log("Actvities created")
+                 
                   this.addProduct(companyId)
                 }
 
@@ -194,11 +194,11 @@ this.status = false;
                       })
                       
                if(response3.status == 200){ 
-                  console.log("Company Updated")
+             
                  this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'Company was updated successfully'
              }
 
              else{

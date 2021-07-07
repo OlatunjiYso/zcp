@@ -8,11 +8,11 @@
         <div class="admin-top-bar-left">
           <div class="settings-icon"></div>
           <div @click = "switchView('user')" class="admin-top-barlinks" :class="[ userView ? activeClass : '']">User</div>
-          <div @click = "switchView('roles')" class="admin-top-barlinks" :class="[ rolesView ? activeClass : '']">Roles</div>
-          <div @click = "switchView('permissions')" class="admin-top-barlinks" :class="[ permView ? activeClass : '']">Permissions</div>
+          <div @click = "switchView('roles')" class="admin-top-barlinks" :class="[ rolesView ? activeClass : '']" v-show="checkPermAdmin('SuperAdmin_Management')">Roles</div>
+          <div @click = "switchView('permissions')" class="admin-top-barlinks" :class="[ permView ? activeClass : '']" v-show="checkPermAdmin('SuperAdmin_Management')">Permissions</div>
         </div>
          <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">October 8th, 2020</div>
+          <div class="admin-topbar-date">{{getDate2}}</div>
         </div>
       </div>
         <div v-show="userView">
@@ -38,8 +38,10 @@ import Rightbar from '../../../components/Admin/rightbar/rightbar'
 import User from './Users.vue'
 import Roles from './Roles/Roles.vue'
 import Permissions from './Perm/Perm.vue'
+import Global from '../../../views/global.js'
 export default {
   name: "Home",
+    mixins:[Global],
   components: {
     Leftbar,
     Rightbar,

@@ -1,6 +1,27 @@
 <template>
   <Loader v-show="loader"/>
-  <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>
+  <Status :state="state"  :message = "message" :resetState="resetState" v-if="status"/>
+  <div style="display:none" id="bulk-loader">
+    <Loader/>
+  </div>
+          <div style="z-index : 999999;display:none" class="app-modal-overlay"  id="bulk-status-success">
+    <div class="app-modal-div success" style="text-align:center">
+    <div> <div class="alert-icon"></div> <div class="alert-message">Request sent successfully</div> 
+     <div @click="resetState2" style="margin-top:30px;cursor:pointer" class="app-modal-button">Close</div>
+    </div> 
+    </div>
+  </div>
+
+            <div style="z-index : 999999;display:none" class="app-modal-overlay" id="bulk-status-failed">
+    <div class="app-modal-div success" style="text-align:center">            
+     <div> 
+            <div class="alert-icon failed"></div>
+            <div class="alert-message">Operation Failed</div>
+            <div @click="resetState3" style="margin-top:30px;cursor:pointer" class="app-modal-button">Try Again</div>
+            </div>
+    </div>
+  </div>
+
   <div class="content-header">Instant Card Request</div>
   <br/><br/>
   <form @submit.prevent="sendJson">
@@ -15,7 +36,7 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Title<span style="color:red">*</span></label>
-        <select v-model="form.title" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.title" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in titles" :key="index" :value="result.titleCode">{{result.titleName}}</option>
         </select>
       </div>
@@ -33,19 +54,19 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Gender<span style="color:red">*</span></label>
-        <select v-model="form.gender" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.gender" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in gender" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Marital Status<span style="color:red">*</span></label>
-        <select v-model="form.maritalStatus" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.maritalStatus" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in maritalStatus" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Mobile No<span style="color:red">*</span></label>
-        <input minlength="13" maxlength="13" v-model="form.mobileNo" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input  maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.mobileNo" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Email Address<span style="color:red">*</span></label>
@@ -66,20 +87,20 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Country<span style="color:red">*</span></label>
-        <select v-model="form.countryCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.countryCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in countries" :key="index" :value="result.countryCode">{{result.counrtyName}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">State<span style="color:red">*</span></label>
-        <select v-model="form.regionCode" @change="fetchStateCities($event)" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.regionCode" @change="fetchStateCities($event)" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in states" :key="index" :value="result.code">{{result.name}}</option>
-          <option value="0">Married</option>
+         
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">City<span style="color:red">*</span></label>
-        <select v-model="form.cityCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.cityCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in stateCities" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
@@ -89,7 +110,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">ID Type<span style="color:red">*</span></label>
-        <select v-model="form.idCardTypeCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.idCardTypeCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in idCardType" :key="index" :value="result.code">{{result.description}}</option>
         </select>
       </div>
@@ -103,7 +124,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input minlength="10" maxlength="10" v-model="form.accountNbr" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input  maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.accountNbr" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Name on Card<span style="color:red">*</span></label>
@@ -111,7 +132,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Socio Prof Code<span style="color:red">*</span></label>
-        <select v-model="form.socioProfCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.socioProfCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in socioProf" :key="index" :value="result.socioCode">{{result.description}}</option>
         </select>
       </div>
@@ -171,7 +192,7 @@ export default {
         "addressLine2": "",
         "cityCode": "",
         "regionCode": "",
-        "countryCode": "",
+        "countryCode": "566",
         "legalID": "",
         "idCardTypeCode": "",
         "documentIssueDate": "",
@@ -213,6 +234,12 @@ export default {
     resetState(){
       this.status = false;
     },
+        resetState2(){
+       document.getElementById("bulk-status-success").style.display = "none";
+    },
+            resetState3(){
+       document.getElementById("bulk-status-failed").style.display = "none";
+    },
     async sendJson(){    
      var selectedFile = this.$refs.myfiles.files[0]
                     var reader = new FileReader();
@@ -224,7 +251,7 @@ export default {
                       workbook.SheetNames.forEach( async function(sheetName) {                  
                           var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                           var json_object = JSON.parse(JSON.stringify(XL_row_object))
-                          document.getElementById("jsonObject").innerHTML = json_object;
+                       
 
                        const newData = json_object.map( x => {
                          return{
@@ -257,19 +284,21 @@ export default {
                        })
                        const formData = newData
          try{
+         document.getElementById("bulk-loader").style.display = "block";
         const response = await axios.post('https://cors-zenith.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalOperations/api/CardRequest/makecardrequest',formData, {
                   headers: {
                       "Content-Type": "application/json"
                   }
               })
         if(response.data[0].responseCode == "00"){
-            alert("Successful")
+          document.getElementById("bulk-loader").style.display = "none";
+           document.getElementById("bulk-status-success").style.display = "flex";
         }
         else{
-         alert("Failed")
+        document.getElementById("bulk-status-failed").style.display = "flex";
         }
       } catch (error) {
-         alert("Failed")
+         document.getElementById("bulk-status-failed").style.display = "flex";
       }
                         })
                     };
@@ -319,7 +348,7 @@ export default {
           this.loader = false;
           this.status = true;
           this.state = 'success';
-          this.message = 'Operation Sucessful'
+          this.message = 'Request submitted Sucessfully'
           this.clearForm();
         }
         else{

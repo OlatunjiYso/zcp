@@ -12,7 +12,7 @@
          <router-link to="/client/activity-requests"><div class="settings-icon"></div></router-link>
         </div>
          <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">{{getDate}}</div>
+          <div class="admin-topbar-date">{{getDate2}}</div>
         </div>
       </div>
   <div class="content-header">Audit</div>
@@ -26,7 +26,11 @@
           </div>
             <div class="form-flex-col-3">
         <label class="login-label">Start Date<span style="color:red">*</span></label>
-        <input v-model="form.startDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.startDate" @change="setEndDate($event)" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+      </div>
+       <div class="form-flex-col-3">
+        <label class="login-label">End Date<span style="color:red">*</span></label>
+        <input :value="endDate" readonly  type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
     </div>
 
@@ -47,13 +51,13 @@
          <button @click="reload" style="font-size:15px;cursor:pointer;height:40px;" className="app-icon table-button filter"><span className="table-button-icon"></span></button> 
           </form>
       </div> -->
-   <table class="app-table2">
+   <table class="app-table2" v-if="!auditData.length <= 0">
                     <thead>
                         <tr class="app-table2-row">
                            <th class="app-table2-header">S/N</th>
                            <th class="app-table2-header">Activity Name</th>
                            <th class="app-table2-header">Activity Requests</th>
-                           <th class="app-table2-header">Workflow Name</th>
+                           <th class="app-table2-header">Status</th>
                            <th class="app-table2-header">Date</th>
                         </tr>
                     </thead>
@@ -70,6 +74,7 @@
                     </tbody>
           
                 </table>
+                 <div v-else style="text-align:center;font-size:18px;font-weight:600">No Data Found</div>
                 <br><br>
     </div>
         </div>
@@ -88,7 +93,9 @@ import {mapGetters} from "vuex";
 import axios from "axios";
 import ViewDetails from './ViewAudit'
 import moment from 'moment'
+import Global from '../../../views/global.js'
 export default {
+    mixins:[Global],
   components: {
     Leftbar,
     Rightbar,
@@ -126,6 +133,11 @@ export default {
        this.$store.dispatch('getCompanies')
   },
   methods: {
+        setEndDate(){
+         const startDate = new Date(this.form.startDate)
+         const endDate = startDate.setMonth(startDate.getMonth() + 1);
+           this.endDate = new Date(endDate).toISOString().substr(0,10);
+    },
    async  companyUser(){
       this.loader = true
      await this.$store.dispatch('getCompanyUsers', this.form.companyId)

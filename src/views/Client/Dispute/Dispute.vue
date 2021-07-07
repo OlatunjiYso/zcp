@@ -12,7 +12,7 @@
         <router-link to="/client/activity-requests"><div class="settings-icon"></div></router-link>
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">October 8th, 2020</div>
+          <div class="admin-topbar-date">{{getDate}}</div>
       </div>
       </div>
   <div class="content-header">Dispute Requests </div>
@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import Global from '../../../views/global.js'
 import Leftbar from "../../../components/Client/leftbar/leftbar";
 import Rightbar from "../../../components/Client/rightbar/rightbar";
 import Loader from "../../../components/Loader/Loader";
@@ -88,8 +89,8 @@ export default {
     Loader,
     Status,
     ViewDetails
-    
   },
+      mixins:[Global],
   computed:{
     ...mapGetters([ 'getUrl3','getUrl2', 'getUrl' ])
   },

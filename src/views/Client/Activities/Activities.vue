@@ -9,7 +9,7 @@
           <div class="settings-icon"></div>
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">October 8th, 2020</div>
+          <div class="admin-topbar-date">{{getDate}}</div>
         </div>
       </div>
       <div class="content-header">Activities</div>
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import Global from '../../../views/global.js'
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
 import Loading from "../../../components/Loading/Loading";
@@ -45,6 +46,7 @@ export default {
     Leftbar,
     Rightbar
   },
+    mixins:[Global],
   mounted() {
     try {
       this.fetchCompanyActivities();

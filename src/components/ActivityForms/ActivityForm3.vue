@@ -7,7 +7,7 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input  minlength="10" maxlength="10" @focus="clearError" @blur = "searchForCard" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input   maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" @focus="clearError" @blur = "searchForCard" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
         <p v-show="accError" style="color:red;font-size:12px">Invalid Account Number</p>
       </div>
        <div class="form-flex-col-3">
@@ -132,7 +132,7 @@ export default {
        if(response.data.length > 0){
  this.loader = false
    this.form.accountName = response.data[0].nameOnCard
-   this.form.accountName = response.data[0].clientCode
+   this.form.clientCode = response.data[0].clientCode
 
 }
          else{

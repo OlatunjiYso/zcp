@@ -10,7 +10,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input  minlength="10" maxlength="10" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Name<span style="color:red">*</span></label>
@@ -18,17 +18,17 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Pickup Branch<span style="color:red">*</span></label>
-        <select v-model="form.pickupBranch" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.pickupBranch" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in branches" :key="index" :value="result.branchNo">{{result.branchName}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Card Pan<span style="color:red">*</span></label>
-        <input v-model="form.cardPan" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.cardPan" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Reason<span style="color:red">*</span></label>
-        <select v-model="form.reason" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.reason" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in reasons" :key="index" :value="result.reasonId">{{result.reissueReason}}</option>
         </select>
       </div>
@@ -127,7 +127,7 @@ export default {
           this.loader = false;
           this.status = true;
           this.state = 'success';
-          this.message = 'Operation Sucessful'
+          this.message = 'Request submitted Sucessfully'
           this.clearForm();
         }
         else{

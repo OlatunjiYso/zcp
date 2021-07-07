@@ -10,8 +10,9 @@
             <div class="details-value">{{value}}</div>
           </div>
         </div>
+              <div @click="closeModal" class="app-modal-close"></div>
+
         </div>
-      <div @click="closeModal" class="app-modal-close"></div>
     </div>
 
 </template>

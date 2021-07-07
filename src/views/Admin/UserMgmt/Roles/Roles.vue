@@ -10,7 +10,7 @@
       <div class="content-sub">Here are the list of roles available</div>
                <div class="app-table-actions">
                     <div class="app-table-search">
-                        <input  type="text" class="app-input-search w-input" placeholder="Search..." id="name" />
+                        <!-- <input  type="text" class="app-input-search w-input" placeholder="Search..." id="name" /> -->
                     </div>
                     <div class="app-table-buttons">
                     <div @click="openAdd" style="cursor:pointer" class="table-view-all">Create Role<span class="table-button-icon"></span></div>

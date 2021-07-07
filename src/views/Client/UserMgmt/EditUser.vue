@@ -5,7 +5,7 @@
                     <div class="app-modal-overlay" v-else>
       <div class="app-modal-div" style="width:70%; height:80%; overflow:auto;">
       <div class="app-modal-heading">
-        <div class="app-modal-header">Add User</div>
+        <div class="app-modal-header">Update User</div>
       </div>
       <div>
           <form @submit.prevent="createUser">
@@ -37,7 +37,7 @@
         </select>
          </div>
         </div>
-          <button type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Add User</button>
+          <button type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Update User</button>
         </form>
       </div>
       <div @click= "closeEdit" class="app-modal-close"></div>
