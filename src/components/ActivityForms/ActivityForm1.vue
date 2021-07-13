@@ -285,7 +285,7 @@ export default {
                        const formData = newData
          try{
          document.getElementById("bulk-loader").style.display = "block";
-        const response = await axios.post('https://cors-zenith.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalOperations/api/CardRequest/makecardrequest',formData, {
+        const response = await axios.post('https://webservicestest.zenithbank.com:8443/CardPortalOperations/api/CardRequest/makecardrequest',formData, {
                   headers: {
                       "Content-Type": "application/json"
                   }
@@ -313,7 +313,7 @@ export default {
       this.loader = true;
             const user = JSON.parse(localStorage.getItem("user-mfb"))
      const company = await axios.get(this.getUrl + 'api/companies/' + parseInt(user.companyId))
-      const companyProduct = await axios.get(this.getUrl + '/api/CardProductSetup')
+      const companyProduct = await axios.get(this.getUrl + 'api/CardProductSetup')
      const product = await companyProduct.data.find(x => { return x.companyId == parseInt(user.companyId) })
        const formData ={
         "productCode": product.cardProductCode,

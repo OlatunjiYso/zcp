@@ -24,7 +24,7 @@
         </div>
           <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Email Address</label> 
-        <input :value="editData.emailAddress" type="text" className="app-modal-form-field w-input"  placeholder="Email Address" id="emailAddress"  required/>
+        <input :value="editData.emailAddress" type="email" className="app-modal-form-field w-input"  placeholder="Email Address" id="emailAddress"  required/>
         </div>
         <div className="form-flex-col">
           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Phone Number</label> 
@@ -66,6 +66,7 @@
                </div>
           <button type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Update Company</button>
         </form>
+
       </div>
       <div @click= "closeModal" class="app-modal-close"></div>
     </div>
@@ -168,6 +169,7 @@ this.status = false;
 
            async addActivities(companyId){
                  const response2 = await axios.post(this.getUrl + 'api/companyactivities/update', {
+                id: this.editData.id,
                  activitiesId: this.activityArray,
                 companyId: parseInt(companyId),
                 isActive: true

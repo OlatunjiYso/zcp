@@ -24,6 +24,7 @@ import CreateRole2 from '../views/Admin/UserMgmt/Roles/CreateRole.vue'
 import Activities2 from '../views/Admin/Activities/Activities.vue'
 import Audit2 from '../views/Admin/Audit/Audit.vue'
 import CardStatus2 from '../views/Admin/CardStatus/CardStatus'
+import CompanyUsers from '../views/Admin/Companies/UserMgmt'
 
 const routes = [
   {
@@ -119,6 +120,15 @@ const routes = [
 
 
 
+
+
+
+  {
+    path: '/admin/:name/users/:id',
+    name: 'CompanyUsers',
+    component: CompanyUsers,
+    meta: { requiresAdminAuth: true }
+  },
 
   {
     path: '/admin/card-status',

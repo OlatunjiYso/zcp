@@ -20,7 +20,7 @@
        </div>
                  <div className="form-flex-col">
            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Mfb or Bank (Update: {{editData.mfbOrBank}})</label> 
-         <select v-model="form.mfbOrBank" style="marginBottom: 30px" class="app-select w-select">
+         <select required v-model="form.mfbOrBank" style="marginBottom: 30px" class="app-select w-select">
              <option  v-for="(result, index) in permType" :key="index" :value="result">{{result}}</option>     
             </select>
         </div>

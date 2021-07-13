@@ -1,7 +1,7 @@
 <template>
 <div>
     <div v-show="AddUserModal">
-              <AddUser :closeAdd="closeAdd" :closeAddReload="closeAddReload"/>
+              <AddUser :users="getAdminUsers" :closeAdd="closeAdd" :closeAddReload="closeAddReload"/>
           </div>
               <div v-show="EditUserModal">
               <EditUser :closeEdit="closeEdit" :userData="userData" :closeEditReload="closeEditReload"/>
@@ -29,7 +29,7 @@
                                   </tr>
                                   </thead>
                                   <tbody>
-                                  <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
+                                  <tr class="app-table2-row" v-for="(result, index) in resultQuery" :key="index" >
                                     <td class="app-table2-data">{{index + 1}}</td>
                                   <td class="app-table2-data">{{result.userName}}</td>
                                       <td class="app-table2-data"> {{result.rolesName}} </td>

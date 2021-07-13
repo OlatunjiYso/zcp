@@ -6,11 +6,11 @@
     <div v-show="EditUserModal">
      <EditUser :closeEdit="closeEdit" :userData="userData" :closeEditReload="closeEditReload"/>
     </div>
-    <div class="content-header">Manage Users</div>
+    <div class="content-header">Manage Users- {{companyName}}</div>
     <div class="content-sub">Here are the list of users available</div>
     <div class="app-table-actions">
       <div class="app-table-search">
-         <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search" id="name">
+        <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search" id="name">
       </div>
       <div class="app-table-buttons">
         <div className="table-button filter" style="cursor:pointer" @click="openAdd">Add New User<span
@@ -58,8 +58,8 @@
 </template>
 
 <script>
-import Leftbar from '../../../components/Client/leftbar/leftbar'
-import Rightbar from '../../../components/Client/rightbar/rightbar'
+import Leftbar from '../../../components/Admin/leftbar/leftbar'
+import Rightbar from '../../../components/Admin/rightbar/rightbar'
 import AddUser from './AddUser'
 import EditUser from './EditUser'
 import {mapGetters} from 'vuex'
@@ -92,7 +92,9 @@ export default {
       isFetchingUsers : false,
       companyUsers : [],
       roles : [],
-       searchQuery: '',
+        searchQuery: '',
+        companyName:''
+
     }
   },
   computed: {
@@ -115,7 +117,7 @@ export default {
         }
       });
     },
-                    resultQuery(){
+                resultQuery(){
       if(this.searchQuery){
       return this.companyUsersComputed.filter((item)=>{
         return this.searchQuery.toLowerCase().split(' ').every(v => item.firstName.toLowerCase().includes(v))
@@ -127,6 +129,7 @@ export default {
   },
   created() {
   //  this.$store.dispatch("getAdminUsers");
+   this.companyName = this.$route.params.name
   },
   methods: {
          closeAdd(){
@@ -155,13 +158,13 @@ export default {
        },
     fetchUsers:function (){
         this.isFetchingUsers = true;
-    const companyId = JSON.parse(localStorage.getItem("user-mfb"))
+
           Promise.all([
-            this.$store.dispatch("fetchCompanyUsers",companyId.companyId),
+            this.$store.dispatch("fetchCompanyUsers",this.$route.params.id),
             this.$store.dispatch("fetchRoles")
           ])
       .then((response)=>{
- 
+        console.log(response)
           this.companyUsers = response[0].data;
           this.roles = response[1].data;
       })

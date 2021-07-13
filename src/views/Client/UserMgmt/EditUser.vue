@@ -16,23 +16,23 @@
         </div>
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Last Name</label> 
-        <input :value="userData.lastName" id="lastName" type="text" className="app-modal-form-field w-input"  placeholder="Last Name"  required/>
+        <input  :value="userData.lastName" id="lastName" type="text" className="app-modal-form-field w-input"  placeholder="Last Name"  required/>
         </div>
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Email Address</label> 
-        <input :value="userData.email" id="emailAddress" type="text" className="app-modal-form-field w-input"  placeholder="Email Address"  required/>
+        <input readonly :value="userData.email" id="emailAddress" type="email" className="app-modal-form-field w-input"  placeholder="Email Address"  required/>
         </div>
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Username</label> 
-        <input :value="userData.userName" id="userName" type="text" className="app-modal-form-field w-input"  placeholder="Username"  required/>
+        <input readonly :value="userData.userName" id="userName" type="text" className="app-modal-form-field w-input"  placeholder="Username"  required/>
         </div>
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Phone Number</label> 
-        <input :value="userData.tel" id="mobileNo" type="text" className="app-modal-form-field w-input"  placeholder="Phone Number"  required/>
+        <input maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" :value="userData.tel" id="mobileNo" type="text" className="app-modal-form-field w-input"  placeholder="Phone Number"  required/>
         </div>
          <div className="form-flex-col">
-             <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role(Update: {{userData.role}})</label> 
-            <select v-model="form.rolesId" style="marginBottom: 30px" class="app-select w-select">
+             <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role</label> 
+            <select required v-model="userData.role" style="marginBottom: 30px" class="app-select w-select">
             <option  v-for="(role, index) in mfbRoles" :key="index" :value="role.id">{{role.name}}</option>        
         </select>
          </div>
@@ -72,7 +72,7 @@ export default {
             userName: '',
             mobileNo: '',
             rolesId: ''
-          }
+          },
       }
   },
         computed:{
@@ -95,15 +95,15 @@ this.status = false;
        this.loader = true
        const companyId = JSON.parse(localStorage.getItem("user-mfb"))
          const formData = {
-                  id: this.userData.id,
+                  id: parseInt(this.userData.id),
                  userName: document.getElementById("userName").value,
-                  companyId: companyId.companyId,
+                  companyId: parseInt(companyId.companyId),
                   firstName: document.getElementById("firstName").value,
                   lastName: document.getElementById("lastName").value,
                   emailAddress: document.getElementById("emailAddress").value,
                   userName: document.getElementById("userName").value,
                   mobileNo: document.getElementById("mobileNo").value,
-                  rolesId: this.form.rolesId == "" ? this.editData.rolesId : this.form.rolesId,
+                  rolesId: parseInt(this.userData.role),
                   isActive: true,
          }
          try {

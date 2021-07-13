@@ -97,9 +97,9 @@ methods:{
    const request = result.data.map( x => {
        return {
             id: x.id,
-            pickupBranch: this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName,
-            reason: this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason,
-            requestBranch: this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName,
+            pickupBranch: this.branches.length > 0 ? this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName : null,
+            reason: this.reasons.length > 0 ? this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason : null,
+            requestBranch:  this.branches.length > 0 ? this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName : null,
             requestDate: x.requestDate,
             surname_change: x.surname_change,
             trans_id: x.trans_id,
@@ -175,7 +175,7 @@ methods:{
       async fetchRejectedRequests(){
           this.RejectLoader = true
            const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + '/api/CardReissue/PendingRejectRequest/'+companyId.companyId)
+ const result = await axios.get(this.getUrl2 + 'api/CardReissue/PendingRejectRequest/'+companyId.companyId)
            this.RejectRequests = result.data
                this.RejectLoader = false
   },

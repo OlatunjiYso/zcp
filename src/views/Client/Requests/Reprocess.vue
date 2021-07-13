@@ -212,7 +212,7 @@ this.status = false;
       this.loader = true;
             const user = JSON.parse(localStorage.getItem("user-mfb"))
      const company = await axios.get(this.getUrl + 'api/companies/' + parseInt(user.companyId))
-      const companyProduct = await axios.get(this.getUrl + '/api/CardProductSetup')
+      const companyProduct = await axios.get(this.getUrl + 'api/CardProductSetup')
      const product = await companyProduct.data.find(x => { return x.companyId == parseInt(user.companyId) })
        const formData ={
          "id": this.requestData.id,

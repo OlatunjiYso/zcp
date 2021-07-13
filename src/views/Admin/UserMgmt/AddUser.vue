@@ -10,13 +10,14 @@
       <div>
         <form @submit.prevent="createUser">
            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Username</label> 
-        <input v-model="form.userName" type="text" className="app-modal-form-field w-input"  placeholder="Username"  required/> 
+                   <p v-show="error" style="color:red;font-size:12px">This username has been taken already</p>
+        <input @focus="removeError" @blur="validateUsername" v-model="form.userName" type="text" className="app-modal-form-field w-input"  placeholder="Username"  required/> 
          <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role</label> 
-        <select v-model.number="form.roleId" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model.number="form.roleId" style="marginBottom: 30px" class="app-select w-select">
             <option selected>Select a Role</option> 
             <option  v-for="(role, index) in bankRoles" :key="index" :value="role.id">{{role.name}}</option>        
         </select>
-        <button type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Add User</button>
+        <button v-show="error == false" type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Add User</button>
         </form>
       </div>
       <div @click= "closeAdd" class="app-modal-close"></div>
@@ -31,7 +32,7 @@ import {mapGetters} from 'vuex'
 import Loader from '../../../components/Loader/Loader'
 import Status from '../../../components/Status/Status'
 export default {
-    props:['closeAdd', 'closeAddReload'],
+    props:['closeAdd', 'closeAddReload','users'],
         components:{
      Loader,
      Status
@@ -47,7 +48,8 @@ export default {
           form: {
             userName: '',
             roleId: 0
-          }
+          },
+          error:false
       }
   },
       computed:{
@@ -60,10 +62,28 @@ export default {
     }
   },
   methods: {
+            removeError(){
+      this.error = false
+    },
+    async validateUsername(user){
+       this.loader = true
+   const response= await this.users.some( x =>{
+      return x.userName == this.form.userName
+    })
+     this.loader = false
+       console.log(response)
+        if(response){
+      this.error = true
+    }
+    else{
+      this.error = false
+    }
+    },
         resetState(){
 this.status = false;
     },
     async createUser(){
+
        this.loader = true
          const formData = {
                  userName: this.form.userName,
@@ -96,7 +116,7 @@ this.status = false;
                this.state = 'failed';
                this.message = 'Operation Failed'
          }
-            
+
       },
   },
 }

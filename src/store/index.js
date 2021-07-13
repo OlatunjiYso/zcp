@@ -5,7 +5,7 @@ export default createStore({
   state: {
     url: 'https://webservicestest.zenithbank.com:8443/CardPortalSecurityApi/',
     url2: 'https://webservicestest.zenithbank.com:8443/CardPortalOperations/',
-    url3: 'https://newwebservicetest.zenithbank.com/disputeresolutionthirdpartyapi/api/Dispute/',
+    url3: 'https://newwebservicetest.zenithbank.com/disputeresolutionthirdpartyapiapi/Dispute/',
     activities: [],
     adminUsers:[],
     companies:[],
@@ -185,7 +185,7 @@ export default createStore({
 
     async getCompanyUsers({commit,state}, companyId){
 
-      const result = await axios.get(state.url + '/api/companies/CompanyUsers/' + companyId,
+      const result = await axios.get(state.url + 'api/companies/CompanyUsers/' + companyId,
         {
           headers: {
             "Content-Type": "application/json"
@@ -197,7 +197,7 @@ export default createStore({
     },
 
       attemptLogin (context,payload){
-         return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companyusers',
+         return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + 'api/companyusers',
               {
                   headers: {
                       "Content-Type": "application/json"
@@ -208,7 +208,7 @@ export default createStore({
 
       fetchCompanyUsers(context,companyId){
 
-          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companies/CompanyUsers/' + companyId,
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + 'api/companies/CompanyUsers/' + companyId,
               {
                   headers: {
                       "Content-Type": "application/json"
@@ -217,7 +217,7 @@ export default createStore({
           )
       },
       fetchCompanyActivities(context,companyId){
-          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companies/CompanyAcivities/'  + companyId,
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + 'api/companies/CompanyAcivities/'  + companyId,
               {
                   headers: {
                       "Content-Type": "application/json"
@@ -226,7 +226,7 @@ export default createStore({
           )
       },
       fetchActivities(context){
-          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/activities',
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + 'api/activities',
               {
                   headers: {
                       "Content-Type": "application/json"
@@ -235,7 +235,7 @@ export default createStore({
           )
       },
       fetchRoles(context){
-          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/roles',
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + 'api/roles',
               {
                   headers: {
                       "Content-Type": "application/json"
@@ -244,7 +244,7 @@ export default createStore({
           )
       },
       fetchCompanyCardRequests(context,companyId){
-          return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `/api/CardRequest/all/${companyId}`,
+          return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `api/CardRequest/all/${companyId}`,
               {
                   headers: {
                       "Content-Type": "application/json"
@@ -254,7 +254,7 @@ export default createStore({
       },
 
       fetchCompanyPendingApproval(context,companyId){
-        return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `/api/CardRequest/pendingApproval/${companyId}`,
+        return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `api/CardRequest/pendingApproval/${companyId}`,
             {
                 headers: {
                     "Content-Type": "application/json"
@@ -264,7 +264,7 @@ export default createStore({
     },
 
     fetchCompanyPendingAcknowledgement(context,companyId){
-      return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `/api/CardRequest/pendingacknowledgement/${companyId}`,
+      return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `api/CardRequest/pendingacknowledgement/${companyId}`,
           {
               headers: {
                   "Content-Type": "application/json"
@@ -274,7 +274,7 @@ export default createStore({
   },
 
   fetchCompanyRejected(context,companyId){
-    return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `/api/CardRequest/PendingRejectRequest/${companyId}`,
+    return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `api/CardRequest/PendingRejectRequest/${companyId}`,
         {
             headers: {
                 "Content-Type": "application/json"

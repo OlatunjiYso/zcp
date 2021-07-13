@@ -132,7 +132,7 @@ this.status = false;
         "surname_change":this.requestData.surname_change,
        }
       try {
-        const response = await axios.post(this.getUrl2 + '/api/CardReissue/ReprocessrejectedRequest',formData)
+        const response = await axios.post(this.getUrl2 + 'api/CardReissue/ReprocessrejectedRequest',formData)
         if(response.status == 200){
           this.loader = false;
           this.status = true;

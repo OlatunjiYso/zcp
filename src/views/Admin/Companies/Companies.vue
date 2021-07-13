@@ -44,11 +44,11 @@
                                       <th class="app-table2-header">Name</th>
                                       <th class="app-table2-header">Code</th>
                                       <th class="app-table2-header">Email Address</th>
-                                       <th class="app-table2-header">Phone Number</th>
                                        <th class="app-table2-header">Account Number</th>
                                       <th class="app-table2-header"></th>
                                        <th class="app-table2-header"></th>
                                        <th class="app-table2-header"></th>
+                                        <th class="app-table2-header"></th>
                                   </tr>
                                   </thead>
                                   <tbody>
@@ -58,8 +58,6 @@
                                   <td class="app-table2-data">{{result.name}}</td>
                                       <td class="app-table2-data"> {{result.companyCode}} </td>
                                         <td class="app-table2-data">{{result.emailAddress}}</td>
-                      
-                                        <td class="app-table2-data">{{result.phoneNumber}}</td>
                                         <td class="app-table2-data">{{result.accountNumber}}</td>
                                               <td class="app-table2-data">
                       <div @click="openCaller(result)" style="background:#c00;cursor:pointer" class="table-btn">Caller Id<span class="table-button-icon"></span></div>
@@ -69,6 +67,9 @@
                             </td> -->
                                          <td class="app-table2-data">
                             <div @click="openEdit(result)" style="cursor:pointer" class="table-btn">Update<span class="table-button-icon"></span></div>
+                            </td>
+                             <td class="app-table2-data">
+                            <router-link :to="`/admin/${result.name}/users/${result.id}`"> <div style="cursor:pointer" class="table-btn">Users<span class="table-button-icon"></span></div> </router-link>
                             </td>
                                   </tr>     
                                                                                                
