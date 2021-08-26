@@ -118,7 +118,8 @@ this.status = false;
     async createUser(){
      
        this.loader = true
-       const companyId = JSON.parse(localStorage.getItem("user-mfb"))
+      
+       const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
                   companyId: parseInt(this.$route.params.id),
                   firstName: this.form.firstName,
@@ -128,6 +129,8 @@ this.status = false;
                   mobileNo: this.form.mobileNo,
                   rolesId: parseInt(this.userRole)  ,
                   isActive: true,
+                   userId: parseInt(user.id)
+                 
          }
          try {
            

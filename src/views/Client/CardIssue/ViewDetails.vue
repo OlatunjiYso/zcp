@@ -59,19 +59,12 @@
             <div class="details-header">Pickup Branch</div>
             <div class="details-value">{{viewDetailsData.pickupBranch}}</div>
           </div>
-            <div class="details-div">
-            <div class="details-header">Pickup Branch</div>
-            <div class="details-value">{{viewDetailsData.pickupBranch}}</div>
-          </div>
                       <div class="details-div">
             <div class="details-header">Status</div>
             <div class="details-value">{{viewDetailsData.workflowId == 1 ? "Needs Approval" : 
                                 viewDetailsData.workflowId == 2 ? "Awaiting processing" : 
                                 viewDetailsData.workflowId == 3 ? "Approved" :
-                                 viewDetailsData.workflowId == 4 ? "Awaiting processing" :
-                                  viewDetailsData.workflowId == 5 ? "Processed and Shipped" :
-                                   viewDetailsData.workflowId == 6 ? "Needs Acknowledgement" :
-                                   viewDetailsData.workflowId == 7 ? "Rejected" : "null"
+                                   viewDetailsData.workflowId == 0 ? "Rejected" : "null"
                                 }}</div>
           </div>
         </div>

@@ -13,7 +13,7 @@
          <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search" id="name">
       </div>
       <div class="app-table-buttons">
-        <div className="table-button filter" style="cursor:pointer" @click="openAdd">Add New User<span
+        <div v-show="checkPerm('Mfb_User_Management')" className="table-button filter" style="cursor:pointer" @click="openAdd">Add New User<span
             className="table-button-icon"></span></div>
       </div>
     </div>
@@ -43,7 +43,7 @@
             <td class="app-table2-data">{{user_item.tel}}</td>
             <td class="app-table2-data">{{user_item.role}}</td>
             <td class="app-table2-data">
-              <div class="table-btn" style="cursor:pointer" @click="openEdit(user_item)">Update User<span
+              <div v-show="checkPerm('Mfb_User_Management')" class="table-btn" style="cursor:pointer" @click="openEdit(user_item)">Update User<span
                   class="table-button-icon"></span></div>
             </td>
           </tr>
@@ -65,8 +65,9 @@ import EditUser from './EditUser'
 import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from "../../../components/Loading/Loading";
-
+import global from '../../../views/global'
 export default {
+  mixins:[global],
   name: "Home",
   components: {
     Loading,

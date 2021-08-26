@@ -15,16 +15,16 @@
         </div>
       </div>
         <ActivityForm1 v-if="form == 1" />
-          <ActivityForm2 com="iii" :searchCard="searchCard" v-else-if="form == 2" />
-        <ActivityForm3 v-else-if="form == 3" />
-         <ActivityForm5 v-else-if="form == 5" />
-          <ActivityForm6 v-else-if="form == 6" />
-          <ActivityForm7 v-else-if="form == 7" />
+          <ActivityForm2 com="iii" :searchCard="searchCard" v-else-if="form == 10" />
+        <ActivityForm3 v-else-if="form == 12" />
+         <ActivityForm5 v-else-if="form == 4" />
+          <ActivityForm6 v-else-if="form == 5" />
+          <ActivityForm7 v-else-if="form == 6" />
          <ActivityForm8 v-else-if="form == 8" />
-           <ActivityForm9 v-else-if="form == 9" />
-           <ActivityForm11 v-else-if="form == 11" />
-           <ActivityForm12 v-else-if="form == 12" />
-         <ActivityForm14 v-else-if="form == 14" />
+           <ActivityForm9 v-else-if="form == 7" />
+           <ActivityForm11 v-else-if="form == 9" />
+           <ActivityForm12 v-else-if="form == 11" />
+         <ActivityForm14 v-else-if="form == 3" />
     </div>
     <!-- <div class="app-admin-col-3">
       <Rightbar />
@@ -71,7 +71,7 @@ export default {
   },
   created() {
     this.form = this.$route.params.slug;
-    console.log("Form ",this.$route.params.slug);
+    
   },
       computed:{
     ...mapGetters([ 'getUrl2' ])

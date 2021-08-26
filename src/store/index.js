@@ -3,8 +3,8 @@ import axios from'axios'
 
 export default createStore({
   state: {
-    url: 'https://webservicestest.zenithbank.com:8443/CardPortalSecurityApi/',
-    url2: 'https://webservicestest.zenithbank.com:8443/CardPortalOperations/',
+    url: process.env.VUE_APP_CardPortalSecurityApi_URL,
+    url2: process.env.VUE_APP_CardPortalOperations_URL,
     url3: 'https://newwebservicetest.zenithbank.com/disputeresolutionthirdpartyapiapi/Dispute/',
     activities: [],
     adminUsers:[],

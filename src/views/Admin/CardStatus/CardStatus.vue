@@ -8,7 +8,7 @@
      <Status :state="state"  :message = "message" :resetState="resetState" v-if="status"/>
  <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-        <router-link to="/client/activity-requests"><div class="settings-icon"></div></router-link>
+       <div @click="previousPage" class="settings-icon"></div>
         </div>
         <div class="admin-top-bar-right">
           <div class="admin-topbar-date">{{getDate2}}</div>
@@ -172,12 +172,13 @@ this.cardData = requests
  }
   },
             async CheckStatus(result){
+                   if( result.clientCode.length > 3){
        this.loader = true
        const user = JSON.parse(localStorage.getItem("user"))
           const form = {
               "companyId": this.companyId,
               "userId": user.id,
-              "clientCode": result.clientCode
+              "clientCode": result.clientCode == null ? "null" : result.clientCode
           }
          try {
            
@@ -203,6 +204,13 @@ this.cardData = requests
                this.state = 'failed';
                 this.message = error.message
          }
+           }
+              else{
+                  this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = "This card does not have a valid client code"
+              }
             
       },
  

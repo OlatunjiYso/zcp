@@ -6,7 +6,7 @@
             <div class="app-admin-col-2">
  <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-          <div class="settings-icon"></div>
+          <div @click="previousPage" class="settings-icon"></div>
         </div>
         <div class="admin-top-bar-right">
           <div class="admin-topbar-date">{{getDate}}</div>
@@ -71,6 +71,35 @@
           </div>
         </div>
       </div>
+            <div class="basic-table-card">
+        <div class="table-header">
+          <div class="content-header-2">Company Details</div>
+        </div>
+        
+               <div className="form-flex">
+                         <div className="form-flex-col-3">  
+                          <div className="details-header">Company Name</div>
+                          <div className="details-value">{{getCompany ? getCompany.name : ""}}</div>
+                         </div>
+                          <div className="form-flex-col-3">  
+                           <div className="details-header">Company Email Address</div>
+                          <div className="details-value">{{ getCompany ? getCompany.emailAddress : ""}}</div>
+                         </div>
+                          <div className="form-flex-col-3">  
+                           <div className="details-header">Company Phone Number</div>
+                          <div className="details-value">{{ getCompany ? getCompany.phoneNumber : ""}}</div>
+                         </div>
+                           <div className="form-flex-col-3">  
+                           <div className="details-header">Company Account Number</div>
+                          <div className="details-value">{{getCompany ? getCompany.accountNumber : ""}}</div>
+                         </div>
+                           <div className="form-flex-col-3">  
+                           <div className="details-header">Company Address</div>
+                          <div className="details-value">{{getCompany ? getCompany.address : ""}}</div>
+                         </div>
+                        
+      </div>
+            </div>
       <div v-if="!isFetchingDashBoard" class="basic-table-card">
         <div class="table-header">
           <div class="content-header-2">Users</div>
@@ -112,7 +141,7 @@
 import Global from '../../../views/global.js'
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
-import {mapState} from "vuex";
+import {mapGetters, mapState} from "vuex";
 import Loading from "../../../components/Loading/Loading";
 export default {
   name: "Home",
@@ -122,7 +151,11 @@ export default {
     Rightbar
   },
     mixins:[Global],
+    created(){
+     this.$store.dispatch('getCompanies')
+    },
   mounted() {
+    this.ismounted = true
     try {
       this.fetchDashboard()
     }catch (e){
@@ -132,6 +165,7 @@ export default {
   },
   data:function (){
     return {
+      ismounted: false,
       isFetchingDashBoard : false,
       date : "October 8th, 2020",
       users_total : 0,
@@ -165,6 +199,7 @@ export default {
     }
   },
   computed:{
+    ...mapGetters(['getCompanies']),
     users_list_computed:function (){
       return this.users_list.slice(0,this.users_list_sample_count).map((user)=>{
         return {
@@ -177,6 +212,14 @@ export default {
         }
       });
     },
+   getCompany(){
+    if(this.ismounted){
+         const company = JSON.parse(localStorage.getItem("user-mfb"))
+   const result = this.getCompanies ? this.getCompanies.find( x => { return x.id == company.companyId}) : 'null'
+//  this.branches.length > 0 ? this.branches.find((entry)=>{return result.branch === entry.branchNo}).branchName : null;
+   return result;
+    }
+    }
   }
 }
 </script>

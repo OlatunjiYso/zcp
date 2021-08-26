@@ -6,7 +6,7 @@
             <div class="app-admin-col-2">
  <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-          <div class="settings-icon"></div>
+          <div @click="previousPage" class="settings-icon"></div>
         </div>
         <div class="admin-top-bar-right">
           <div class="admin-topbar-date">{{getDate2}}</div>

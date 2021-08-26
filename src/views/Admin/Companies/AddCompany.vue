@@ -183,7 +183,8 @@ export default {
 this.status = false;
     },
         async createCompany(){
-       this.loader = true
+       this.loader = true 
+        const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
                   name: this.form.name,
           companyCode: this.form.companyCode,
@@ -192,6 +193,8 @@ this.status = false;
           phoneNumber: this.form.phoneNumber,
           accountNumber: this.form.accountNumber,
           branch: this.form.branch,
+         userId: parseInt(user.id)
+      
          }
 
 
@@ -220,10 +223,13 @@ this.status = false;
             
       },
      async addActivities(companyId){
+              const user = JSON.parse(localStorage.getItem("user"))
                  const response2 = await axios.post(this.getUrl + 'api/companyactivities', {
                  activitiesId: this.activityArray,
                 companyId: parseInt(companyId),
-                isActive: true
+                isActive: true,
+                 userId: parseInt(user.id)
+                
                       })
 
                if(response2.status == 200){    
@@ -239,11 +245,13 @@ this.status = false;
              }
       },
        async addProduct(companyId){
+         const user = JSON.parse(localStorage.getItem("user"))
                   const response3 = await axios.post(this.getUrl + 'api/CardProductSetup', {
                 companyId: parseInt(companyId),
                 productName: this.form.productName,
                 cardProductCode: this.form.productCode,
-                isActive: true
+                isActive: true,
+                userId: parseInt(user.id)           
                       })
                       
                if(response3.status == 200){ 
@@ -262,6 +270,7 @@ this.status = false;
       },
      async addUser(){
           this.loader = true
+          const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
                   companyId: parseInt(this.companyId),
                   firstName: this.form2.firstName,
@@ -270,7 +279,9 @@ this.status = false;
                   userName: this.form2.userName,
                   mobileNo: this.form2.mobileNo,
                   rolesId: parseInt(document.getElementById("roles").value),
-                  isActive: true
+                  isActive: true,
+                   userId: parseInt(user.id)
+                 
          }
          try {
            

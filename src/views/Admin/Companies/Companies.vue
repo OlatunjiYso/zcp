@@ -4,7 +4,7 @@
               <AddMFB  :closeModal="closeModal" :closeModalReload="closeModalReload" />
           </div>
           <div v-show="EditModal">
-              <EditMFB :companyCardSetup="companyCardSetup" :editActivities="activities" :closeModal="closeEdit" :closeEditReload="closeEditReload" :editData="editData"/>
+              <EditMFB :cardData ="cardData" :companyCardSetup="companyCardSetup" :editActivities="activities" :closeModal="closeEdit" :closeEditReload="closeEditReload" :editData="editData"/>
           </div>
             <div v-show="CallerModal">
               <CallerModal :isSetup="isSetup" :callerData="callerData" :companyData="companyData"  :closeModal="closeCaller" :closeCallerReload="closeCaller" />
@@ -15,7 +15,7 @@
             <div class="app-admin-col-2">
  <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-          <div class="settings-icon"></div>
+          <div class="settings-icon" @click="previousPage"></div>
         </div>
         <div class="admin-top-bar-right">
           <div class="admin-topbar-date">{{getDate2}}</div>
@@ -119,6 +119,7 @@ export default {
       callerData:"",
       isSetup: false,
        searchQuery: '',
+       cardData:""
     }
   },
   computed:{
@@ -141,7 +142,7 @@ export default {
     created(){
    this.$store.dispatch("getCompanies");
   },
-  methods: {       
+  methods: {    
        selectCompany(result){
       var checkbox = document.getElementById(`SC${result.id}`);
       if (checkbox.checked == true){
@@ -190,6 +191,8 @@ export default {
 
              const response = await axios.get(this.getUrl + 'api/companies/CompanyAcivities/' + result.id)
          const response2 = await axios.get(this.getUrl + 'api/CardProductSetup')
+          const response3 = await axios.get(this.getUrl + 'api/CardProductSetup/' + result.id)
+          this.cardData = response3;
              let cardSetup = response2.data
              const y = cardSetup.find(x => { return x.companyId ==  result.id})
              this.companyCardSetup = y
@@ -197,7 +200,7 @@ export default {
             this.editData = result
            this.EditModal = true
 
-       },
+       },  
         closeEdit(){
            this.EditModal = false
        },

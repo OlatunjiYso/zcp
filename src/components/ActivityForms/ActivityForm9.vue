@@ -119,6 +119,7 @@ this.status = false;
          }
     },
             async Deactivate(result){
+               if( result.clientCode.length > 3){
        this.loader = true
        const user = JSON.parse(localStorage.getItem("user-mfb"))
           const form = {
@@ -133,7 +134,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Cardd deactivated Sucessfully'
+               this.message = 'Card deactivated Sucessfully'
              }
              else{
                               this.cardData = []
@@ -150,6 +151,13 @@ this.status = false;
                this.state = 'failed';
                this.message = error.message
          }
+          }
+              else{
+                  this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = "This card does not have a valid client code"
+              }
             
       },
  

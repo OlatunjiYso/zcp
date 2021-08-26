@@ -37,6 +37,10 @@
             <option  v-for="(role, index) in mfbRoles" :key="index" :value="role.id">{{role.name}}</option>        
         </select>
          </div>
+            <div className="form-flex-col">
+               <input  style="display:inline-block" type="checkbox" id="cash" name="cash">
+            <label style="display:inline-block;margin-left:10px;color:#a3a3a3; font-weight:500;font-size:13px" for="cash">I agree to the <a href="https://drive.google.com/file/d/1ENniW_GqiHlGRGyIkjY-doKK0MQFdE31/view?ths=true">terms and conditions</a> </label> 
+         </div>
         </div>
           <button v-show="error == false" type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Add User</button>
         </form>

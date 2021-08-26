@@ -41,6 +41,9 @@ export default {
         }
     }, 
     methods: {
+      previousPage(){
+         this.$router.go(-1);
+      },
       checkPermAdmin(result){
          const response = this.getAdminPermissions.some( x=>{ return x.name == result })
          return response 

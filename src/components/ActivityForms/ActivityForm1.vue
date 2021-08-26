@@ -6,7 +6,7 @@
   </div>
           <div style="z-index : 999999;display:none" class="app-modal-overlay"  id="bulk-status-success">
     <div class="app-modal-div success" style="text-align:center">
-    <div> <div class="alert-icon"></div> <div class="alert-message">Request sent successfully</div> 
+    <div> <div class="alert-icon"></div> <div class="alert-message" >Request sent successfully</div> 
      <div @click="resetState2" style="margin-top:30px;cursor:pointer" class="app-modal-button">Close</div>
     </div> 
     </div>
@@ -16,23 +16,23 @@
     <div class="app-modal-div success" style="text-align:center">            
      <div> 
             <div class="alert-icon failed"></div>
-            <div class="alert-message">Operation Failed</div>
+            <div class="alert-message" id="error-text">Operation Failed - Invalid File</div>
             <div @click="resetState3" style="margin-top:30px;cursor:pointer" class="app-modal-button">Try Again</div>
             </div>
     </div>
   </div>
 
   <div class="content-header">Instant Card Request</div>
-  <br/><br/>
-  <form @submit.prevent="sendJson">
+  <br/>
+   <div @click="isBulk = !isBulk" style="cursor:pointer;background:#c00;float:left;" class="table-btn">{{isBulk ? 'Single Upload' : 'Bulk Upload'}}<span class="table-button-icon"></span></div>
+   <br/><br/><br/>
+  <form @submit.prevent="sendJson" v-if="isBulk">
       <label for="myfile">Bulk Upload</label>
 <input class="bulk-upload" ref="myfiles" type="file" id="myfile" name="myfile" accept=".xls, .xlsx" required>
 <br>
-  <button type="submit" class="app-form-button">Submit</button>
+  <button v-show ="isActiveBtn" type="submit" class="app-form-button">Submit</button>
   </form>
-
-  <div class="app-divider"></div>
-  <form @submit.prevent="sendRequest">
+  <form @submit.prevent="sendRequest" v-else>
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Title<span style="color:red">*</span></label>
@@ -94,8 +94,7 @@
       <div class="form-flex-col-3">
         <label class="login-label">State<span style="color:red">*</span></label>
         <select required v-model="form.regionCode" @change="fetchStateCities($event)" style="marginBottom: 30px" class="app-select w-select">
-          <option  v-for="(result, index) in states" :key="index" :value="result.code">{{result.name}}</option>
-         
+          <option  v-for="(result, index) in states" :key="index" :value="result.code">{{result.name}}</option>       
         </select>
       </div>
       <div class="form-flex-col-3">
@@ -116,11 +115,11 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Issued Date<span style="color:red">*</span></label>
-        <input v-model="form.documentIssueDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.documentIssueDate" :max="todayDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Expiry Date<span style="color:red">*</span></label>
-        <input v-model="form.expiryDateOfDoc" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.expiryDateOfDoc" :min="newSorted" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
@@ -139,7 +138,7 @@
 
 
     </div>
-    <button type="submit" class="app-form-button">Submit</button>
+    <button v-show ="isActiveBtn" type="submit" class="app-form-button">Submit</button>
   </form>
 </template>
 
@@ -163,12 +162,11 @@ export default {
     Loader,
     Status
   },
-  computed:{
-    ...mapGetters([ 'getUrl2', 'getUrl' ])
-  },
   mixins: [operationMixen],
   data(){
     return{
+      isBulk: false,
+      todayDate:  new Date().toISOString().split("T")[0],
       uploadFile:null,
       loader: false,
       status: false,
@@ -195,13 +193,42 @@ export default {
         "countryCode": "566",
         "legalID": "",
         "idCardTypeCode": "",
-        "documentIssueDate": "",
-        "expiryDateOfDoc": "",
+        "documentIssueDate": null,
+        "expiryDateOfDoc": null,
         "accountNbr": "",
         "nameOnCard": "",
         "socioProfCode": ""
       },
-       arry:[]
+       arry:[],
+       ismounted:false,
+       isActiveBtn: false
+    }
+  },
+  async mounted() {
+
+    this.ismounted = true
+      const companyProduct = await axios.get(this.getUrl + 'api/CardProductSetup')
+   
+      if(companyProduct.data.length > 0 ){
+        this.isActiveBtn = true;
+      }
+      else{
+        this.isActiveBtn = false;
+      }
+  },
+    computed:{
+    ...mapGetters([ 'getUrl2', 'getUrl' ]),
+    newSorted(){
+      if(this.ismounted){
+            const issueDate = new Date();
+            const d = issueDate.setDate(issueDate.getDate() + 1);
+      const momentDate =  moment(issueDate).format('DD-MM-YYYY');
+       const a = new Date(d).toISOString().substr(0,10);
+
+      return a;
+            
+      }
+
     }
   },
   methods: {
@@ -252,13 +279,18 @@ export default {
                           var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                           var json_object = JSON.parse(JSON.stringify(XL_row_object))
                        
+                       
+                         const user = JSON.parse(localStorage.getItem("user-mfb"))
+                        const company = await axios.get('https://epmalive.africa.int.zenithbank.com/CardportalSecurityAPi/api/companies/' + parseInt(user.companyId))
+                          const companyProduct = await axios.get('https://epmalive.africa.int.zenithbank.com/CardportalSecurityAPi/api/CardProductSetup')
+                        const product = await companyProduct.data.find(x => { return x.companyId == parseInt(user.companyId) })
 
                        const newData = json_object.map( x => {
-                         return{
-                                   "productCode": x.productCode,
-                                  "branchNo": x.branchNo,
-                                  "companyId": parseInt(x.companyId),
-                                  "userId": parseInt(x.userId),
+                         return{      
+                                  "productCode": product.cardProductCode,
+                                  "branchNo": company.data.branch,
+                                  "companyId": parseInt(user.companyId),
+                                  "userId": parseInt(user.id),
                                   "title": x.title,
                                   "firstName": x.firstName,
                                   "middleName": x.middleName,
@@ -282,10 +314,72 @@ export default {
                                   "socioProfCode": x.socioProfCode
                          }
                        })
-                       const formData = newData
-         try{
+
+                             const newData2 = json_object.map( x => {
+                         return{      
+                                  "productCode": product.cardProductCode,
+                                  "branchNo": company.data.branch,
+                                  "companyId": parseInt(user.companyId),
+                                  "userId": parseInt(user.id),
+                                  "title": x.title,
+                                  "firstName": x.firstName,
+                                  "middleName": x.middleName,
+                                  "lastName": x.lastName,
+                                  "gender": x.gender,
+                                  "maritalStatus": x.maritalStatus,
+                                  "mobileNo": x.mobileNo,
+                                  "email": x.email,
+                                  "dateOfBirth": x.dateOfBirth,
+                                  "addressLine1": x.addressLine1,
+                                  "addressLine2": x.addressLine2,
+                                  "cityCode": x.cityCode,
+                                  "regionCode":x.regionCode,
+                                  "countryCode": x.countryCode,
+                                  "legalID": x.legalID,
+                                  "idCardTypeCode": x.idCardTypeCode,
+                                  "documentIssueDate": x.documentIssueDate,
+                                  "expiryDateOfDoc": x.expiryDateOfDoc,
+                                  "accountNbr": x.accountNbr,
+                                  "nameOnCard": x.nameOnCard,
+                                  "socioProfCode": x.socioProfCode
+                         }
+                       })
+    
+    var sorted_arr = newData.sort();
+    var valResults = [];
+    for (var i = 0; i < sorted_arr.length - 1; i++) {
+        if (sorted_arr[i + 1].accountNbr === sorted_arr[i].accountNbr) {
+            valResults.push(sorted_arr[i].accountNbr);
+           
+        }
+    }
+
+        var sorted_arr2 = newData.sort();
+
+      const newSorted =  sorted_arr2.map(s => {
+          return {
+           "documentIssueDate": new Date(s.documentIssueDate).toISOString().substr(0,10),
+            "expiryDateOfDoc": new Date(s.expiryDateOfDoc).toISOString().substr(0,10)
+          }
+        })
+
+    var valResults2 = [];
+    for (var i = 0; i < newSorted.length - 1; i++) {
+        if (newSorted[i].expiryDateOfDoc < newSorted[i].documentIssueDate) {
+     
+            valResults2.push(newSorted[i]);
+        }
+    }
+
+   const formData = newData2
+
+   if(valResults.length <= 0 ){
+
+        if(valResults2.length <= 0){
+
+              try{
          document.getElementById("bulk-loader").style.display = "block";
-        const response = await axios.post('https://webservicestest.zenithbank.com:8443/CardPortalOperations/api/CardRequest/makecardrequest',formData, {
+        const response = await axios.post('https://epmalive.africa.int.zenithbank.com/CardportalOperation/api/CardRequest/makecardrequest',formData, {
                   headers: {
                       "Content-Type": "application/json"
                   }
@@ -295,11 +389,32 @@ export default {
            document.getElementById("bulk-status-success").style.display = "flex";
         }
         else{
+          console.log("400")
+           document.getElementById("bulk-loader").style.display = "none";
         document.getElementById("bulk-status-failed").style.display = "flex";
         }
       } catch (error) {
+        console.log("500")
+         document.getElementById("bulk-loader").style.display = "none";
          document.getElementById("bulk-status-failed").style.display = "flex";
       }
+   }
+
+      else{
+     document.getElementById("bulk-status-failed").style.display = "flex";
+     document.getElementById("error-text").innerHTML = "Expiry Date is less than Issue Date";
+   }
+
+   }
+                      
+   else{
+     document.getElementById("bulk-status-failed").style.display = "flex";
+     document.getElementById("error-text").innerHTML = "Multiple account number instants";
+   }
+
+
+                  
+
                         })
                     };
 

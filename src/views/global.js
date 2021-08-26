@@ -6,11 +6,14 @@ export default {
           message:"Hii",
           componentLoaded: false,
           role:"",
-          role2:""
+          role2:"",
+          branches:[]
         }
     },
      async created(){
-
+      await this.$store.dispatch('getCardSetup')
+        const result = await axios.get(this.getUrl2 + 'api/Common/Branch')
+        this.branches = result.data
       await this.$store.dispatch('getRoles')
       if(localStorage.getItem('user-mfb')){
               const user = JSON.parse(localStorage.getItem('user-mfb'))
@@ -28,7 +31,7 @@ export default {
       this.componentLoaded = true
     },
     computed:{
-    ...mapGetters([ 'getUrl','getUrl2','getPermissions','getAdminPermissions', 'getRoles']),
+    ...mapGetters(['getCardSetup', 'getUrl','getUrl2','getPermissions','getAdminPermissions', 'getRoles']),
     getDate: function(){
       if(!this.componentLoaded){
         return null
@@ -51,6 +54,9 @@ export default {
     }
     }, 
     methods: {
+      previousPage(){
+         this.$router.go(-1);
+      },
       async searchCard(e){
         const user = JSON.parse(localStorage.getItem("user-mfb"))
            this.loading = true

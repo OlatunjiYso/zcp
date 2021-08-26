@@ -64,11 +64,14 @@ export default {
   methods: {
      async createActivity(){
        this.loader = true
+       const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
                  name: this.form.name,
                  description: this.form.description,
                  requireMakerChecker: this.form.markerChecker,
-                 isActive: true
+                 isActive: true,
+                 userId: parseInt(user.id)
+      
          }
          try {
            

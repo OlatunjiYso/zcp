@@ -93,11 +93,11 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Issued Date<span style="color:red">*</span></label>
-        <input v-model="requestData.documentIssueDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.documentIssueDate" :max="todayDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Expiry Date<span style="color:red">*</span></label>
-        <input v-model="requestData.expiryDateOfDoc" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.expiryDateOfDoc"  :min="validateExpiry" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
@@ -139,12 +139,11 @@ export default {
     Loader,
     Status
   },
-  computed:{
-    ...mapGetters([ 'getUrl2', 'getUrl' ])
-  },
+
   mixins: [operationMixen],
   data(){
     return{
+      todayDate:  new Date().toISOString().split("T")[0],
       loader: false,
       status: false,
       state: null,
@@ -175,8 +174,34 @@ export default {
         "accountNbr": "",
         "nameOnCard": "",
         "socioProfCode": ""
-      }
+      },
+       ismounted:false,
+       isActiveBtn: false
     }
+  },
+   computed:{
+    ...mapGetters([ 'getUrl2', 'getUrl' ]),
+        validateExpiry(){
+      if(this.ismounted){
+            const issueDate = new Date();
+            const d = issueDate.setDate(issueDate.getDate() + 1);
+       const a = new Date(d).toISOString().substr(0,10);
+
+      return a;
+            
+      }
+  }
+   },
+    async mounted() {
+    this.ismounted = true
+      const companyProduct = await axios.get(this.getUrl + 'api/CardProductSetup')
+   
+      if(companyProduct.data.length > 0 ){
+        this.isActiveBtn = true;
+      }
+      else{
+        this.isActiveBtn = false;
+      }
   },
   methods: {
           resetState(){

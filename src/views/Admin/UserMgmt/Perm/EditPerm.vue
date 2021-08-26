@@ -79,13 +79,16 @@ this.status = false;
 
     },
     async updatePerm(){
-       this.loader = true
+       this.loader = true 
+       const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
               id:this.editData.id,
               name: document.getElementById("testField1").value,
               description: document.getElementById("testField2").value,
               mfbOrBank: this.form.mfbOrBank == "" ? this.editData.mfbOrBank : this.form.mfbOrBank,
-              isActive: true
+              isActive: true,
+               userId: parseInt(user.id)
+                
          }
          try {
            

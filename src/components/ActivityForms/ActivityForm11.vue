@@ -32,10 +32,10 @@
           <option  v-for="(result, index) in reasons" :key="index" :value="result.reasonId">{{result.reissueReason}}</option>
         </select>
       </div>
-      <div class="form-flex-col-3">
+      <!-- <div class="form-flex-col-3">
         <label class="login-label">Activity By<span style="color:red">*</span></label>
         <input v-model="form.activityBy" type="text" class="app-text-field w-input" required placeholder="Type Here" />
-      </div>
+      </div> -->
       <div class="form-flex-col-3">
         <label class="login-label">New Name of Card<span style="color:red">*</span></label>
         <input v-model="form.newNameOfCard" type="text" class="app-text-field w-input" required placeholder="Type Here" />
@@ -98,7 +98,6 @@ export default {
       this.form.cardPan= "";
       this.form.surname_change= "";
       this.form.newNameOfCard= "";
-      this.form.activityBy="";
     },
     resetState(){
       this.status = false;
@@ -118,7 +117,7 @@ export default {
         "workflowId": 1,
         "reason": this.form.reason,
         "newNameOfCard": this.form.newNameOfCard,
-         "activityBy": this.form.activityBy,
+         "activityBy": user.userName,
         "surname_change":this.form.surname_change,
        }
       try {

@@ -75,11 +75,14 @@ this.status = false;
     },
     async createPerm(){
        this.loader = true
+       const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
                  name: this.form.name,
               description: this.form.description,
               mfbOrBank: this.form.mfbOrBank,
-              isActive: true
+              isActive: true,
+               userId: parseInt(user.id)
+                 
          }
          try {
            

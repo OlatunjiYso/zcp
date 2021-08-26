@@ -6,7 +6,7 @@
             <div class="app-admin-col-2">
             <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-          <div class="settings-icon"></div>
+          <div @click="previousPage" class="settings-icon"></div>
           <div @click = "switchView('user')" class="admin-top-barlinks" :class="[ userView ? activeClass : '']">User</div>
           <div @click = "switchView('roles')" class="admin-top-barlinks" :class="[ rolesView ? activeClass : '']" v-show="checkPermAdmin('SuperAdmin_Management')">Roles</div>
           <div @click = "switchView('permissions')" class="admin-top-barlinks" :class="[ permView ? activeClass : '']" v-show="checkPermAdmin('SuperAdmin_Management')">Permissions</div>

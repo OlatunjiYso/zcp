@@ -65,12 +65,15 @@ export default {
   methods: {
      async updateActivity(){
        this.loader = true
+ const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
                  id: this.editData.id,
                  name: document.getElementById("name").value,
                  description: document.getElementById("description").value,
                  requireMakerChecker: document.getElementById("markerChecker").checked,
-                 isActive: true
+                 isActive: true,
+                userId: parseInt(user.id)
+        
          }
          try {
            

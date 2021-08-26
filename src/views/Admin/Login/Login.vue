@@ -11,7 +11,7 @@
       <h2 class="login-header">Welcome Back!</h2>
       <div class="login-sub">Kindly fill in your credentials to login into your account.</div>
       <div >
-        <form @submit.prevent="Login">
+        <form @submit.prevent="testLogin">
           <div class="app-login-form-group">
             <label for="Email-address" class="login-label">User Name</label>
             <input v-model="form.userName" type="text" class="app-login-text-field w-input"  placeholder="john.doe" required></div>
@@ -68,6 +68,7 @@ export default {
         resetState(){
 this.status = false;
     },
+    
     GenerateToken(length){
     var result           = [];
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -75,6 +76,21 @@ this.status = false;
     for ( var i = 0; i < length; i++ ) {result.push(characters.charAt(Math.floor(Math.random() * charactersLength)));}
    this.token =  result.join(''); 
    return result.join('');
+    },
+    testLogin(){
+      let testData= {
+  "responseCode": "01",
+  "responseMessage": "There is already an open DataReader associated with this Connection which must be closed first.",
+  "id": 3,
+  "userName": "cynthia.jon-olawuyi",
+  "rolesId": 40,
+  "permissions": [{"name":"SuperAdmin_Management"},{"name":"Admin_Onboarding"},{"name":"Admin_User_Management"}]
+}
+
+     this.GenerateToken(50);
+       localStorage.setItem('token', this.token)   
+        localStorage.setItem('user', JSON.stringify(testData))    
+       this.$router.push('/admin/overview')
     },
       async Login(){
       this.GenerateToken(50);

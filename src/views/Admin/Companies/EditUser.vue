@@ -95,7 +95,7 @@ this.status = false;
     },
     async updateUser(){
        this.loader = true
-    
+     const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
                   id: parseInt(this.userData.id),
                  userName: document.getElementById("userName").value,
@@ -107,6 +107,8 @@ this.status = false;
                   mobileNo: document.getElementById("mobileNo").value,
                   rolesId: parseInt(this.userData.role),
                   isActive: true,
+                   userId: parseInt(user.id)
+                
          }
          try {
            

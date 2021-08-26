@@ -90,13 +90,16 @@ this.status = false;
     },
     async updateRole(){
        this.loader = true
+       const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
               id:this.editData.id,
               name: document.getElementById("permname").value,
               description: document.getElementById("description").value,
                mfbOrBank: this.form.mfbOrBank == "" ? this.editData.mfbOrBank : this.form.mfbOrBank,
               permissions: this.permAray,
-              isActive: true
+              isActive: true,
+               userId: parseInt(user.id)
+                 
          }
          try {
            

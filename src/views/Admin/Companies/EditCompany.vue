@@ -80,8 +80,8 @@ import {mapGetters} from 'vuex'
 import Loader from '../../../components/Loader/Loader'
 import Status from '../../../components/Status/Status'
 export default {
-    props:['closeModal','closeEditReload','editData', 'editActivities', 'companyCardSetup'],
-        components:{
+    props:['cardData','closeModal','closeEditReload','editData', 'editActivities', 'companyCardSetup'],
+    components:{
      Loader,
      Status
     },
@@ -101,23 +101,27 @@ export default {
           phoneNumber: "",
           accountNumber: "",
           branch: "",
-         productName:"",
-          productCode:""
+         productName:null,
+          productCode:null
         },
           cardSetup:[],
+          
       }
   },
       computed:{
     ...mapGetters([
       'getUrl',
       'getActivities',
-    ])
+    ]),
+
   },
-  created(){
-    this.$store.dispatch("getActivities");
-    this.getCardSetup()
+  async created(){
+       await this.getCardSetup();
+    await this.$store.dispatch("getActivities");
   },
+
   methods: {
+
     savecardSetup(result){
     let cardCode = result.target.value;
     const y = this.cardSetup.find(x => { return x.cardProductCode == cardCode})
@@ -133,6 +137,7 @@ this.status = false;
     },
         async updateCompany(){
        this.loader = true
+       const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
           id: this.editData.id,
           name: document.getElementById("name").value,
@@ -142,6 +147,8 @@ this.status = false;
           phoneNumber: document.getElementById("phoneNumber").value,
           accountNumber: document.getElementById("accountNumber").value,
           branch: document.getElementById("branch").value,
+          userId: parseInt(user.id)
+         
          }
 
          try {
@@ -168,11 +175,14 @@ this.status = false;
       },
 
            async addActivities(companyId){
+              const user = JSON.parse(localStorage.getItem("user"))
                  const response2 = await axios.post(this.getUrl + 'api/companyactivities/update', {
                 id: this.editData.id,
                  activitiesId: this.activityArray,
                 companyId: parseInt(companyId),
-                isActive: true
+                isActive: true,
+                 userId: parseInt(user.id)
+                
                       })
 
                if(response2.status == 200){    
@@ -188,11 +198,14 @@ this.status = false;
              }
       },
              async addProduct(companyId){
+             const user = JSON.parse(localStorage.getItem("user"))
                   const response3 = await axios.post(this.getUrl + 'api/CardProductSetup', {
                 companyId: parseInt(companyId),
-                productName: this.form.productName,
-                cardProductCode: this.form.productCode,
-                isActive: true
+                 productName: this.form.productName == null ? this.companyCardSetup.productName : this.form.productName,
+                cardProductCode: this.form.productCode  == null ? this.companyCardSetup.cardProductCode : this.form.productCode,
+                isActive: true,
+                userId: parseInt(user.id)
+                 
                       })
                       
                if(response3.status == 200){ 
@@ -220,13 +233,13 @@ this.status = false;
           if (checkbox.checked == true){
 for(var i = 0; i < this.getActivities.length; i++) {
 
-    console.log("checked") ;
+    
       this.activityArray.push(parseInt(this.getActivities[i].id));
       document.getElementById(`E${this.getActivities[i].id}`).checked = true;
   }
           }
   else{
-      console.log("unchecked")
+      
      this.activityArray = []
      for(var i = 0; i < this.getActivities.length; i++) {
       document.getElementById(`E${this.getActivities[i].id}`).checked = false;
@@ -238,20 +251,20 @@ for(var i = 0; i < this.getActivities.length; i++) {
 
  async addToActivity(activity, index){
         let Avalue = await parseInt(activity.id)
-        console.log(`E${activity.id}`)
+    
       var checkbox = document.getElementById(`E${activity.id}`);
        const state = await this.activityArray.some(activity => { return activity == Avalue })
-       console.log(state)
+     
       if (state == false && checkbox.checked == true){
-    console.log("checked") ;
+    
     this.activityArray.push(Avalue);
   }
   else{
-      console.log("unchecked")
+     
      const newIndex = this.activityArray.findIndex( result => { return result == Avalue})
 
        await this.activityArray.splice(newIndex, 1); 
-       console.log("finised unchecked " + newIndex) 
+     
       }
 
       },

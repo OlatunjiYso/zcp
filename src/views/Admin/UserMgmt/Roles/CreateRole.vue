@@ -91,12 +91,16 @@ this.status = false;
     },
     async createRole(){
        this.loader = true
+        const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
                  name: this.form.name,
               description: this.form.description,
               permissions: this.permAray,
                mfbOrBank: this.form.mfbOrBank,
-              isActive: true
+              isActive: true,
+               userId: parseInt(user.id)
+                 
+
          }
          try {
            
