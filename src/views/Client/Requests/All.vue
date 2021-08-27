@@ -40,7 +40,7 @@
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
-                            <td class="app-table2-data">{{result.socioProfCode}}</td>
+                            <td class="app-table2-data">{{result.branchNo}}</td>
                             <th class="app-table2-data">{{ result.workflowDescription}}</th>
                               <td class="app-table2-data">
                                    <div @click="openModal(result)" style="cursor:pointer" class="table-btn">View<span class="table-button-icon"></span></div>

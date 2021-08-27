@@ -88,15 +88,15 @@ this.status = false;
                  password: this.form.password,
          }
 
-          var today = new Date();         
-          var myHour = new Date();
-          myHour.setHours(today.getHours() + 6); //six hour from now
+        const d1 = new Date ();
+const d2 = new Date ( d1 );
+d2.setHours ( d1.getHours() + 2 ); //two hour from now
          try {
            
              const response = await axios.post(this.getUrl + 'api/Login/companylogin',formData
              )
              if(response.status == 200 && response.data.userName != null){
-              localStorage.setItem('et', myHour)
+              localStorage.setItem('et', d2)
               await localStorage.setItem('token-mfb', this.token)
               await localStorage.setItem('user-mfb', JSON.stringify(response.data) )
               

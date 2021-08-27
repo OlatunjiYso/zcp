@@ -11,7 +11,7 @@
       <h2 class="login-header">Welcome Back!</h2>
       <div class="login-sub">Kindly fill in your credentials to login into your account.</div>
       <div >
-        <form @submit.prevent="testLogin">
+        <form @submit.prevent="Login">
           <div class="app-login-form-group">
             <label for="Email-address" class="login-label">User Name</label>
             <input v-model="form.userName" type="text" class="app-login-text-field w-input"  placeholder="john.doe" required></div>
@@ -77,7 +77,13 @@ this.status = false;
    this.token =  result.join(''); 
    return result.join('');
     },
+
     testLogin(){
+              const d1 = new Date ();
+const d2 = new Date ( d1 );
+
+d2.setMinutes ( d1.getMinutes() + 2 ); 
+          
       let testData= {
   "responseCode": "01",
   "responseMessage": "There is already an open DataReader associated with this Connection which must be closed first.",
@@ -88,6 +94,7 @@ this.status = false;
 }
 
      this.GenerateToken(50);
+     localStorage.setItem('et', d2)
        localStorage.setItem('token', this.token)   
         localStorage.setItem('user', JSON.stringify(testData))    
        this.$router.push('/admin/overview')
@@ -100,15 +107,15 @@ this.status = false;
                  userName: this.form.userName,
                  password: this.form.password,
          }
-         var today = new Date();         
-          var myHour = new Date();
-          myHour.setHours(today.getHours() + 6); //six hour from now
+        const d1 = new Date ();
+const d2 = new Date ( d1 );
+d2.setHours ( d1.getHours() + 2 ); //two hour from now
          try {
            
              const response = await axios.post(this.getUrl + 'api/Login/banklogin',formData
              )
              if(response.status == 200 && response.data.userName != null){
-                localStorage.setItem('et', myHour)
+                localStorage.setItem('et', d2)
               await localStorage.setItem('token', this.token)
               await localStorage.setItem('user', JSON.stringify(response.data))
             

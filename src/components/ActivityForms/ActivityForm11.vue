@@ -4,10 +4,7 @@
   <div class="content-header">Card Reissue </div>
   <form @submit.prevent="sendRequest">
     <div class="form-flex">
-          <div class="form-flex-col-3">
-        <label class="login-label">Surname Change<span style="color:red">*</span></label>
-        <input v-model="form.surname_change" type="text" class="app-text-field w-input" required placeholder="Type Here" />
-      </div>
+
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
         <input maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
@@ -31,6 +28,10 @@
         <select required v-model="form.reason" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in reasons" :key="index" :value="result.reasonId">{{result.reissueReason}}</option>
         </select>
+      </div>
+                <div class="form-flex-col-3">
+        <label class="login-label">Surname Change(Optional)</label>
+        <input v-model="form.surname_change" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <!-- <div class="form-flex-col-3">
         <label class="login-label">Activity By<span style="color:red">*</span></label>

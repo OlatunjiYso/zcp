@@ -3,7 +3,7 @@
         <Loader v-show="loader"/>
      <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>
                     <div class="app-modal-overlay" v-else>
-      <div class="app-modal-div" style="width:50%; height:60%; overflow:auto;">
+      <div class="app-modal-div" style="width:80%; height:80vh; overflow:auto;">
       <div class="app-modal-heading">
         <div class="app-modal-header">Add Role</div>
       </div>
@@ -24,16 +24,28 @@
              <option  v-for="(result, index) in permType" :key="index" :value="result">{{result}}</option>     
             </select>
         </div>
-         <div className="form-flex-col">
+         <!-- <div className="form-flex-col">
             <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Permission</label> 
           <select @change="addtoArray($event)" class="app-select w-select">
                <option selected>Select Permission</option> 
              <option  v-for="(perm, index) in getPermissions" :key="index" :value="perm.id">{{perm.name}}::{{perm.id}}</option>        
             </select>
-         </div>
+         </div> -->
               </div>
-       <div v-for="(perm, index) in permAray" :key="index" style= "margin-right:20px;margin-bottom:20px;background: #ededed;padding:10px; border-radius:5px; display:inline-block;color:#696969;font-size: 13px">
-                 {{perm}} <span @click="removePerm(index)"  style="cursor: pointer; font-weight: bold; color:red; margin-left:10px">X</span> </div>
+       <!-- <div v-for="(perm, index) in permAray" :key="index" style= "margin-right:20px;margin-bottom:20px;background: #ededed;padding:10px; border-radius:5px; display:inline-block;color:#696969;font-size: 13px">
+                 {{perm}} <span @click="removePerm(index)"  style="cursor: pointer; font-weight: bold; color:red; margin-left:10px">X</span> </div> -->
+
+                                  <div class="app-modal-heading">
+        <div class="app-modal-header">Assign Permission</div>
+      </div>
+       <label><input @click="selectAll" style="margin-right:20px" id="select-all-role" type="checkbox" />Select All</label>
+               <div className="form-flex">
+                         <div className="form-flex-col-x" v-for="(perm, index) in getPermissions" :key="index">      
+             <label :for="perm.name"><input @click="addToActivity(perm, index)" style="margin-right:20px" :id="`AR${perm.id}`" type="checkbox" value="test" />{{perm.name}}</label>
+        </div>
+               </div>
+
+
           <button type="submit" style="display:block;cursor:pointer" class="app-modal-button">Add Role</button>
         </form>
       </div>
@@ -78,6 +90,46 @@ export default {
     ])
   },
   methods: {
+        
+      selectAll(){
+      var checkbox = document.getElementById("select-all-role");
+      
+     this.permAray = []
+          if (checkbox.checked == true){
+for(var i = 0; i < this.getPermissions.length; i++) {
+
+    console.log("checked") ;
+      this.permAray.push(parseInt(this.getPermissions[i].id));
+      document.getElementById(`AR${this.getPermissions[i].id}`).checked = true;
+  }
+          }
+  else{
+      console.log("unchecked")
+     this.permAray = []
+     for(var i = 0; i < this.getPermissions.length; i++) {
+      document.getElementById(`AR${this.getPermissions[i].id}`).checked = false;
+  }
+      }
+
+      },
+      async addToActivity(activity, index){
+        let Avalue = await parseInt(activity.id)
+      var checkbox = document.getElementById(`AR${activity.id}`);
+       const state = await this.permAray.some(activity => { return activity == Avalue })
+       console.log(state)
+      if (state == false && checkbox.checked == true){
+    console.log("checked") ;
+    this.permAray.push(Avalue);
+  }
+  else{
+      console.log("unchecked")
+     const newIndex = this.permAray.findIndex( result => { return result == Avalue})
+
+       await this.permAray.splice(newIndex, 1); 
+       console.log("finised unchecked " + newIndex) 
+      }
+
+      },
       addtoArray(result){
        let permValue = parseInt(result.target.value)
        this.permAray.push(permValue)
