@@ -20,7 +20,7 @@
        </div>
                  <div className="form-flex-col">
            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Mfb or Bank (Update: {{editData.mfbOrBank}})</label> 
-         <select v-model="form.mfbOrBank" style="marginBottom: 30px" class="app-select w-select">
+         <select required v-model="form.mfbOrBank" style="marginBottom: 30px" class="app-select w-select">
              <option  v-for="(result, index) in permType" :key="index" :value="result">{{result}}</option>     
             </select>
         </div>
@@ -79,13 +79,16 @@ this.status = false;
 
     },
     async updatePerm(){
-       this.loader = true
+       this.loader = true 
+       const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
               id:this.editData.id,
               name: document.getElementById("testField1").value,
               description: document.getElementById("testField2").value,
               mfbOrBank: this.form.mfbOrBank == "" ? this.editData.mfbOrBank : this.form.mfbOrBank,
-              isActive: true
+              isActive: true,
+               userId: parseInt(user.id)
+                
          }
          try {
            
@@ -94,7 +97,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'Permission updated Sucessfully'
              }
              else{
                this.loader = false;

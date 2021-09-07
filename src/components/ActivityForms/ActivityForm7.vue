@@ -7,15 +7,15 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input  minlength="10" maxlength="10" v-model="form.accountNumber" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
+        <input  maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.accountNumber" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Last 6 Digits of Card<span style="color:red">*</span></label>
-        <input v-model="form.last_6_digits_of_card" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
+        <input maxlength="6" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.last_6_digits_of_card" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Amount<span style="color:red">*</span></label>
-        <input v-model="form.amount" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
+        <input v-model="form.amount" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
       </div>
             <div class="form-flex-col-3">
         <label class="login-label">Start Date<span style="color:red">*</span></label>
@@ -64,7 +64,7 @@
           
                 </table>
                 <br><br>
-                  <form @submit.prevent="initiateDispute">
+                  <form @submit.prevent="initiateDispute" v-if="listDispute.length > 0">
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Transaction Date<span style="color:red">*</span></label>
@@ -207,7 +207,7 @@ export default {
                     "account_id": result.account_id,
                     "amount_requested": result.source_node_amount_requested,
                     "pan": result.pan,
-                    "create_dt": result.create_dt,
+                    "create_dt": result.datE_CREATE,
                     "in_req": result.in_req,
                     "flag": result.flag,
                     "source_node_sys_trace": result.source_node_sys_trace,
@@ -219,7 +219,7 @@ export default {
      const newIndex = this.listDispute.findIndex( x => { return x.trans_id == result.trans_id})
 
        await this.listDispute.splice(newIndex, 1); 
-       console.log("finised unchecked " + newIndex) 
+   
       }
 
     },
@@ -242,7 +242,7 @@ export default {
         const response = await axios.post(this.getUrl2 + 'api/DispenseErrorCaller/SearchDistpute',formData)
         if(response.data.responseCode == "00"){
           this.loader = false;
-          this.disputeData = response.data.data.data
+          this.disputeData = response.data.data
         }
         else{
           this.loader = false;

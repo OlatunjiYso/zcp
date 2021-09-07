@@ -92,7 +92,7 @@ export default {
            this.permissionModal = false
        },
         openModal(){
-            console.log("clicked")
+
            this.permissionModal = true
        }
   },

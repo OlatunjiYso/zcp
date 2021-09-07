@@ -13,7 +13,7 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Title<span style="color:red">*</span></label>
-        <select v-model="requestData.title" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.title" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in titles" :key="index" :value="result.titleCode">{{result.titleName}}</option>
         </select>
       </div>
@@ -31,13 +31,13 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Gender<span style="color:red">*</span></label>
-        <select v-model="requestData.gender" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.gender" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in gender" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Marital Status<span style="color:red">*</span></label>
-        <select v-model="requestData.maritalStatus" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.maritalStatus" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in maritalStatus" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
@@ -64,20 +64,20 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Country<span style="color:red">*</span></label>
-        <select v-model="requestData.countryCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.countryCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in countries" :key="index" :value="result.countryCode">{{result.counrtyName}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">State<span style="color:red">*</span></label>
-        <select v-model="requestData.regionCode" @change="fetchStateCities($event)" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.regionCode" @change="fetchStateCities($event)" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in states" :key="index" :value="result.code">{{result.name}}</option>
           <option value="0">Married</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">City<span style="color:red">*</span></label>
-        <select v-model="requestData.cityCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.cityCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in stateCities" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
@@ -87,17 +87,17 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">ID Type<span style="color:red">*</span></label>
-        <select v-model="requestData.idCardTypeCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.idCardTypeCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in idCardType" :key="index" :value="result.code">{{result.description}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Issued Date<span style="color:red">*</span></label>
-        <input v-model="requestData.documentIssueDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.documentIssueDate" :max="todayDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Expiry Date<span style="color:red">*</span></label>
-        <input v-model="requestData.expiryDateOfDoc" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="requestData.expiryDateOfDoc"  :min="validateExpiry" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
@@ -109,7 +109,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Socio Prof Code<span style="color:red">*</span></label>
-        <select v-model="requestData.socioProfCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.socioProfCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in socioProf" :key="index" :value="result.socioCode">{{result.description}}</option>
         </select>
       </div>
@@ -139,12 +139,11 @@ export default {
     Loader,
     Status
   },
-  computed:{
-    ...mapGetters([ 'getUrl2', 'getUrl' ])
-  },
+
   mixins: [operationMixen],
   data(){
     return{
+      todayDate:  new Date().toISOString().split("T")[0],
       loader: false,
       status: false,
       state: null,
@@ -175,8 +174,34 @@ export default {
         "accountNbr": "",
         "nameOnCard": "",
         "socioProfCode": ""
-      }
+      },
+       ismounted:false,
+       isActiveBtn: false
     }
+  },
+   computed:{
+    ...mapGetters([ 'getUrl2', 'getUrl' ]),
+        validateExpiry(){
+      if(this.ismounted){
+            const issueDate = new Date();
+            const d = issueDate.setDate(issueDate.getDate() + 1);
+       const a = new Date(d).toISOString().substr(0,10);
+
+      return a;
+            
+      }
+  }
+   },
+    async mounted() {
+    this.ismounted = true
+      const companyProduct = await axios.get(this.getUrl + 'api/CardProductSetup')
+   
+      if(companyProduct.data.length > 0 ){
+        this.isActiveBtn = true;
+      }
+      else{
+        this.isActiveBtn = false;
+      }
   },
   methods: {
           resetState(){
@@ -212,7 +237,7 @@ this.status = false;
       this.loader = true;
             const user = JSON.parse(localStorage.getItem("user-mfb"))
      const company = await axios.get(this.getUrl + 'api/companies/' + parseInt(user.companyId))
-      const companyProduct = await axios.get(this.getUrl + '/api/CardProductSetup')
+      const companyProduct = await axios.get(this.getUrl + 'api/CardProductSetup')
      const product = await companyProduct.data.find(x => { return x.companyId == parseInt(user.companyId) })
        const formData ={
          "id": this.requestData.id,
@@ -248,7 +273,7 @@ this.status = false;
           this.loader = false;
           this.status = true;
           this.state = 'success';
-          this.message = 'Operation Sucessful'
+          this.message = 'Request submited Sucessfully'
           this.clearForm();
         }
         else{

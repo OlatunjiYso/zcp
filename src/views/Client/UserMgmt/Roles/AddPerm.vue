@@ -33,7 +33,7 @@ export default {
   },
   methods: {
         addtoArray(result){
-            console.log("clickdded", result)
+
        this.permArray.push(result.target.value)
    },
 

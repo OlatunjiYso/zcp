@@ -12,7 +12,7 @@
         <router-link to="/client/activity-requests"><div class="settings-icon"></div></router-link>
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">October 8th, 2020</div>
+          <div class="admin-topbar-date">{{getDate}}</div>
       </div>
       </div>
   <div class="content-header">Dispute Requests </div>
@@ -20,11 +20,11 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Start Date<span style="color:red">*</span></label>
-        <input v-model="form.startDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.startDate" :max="todayDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">End Date<span style="color:red">*</span></label>
-        <input v-model="form.endDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.endDate" :max="todayDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
     </div>
         <br><br>
@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import Global from '../../../views/global.js'
 import Leftbar from "../../../components/Client/leftbar/leftbar";
 import Rightbar from "../../../components/Client/rightbar/rightbar";
 import Loader from "../../../components/Loader/Loader";
@@ -88,13 +89,14 @@ export default {
     Loader,
     Status,
     ViewDetails
-    
   },
+      mixins:[Global],
   computed:{
     ...mapGetters([ 'getUrl3','getUrl2', 'getUrl' ])
   },
   data(){
     return{
+       todayDate:  new Date().toISOString().split("T")[0],
       viewDetails: false,
       transData: [],
       viewDetailsData:'',
@@ -133,6 +135,9 @@ export default {
       this.status = false;
     },
     async sendRequest(){
+        const a = new Date(this.form.startDate).toISOString().substr(0,10);
+       const b = new Date(this.form.endDate).toISOString().substr(0,10);
+      if(b > a) {
       this.loader = true;
 
      const formData = {
@@ -161,6 +166,12 @@ export default {
         this.status = true;
         this.state = 'failed';
         this.message = 'Operation Failed'
+      }
+       }
+      else{
+        this.status = true;
+        this.state = 'failed';
+        this.message = 'Start Date cannot be greater than End Date'
       }
 
     },

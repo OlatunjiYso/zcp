@@ -2,7 +2,7 @@
   <div>
        <Loader v-show="loader"/>
      <Status :state="state"  :message = "message" :resetState="resetState" v-if="status"/>
- <div class="content-header">Pending Card Reissue</div>
+ <div class="content-header">Pending Card Cancellation Requests</div>
       <div class="content-sub">Here are the requests that need approval</div>
       <div class="app-table-actions">
         <div class="app-table-search">
@@ -120,7 +120,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'Request Approved Successfully'
              }
              else{
                this.loader = false;
@@ -156,8 +156,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
-             }
+ this.message = 'Request Denied Successfully'             }
              else{
                this.loader = false;
                this.status = true;

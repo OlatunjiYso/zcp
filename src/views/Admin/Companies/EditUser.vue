@@ -8,7 +8,7 @@
         <div class="app-modal-header">Update User</div>
       </div>
       <div>
-          <form @submit.prevent="createUser">
+          <form @submit.prevent="updateUser">
         <div className="form-flex">
       <div className="form-flex-col">
           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >First Name</label> 
@@ -16,7 +16,7 @@
         </div>
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Last Name</label> 
-        <input  :value="userData.lastName" id="lastName" type="text" className="app-modal-form-field w-input"  placeholder="Last Name"  required/>
+        <input :value="userData.lastName" id="lastName" type="text" className="app-modal-form-field w-input"  placeholder="Last Name"  required/>
         </div>
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Email Address</label> 
@@ -28,7 +28,7 @@
         </div>
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Phone Number</label> 
-        <input maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" :value="userData.tel" id="mobileNo" type="text" className="app-modal-form-field w-input"  placeholder="Phone Number"  required/>
+        <input  maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" :value="userData.tel" id="mobileNo" type="text" className="app-modal-form-field w-input"  placeholder="Phone Number"  required/>
         </div>
          <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role</label> 
@@ -71,8 +71,9 @@ export default {
             emailAddress: '',
             userName: '',
             mobileNo: '',
-            rolesId: ''
-          },
+            rolesId: '',
+            companyName:''
+          }
       }
   },
         computed:{
@@ -86,18 +87,19 @@ export default {
   },
     created(){
    this.$store.dispatch("getRoles");
+  
   },
   methods: {
             resetState(){
 this.status = false;
     },
-    async createUser(){
+    async updateUser(){
        this.loader = true
-       const companyId = JSON.parse(localStorage.getItem("user-mfb"))
+     const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
                   id: parseInt(this.userData.id),
                  userName: document.getElementById("userName").value,
-                  companyId: parseInt(companyId.companyId),
+                  companyId: parseInt(this.$route.params.id),
                   firstName: document.getElementById("firstName").value,
                   lastName: document.getElementById("lastName").value,
                   emailAddress: document.getElementById("emailAddress").value,
@@ -105,6 +107,8 @@ this.status = false;
                   mobileNo: document.getElementById("mobileNo").value,
                   rolesId: parseInt(this.userData.role),
                   isActive: true,
+                   userId: parseInt(user.id)
+                
          }
          try {
            

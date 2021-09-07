@@ -7,7 +7,7 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input  minlength="10" maxlength="10" @focus="clearError" @blur = "searchForCard" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input   maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" @focus="clearError" @blur = "searchForCard" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
         <p v-show="accError" style="color:red;font-size:12px">Invalid Account Number</p>
       </div>
        <div class="form-flex-col-3">
@@ -16,11 +16,11 @@
       </div>
             <div class="form-flex-col-3">
         <label class="login-label">Start Date<span style="color:red">*</span></label>
-        <input v-model="form.startDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.startDate" :max="todayDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
                   <div class="form-flex-col-3">
         <label class="login-label">End Date<span style="color:red">*</span></label>
-        <input v-model="form.endDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.endDate" :max="todayDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
     </div>
         <br><br>
@@ -58,6 +58,7 @@
                 </table>
                 <br><br>
     </div>
+   <EmptyData v-else/>
 </template>
 
 <script>
@@ -68,23 +69,27 @@ import Status from "../Status/Status2";
 import {mapGetters} from "vuex";
 import axios from "axios";
 import ViewDetails from './ViewActivity3'
+import EmptyData from '../EmptyData/EmptyData'
 export default {
   components: {
     Leftbar,
     Rightbar,
     Loader,
     Status,
-    ViewDetails
+    ViewDetails,
+    EmptyData
   },
   computed:{
     ...mapGetters([ 'getUrl2','getUrl3', 'getUrl' ])
   },
   data(){
     return{
+       todayDate:  new Date().toISOString().split("T")[0],
       loader: false,
       status: false,
       state: null,
       message: null,
+      emptyResponse: false,
       form:{
         "accountNumber": "",
         "accountName": "",
@@ -132,7 +137,7 @@ export default {
        if(response.data.length > 0){
  this.loader = false
    this.form.accountName = response.data[0].nameOnCard
-   this.form.accountName = response.data[0].clientCode
+   this.form.clientCode = response.data[0].clientCode
 
 }
          else{
@@ -152,6 +157,9 @@ export default {
            },
 
     async sendRequest(){
+       const a = new Date(this.form.startDate).toISOString().substr(0,10);
+       const b = new Date(this.form.endDate).toISOString().substr(0,10);
+      if(b > a) {
       this.loader = true;
       const user = JSON.parse(localStorage.getItem("user-mfb"))
        const formData ={
@@ -165,7 +173,7 @@ export default {
         const response = await axios.post(this.getUrl2 + 'api/cardtransactionlog/transactions',formData)
         if(response.data.responseCode == "00"){
           this.loader = false;
-          this.transData = response.data.transactionLog
+          this.transData = response.data.transactionLog == null ? [] : response.data.transactionLog
         }
         else{
           this.loader = false;
@@ -180,6 +188,13 @@ export default {
         this.status = true;
         this.state = 'failed';
          this.message = error.message
+      }
+      }
+      else{
+        this.loader = false;
+          this.status = true;
+          this.state = 'failed';
+          this.message = 'Start Date cannot be greater and End Date'
       }
 
     },

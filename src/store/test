@@ -1,24 +1,42 @@
 import { createStore }  from 'vuex'
 import axios from'axios'
+
 export default createStore({
   state: {
-    url: 'https://zenith-cors.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalSecurityApi/',
-    url2: 'https://zenith-cors.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalOperations/',
+    url: process.env.VUE_APP_CardPortalSecurityApi_URL,
+    url2: process.env.VUE_APP_CardPortalOperations_URL,
+    url3: 'https://newwebservicetest.zenithbank.com/disputeresolutionthirdpartyapiapi/Dispute/',
     activities: [],
     adminUsers:[],
     companies:[],
     roles:[],
-    permissions:[],
-    companyUsers:[],
+    companyUsers:["1"],
     currentDate: "",
-    activeUser:{
-        companyId : 1,
-    },
+    activeUser:{ companyId : 1},
     loader: false,
     loading:false,
-    cardSetup:[]
+    cardSetup: [],
+    permissions: localStorage.getItem("user-mfb")? JSON.parse(localStorage.getItem("user-mfb")).permissions : '',
+    AdminPermissions: localStorage.getItem("user")? JSON.parse(localStorage.getItem("user")).permissions : '',
+    currentNav: localStorage.getItem("c-CN")? parseInt(JSON.parse(localStorage.getItem('c-CN'))) : 1,
+    currentAdminNav: localStorage.getItem('c-AN') ? parseInt(JSON.parse(localStorage.getItem('c-AN'))) : 1
   },
   getters:{
+    getCurrentAdminNav(state){
+      return state.currentAdminNav
+    },
+    getCurrentNav(state){
+      return state.currentNav
+    },
+    getAdminPermissions(state){
+      return state.AdminPermissions
+     },
+    getPermissions(state){
+     return state.permissions
+    },
+    getCardSetup(state){
+      return state.cardSetup
+    },
     getLoading(state){
       return state.loading
     },
@@ -27,6 +45,9 @@ export default createStore({
    },
    getUrl2(state){
     return state.url2;
+  },
+  getUrl3(state){
+    return state.url3;
   },
    getActivities(state){
      return state.activities
@@ -40,17 +61,23 @@ export default createStore({
   getRoles(state){
     return state.roles
   },
-  getPermissions(state){
-    return state.permissions
-  },
   getCompanyUsers(state){
     return state.companyUsers
   },
-  getCardSetup(state){
-    return state.cardSetup
-  },
   },
   mutations: {
+    setAdminNav(state, payload){
+      state.currentAdminNav = payload
+    },
+    setNav(state, payload){
+      state.currentNav = payload
+    },
+    setCompUsers(state, payload){
+      state.companyUsers = payload;
+    },
+    setCardSetup(state, payload){
+      state.cardSetup = payload;
+    },
     setActivities(state, payload){
       state.activities = payload;
     },
@@ -66,28 +93,36 @@ export default createStore({
     setPermissions(state, payload){
       state.permissions = payload;
     },
-    setCompanyUsers(state, payload){
-      state.companyUsers = payload;
-    },
-    setCardSetup(state, payload){
-      state.cardSetup = payload;
-    }
   },
   actions: {
+    getPermissions({commit, state}){
+      commit('setPermission')
+    },
+    Logout(){
+     localStorage.removeItem('user-mfb')
+     localStorage.removeItem('token-mfb')
+     localStorage.removeItem('user')
+     localStorage.removeItem('token')
+    },
     async getCardSetup({commit, state}){
-      const result = await axios.get(state.url2 + 'api/CardProductSetup/FetchCardProductCodeForsetup',
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-        )
+      const local_token = localStorage.getItem('app-token')
+     const result = await axios.get(state.url + 'api/CardProductSetup/FetchCardProductCodeForsetup',
+     {
+      headers: {
+        'Authorization': `Bearer ${local_token}` 
+      }
+     }
+     )
       commit('setCardSetup', result.data)
     },
+
    async getActivities({commit, state}){
+    const local_token = localStorage.getItem('app-token')
       const result = await axios.get(state.url + 'api/activities',
+   
         {
           headers: {
+            'Authorization': `Bearer ${local_token}` ,
             "Content-Type": "application/json"
           }
         }
@@ -96,13 +131,16 @@ export default createStore({
     },
 
     async getAdminUsers({commit, state}){
-      state.loading = true
+      state.loading = true 
+      const local_token = localStorage.getItem('app-token')
       const result = await axios.get(state.url + 'api/adminusers',
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
+     
+      {
+        headers: {
+          'Authorization': `Bearer ${local_token}` ,
+          "Content-Type": "application/json"
         }
+      }
         )
         state.loading = false
        const users = result.data
@@ -110,22 +148,26 @@ export default createStore({
          return {
             id: user.id,
             userName: user.userName,
-            rolesId : this.state.roles.find((entry)=>{return user.rolesId === entry.id}).name,
+            rolesName : state.roles.find((entry)=>{return user.rolesId === entry.id}).name,
+            rolesId: user.rolesId,
             created_at : user.created_at
          }
         })
-        console.log(adminUsers)
+       
       commit('setAdminUsers', adminUsers)
     },
 
     async getCompanies({commit, state}){
-      state.loading = true
+      state.loading = true 
+      const local_token = localStorage.getItem('app-token')
       const result = await axios.get(state.url + 'api/companies',
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
+     
+      {
+        headers: {
+          'Authorization': `Bearer ${local_token}` ,
+          "Content-Type": "application/json"
         }
+      }
         )
         state.loading = false
       commit('setCompanies', result.data)
@@ -133,12 +175,15 @@ export default createStore({
 
     async getRoles({commit, state}){
       state.loading = true
+       const local_token = localStorage.getItem('app-token')
       const result = await axios.get(state.url + 'api/roles',
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
+     
+      {
+        headers: {
+          'Authorization': `Bearer ${local_token}` ,
+          "Content-Type": "application/json"
         }
+      }
         )
         state.loading = false
       commit('setRoles', result.data)
@@ -146,9 +191,12 @@ export default createStore({
 
     async getPermissions({commit, state}){
       state.loading = true
+const local_token = localStorage.getItem('app-token')
       const result = await axios.get(state.url + 'api/permissions',
+        
         {
           headers: {
+            'Authorization': `Bearer ${local_token}` ,
             "Content-Type": "application/json"
           }
         }
@@ -157,93 +205,133 @@ export default createStore({
       commit('setPermissions', result.data)
     },
 
-    async getCompanyUsers({commit, state}){
-      const result = await axios.get(state.url + 'api/companyusers',
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
+    async getCompanyUsers({commit,state}, companyId){
+  const local_token = localStorage.getItem('app-token')
+      const result = await axios.get(state.url + 'api/companies/CompanyUsers/' + companyId,
+    
+      {
+        headers: {
+          'Authorization': `Bearer ${local_token}` ,
+          "Content-Type": "application/json"
         }
+      }
         )
-      commit('setCompanyUsers', result.data)
+      commit('setCompUsers', result.data)
+      
     },
 
       attemptLogin (context,payload){
-         return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companyusers',
-              {
-                  headers: {
-                      "Content-Type": "application/json"
-                  }
-              }
+ const local_token = localStorage.getItem('app-token')
+         return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + 'api/companyusers',
+             
+        {
+          headers: {
+            'Authorization': `Bearer ${local_token}` ,
+            "Content-Type": "application/json"
+          }
+        }
           )
       },
 
       fetchCompanyUsers(context,companyId){
-
-          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companies/CompanyUsers/' + companyId,
-              {
-                  headers: {
-                      "Content-Type": "application/json"
-                  }
-              }
+const local_token = localStorage.getItem('app-token')
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + 'api/companies/CompanyUsers/' + companyId,
+          
+          {
+            headers: {
+              'Authorization': `Bearer ${local_token}` ,
+              "Content-Type": "application/json"
+            }
+          }
           )
       },
       fetchCompanyActivities(context,companyId){
-          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/companies/CompanyAcivities/'  + companyId,
-              {
-                  headers: {
-                      "Content-Type": "application/json"
-                  }
-              }
+         const local_token = localStorage.getItem('app-token')
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + 'api/companies/CompanyAcivities/'  + companyId,
+         
+          {
+            headers: {
+              'Authorization': `Bearer ${local_token}` ,
+              "Content-Type": "application/json"
+            }
+          }
           )
       },
       fetchActivities(context){
-          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/activities',
-              {
-                  headers: {
-                      "Content-Type": "application/json"
-                  }
-              }
+        const local_token = localStorage.getItem('app-token')
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + 'api/activities',
+          
+          {
+            headers: {
+              'Authorization': `Bearer ${local_token}` ,
+              "Content-Type": "application/json"
+            }
+          }
           )
       },
       fetchRoles(context){
-          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + '/api/roles',
-              {
-                  headers: {
-                      "Content-Type": "application/json"
-                  }
-              }
+        const local_token = localStorage.getItem('app-token')
+          return axios.get(process.env.VUE_APP_CardPortalSecurityApi_URL + 'api/roles',
+          
+          {
+            headers: {
+              'Authorization': `Bearer ${local_token}` ,
+              "Content-Type": "application/json"
+            }
+          }
           )
       },
       fetchCompanyCardRequests(context,companyId){
-          return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `/api/CardRequest/all/${companyId}`,
-              {
-                  headers: {
-                      "Content-Type": "application/json"
-                  }
-              }
+             const local_token = localStorage.getItem('app-token')
+          return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `api/CardRequest/all/${companyId}`,
+             
+        {
+          headers: {
+            'Authorization': `Bearer ${local_token}` ,
+            "Content-Type": "application/json"
+          }
+        }
           )
       },
 
       fetchCompanyPendingApproval(context,companyId){
-        return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `/api/CardRequest/pendingApproval/${companyId}`,
-            {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
+ const local_token = localStorage.getItem('app-token')
+        return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `api/CardRequest/pendingApproval/${companyId}`,
+           
+        {
+          headers: {
+            'Authorization': `Bearer ${local_token}` ,
+            "Content-Type": "application/json"
+          }
+        }
         )
     },
 
     fetchCompanyPendingAcknowledgement(context,companyId){
-      return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `/api/CardRequest/pendingacknowledgement/${companyId}`,
-          {
-              headers: {
-                  "Content-Type": "application/json"
-              }
-          }
+      const local_token = localStorage.getItem('app-token')
+      return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `api/CardRequest/pendingacknowledgement/${companyId}`,
+      
+      {
+        headers: {
+          'Authorization': `Bearer ${local_token}` ,
+          "Content-Type": "application/json"
+        }
+      }
       )
   },
+
+  fetchCompanyRejected(context,companyId){
+const local_token = localStorage.getItem('app-token')
+    return axios.get(process.env.VUE_APP_CardPortalOperations_URL + `api/CardRequest/PendingRejectRequest/${companyId}`,
+         
+        {
+          headers: {
+            'Authorization': `Bearer ${local_token}` ,
+            "Content-Type": "application/json"
+          }
+        }
+    )
+},
 
       getClientDashboardData(context,companyId){
         return Promise.all([
@@ -252,6 +340,7 @@ export default createStore({
             context.dispatch("fetchCompanyCardRequests",companyId),
             context.dispatch("fetchCompanyPendingApproval",companyId),
             context.dispatch("fetchCompanyPendingAcknowledgement",companyId),
+            context.dispatch("fetchCompanyRejected",companyId),
             context.dispatch("fetchRoles"),
         ]);
       }

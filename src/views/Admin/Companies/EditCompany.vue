@@ -16,7 +16,7 @@
         </div>
          <div className="form-flex-col">
                 <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Account Number</label> 
-        <input :value="editData.accountNumber" type="text" className="app-modal-form-field w-input"  placeholder="Account Number" id="accountNumber"  required/>
+        <input :value="editData.accountNumber" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" type="text" className="app-modal-form-field w-input"  placeholder="Account Number" id="accountNumber"  required/>
         </div>
          <div className="form-flex-col">
             <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Company Code</label> 
@@ -24,11 +24,11 @@
         </div>
           <div className="form-flex-col">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Email Address</label> 
-        <input :value="editData.emailAddress" type="text" className="app-modal-form-field w-input"  placeholder="Email Address" id="emailAddress"  required/>
+        <input :value="editData.emailAddress" type="email" className="app-modal-form-field w-input"  placeholder="Email Address" id="emailAddress"  required/>
         </div>
         <div className="form-flex-col">
           <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Phone Number</label> 
-        <input :value="editData.phoneNumber" type="text" className="app-modal-form-field w-input"  placeholder="Phone Number" id="phoneNumber"  required/>
+        <input :value="editData.phoneNumber" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" type="text" className="app-modal-form-field w-input"  placeholder="Phone Number" id="phoneNumber"  required/>
         </div>
         <div className="form-flex-col">
            <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Address</label> 
@@ -51,21 +51,22 @@
       </div>
                <div className="form-flex">
                          <div className="form-flex-col-x" v-for="(perm, index) in editActivities" :key="index">      
-             <label :for="perm.name"><input disabled="disabled" checked="checked" style="margin-right:20px" :id="`C${perm.id}`" type="checkbox" value="test" />{{perm.name}}::{{perm.id}}</label>
+             <label :for="perm.name"><input disabled="disabled" checked="checked" style="margin-right:20px" :id="`C${perm.id}`" type="checkbox" value="test" />{{perm.name}}</label>
         </div>
                </div>
       <br>
                        <div class="app-modal-heading">
-        <div class="app-modal-header">Add Activities</div>
+        <div class="app-modal-header">Update Activities</div>
       </div>
        <label><input @click="selectAll" style="margin-right:20px" id="select-all2" type="checkbox" />Select All</label>
                <div className="form-flex">
                          <div className="form-flex-col-x" v-for="(perm, index) in getActivities" :key="index">      
-             <label :for="perm.name"><input @click="addToActivity(perm, index)" style="margin-right:20px" :id="`E${perm.id}`" type="checkbox" value="test" />{{perm.name}}::{{perm.id}}</label>
+             <label :for="perm.name"><input @click="addToActivity(perm, index)" style="margin-right:20px" :id="`E${perm.id}`" type="checkbox" value="test" />{{perm.name}}</label>
         </div>
                </div>
           <button type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Update Company</button>
         </form>
+
       </div>
       <div @click= "closeModal" class="app-modal-close"></div>
     </div>
@@ -79,8 +80,8 @@ import {mapGetters} from 'vuex'
 import Loader from '../../../components/Loader/Loader'
 import Status from '../../../components/Status/Status'
 export default {
-    props:['closeModal','closeEditReload','editData', 'editActivities', 'companyCardSetup'],
-        components:{
+    props:['cardData','closeModal','closeEditReload','editData', 'editActivities', 'companyCardSetup'],
+    components:{
      Loader,
      Status
     },
@@ -100,23 +101,27 @@ export default {
           phoneNumber: "",
           accountNumber: "",
           branch: "",
-         productName:"",
-          productCode:""
+         productName:null,
+          productCode:null
         },
           cardSetup:[],
+          
       }
   },
       computed:{
     ...mapGetters([
       'getUrl',
       'getActivities',
-    ])
+    ]),
+
   },
-  created(){
-    this.$store.dispatch("getActivities");
-    this.getCardSetup()
+  async created(){
+       await this.getCardSetup();
+    await this.$store.dispatch("getActivities");
   },
+
   methods: {
+
     savecardSetup(result){
     let cardCode = result.target.value;
     const y = this.cardSetup.find(x => { return x.cardProductCode == cardCode})
@@ -132,6 +137,7 @@ this.status = false;
     },
         async updateCompany(){
        this.loader = true
+       const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
           id: this.editData.id,
           name: document.getElementById("name").value,
@@ -141,6 +147,8 @@ this.status = false;
           phoneNumber: document.getElementById("phoneNumber").value,
           accountNumber: document.getElementById("accountNumber").value,
           branch: document.getElementById("branch").value,
+          userId: parseInt(user.id)
+         
          }
 
          try {
@@ -167,14 +175,18 @@ this.status = false;
       },
 
            async addActivities(companyId){
+              const user = JSON.parse(localStorage.getItem("user"))
                  const response2 = await axios.post(this.getUrl + 'api/companyactivities/update', {
+                id: this.editData.id,
                  activitiesId: this.activityArray,
                 companyId: parseInt(companyId),
-                isActive: true
+                isActive: true,
+                 userId: parseInt(user.id)
+                
                       })
 
                if(response2.status == 200){    
-                  console.log("Actvities created")
+                 
                   this.addProduct(companyId)
                 }
 
@@ -186,19 +198,22 @@ this.status = false;
              }
       },
              async addProduct(companyId){
+             const user = JSON.parse(localStorage.getItem("user"))
                   const response3 = await axios.post(this.getUrl + 'api/CardProductSetup', {
                 companyId: parseInt(companyId),
-                productName: this.form.productName,
-                cardProductCode: this.form.productCode,
-                isActive: true
+                 productName: this.form.productName == null ? this.companyCardSetup.productName : this.form.productName,
+                cardProductCode: this.form.productCode  == null ? this.companyCardSetup.cardProductCode : this.form.productCode,
+                isActive: true,
+                userId: parseInt(user.id)
+                 
                       })
                       
                if(response3.status == 200){ 
-                  console.log("Company Updated")
+             
                  this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'Company was updated successfully'
              }
 
              else{
@@ -218,13 +233,13 @@ this.status = false;
           if (checkbox.checked == true){
 for(var i = 0; i < this.getActivities.length; i++) {
 
-    console.log("checked") ;
+    
       this.activityArray.push(parseInt(this.getActivities[i].id));
       document.getElementById(`E${this.getActivities[i].id}`).checked = true;
   }
           }
   else{
-      console.log("unchecked")
+      
      this.activityArray = []
      for(var i = 0; i < this.getActivities.length; i++) {
       document.getElementById(`E${this.getActivities[i].id}`).checked = false;
@@ -236,20 +251,20 @@ for(var i = 0; i < this.getActivities.length; i++) {
 
  async addToActivity(activity, index){
         let Avalue = await parseInt(activity.id)
-        console.log(`E${activity.id}`)
+    
       var checkbox = document.getElementById(`E${activity.id}`);
        const state = await this.activityArray.some(activity => { return activity == Avalue })
-       console.log(state)
+     
       if (state == false && checkbox.checked == true){
-    console.log("checked") ;
+    
     this.activityArray.push(Avalue);
   }
   else{
-      console.log("unchecked")
+     
      const newIndex = this.activityArray.findIndex( result => { return result == Avalue})
 
        await this.activityArray.splice(newIndex, 1); 
-       console.log("finised unchecked " + newIndex) 
+     
       }
 
       },

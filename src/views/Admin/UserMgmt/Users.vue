@@ -1,7 +1,7 @@
 <template>
 <div>
     <div v-show="AddUserModal">
-              <AddUser :closeAdd="closeAdd" :closeAddReload="closeAddReload"/>
+              <AddUser :users="getAdminUsers" :closeAdd="closeAdd" :closeAddReload="closeAddReload"/>
           </div>
               <div v-show="EditUserModal">
               <EditUser :closeEdit="closeEdit" :userData="userData" :closeEditReload="closeEditReload"/>
@@ -10,16 +10,16 @@
       <div class="content-sub">Here are the list of roles available</div>
           <div class="app-table-actions">
         <div class="app-table-search">
-        <input type="text" class="app-input-search w-input"  placeholder="Search..." id="name" />
+        <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search" id="name">
           </div>
               <div class="app-table-buttons">
-          <div @click="openAdd" style="cursor:pointer" className="table-button filter">Add New User<span className="table-button-icon"></span></div>
+          <div v-show="checkPermAdmin('SuperAdmin_Management')" @click="openAdd" style="cursor:pointer" className="table-button filter">Add New User<span className="table-button-icon"></span></div>
         </div>
       </div>
     
       <Loading v-if="getLoading"/>
         <div v-else>
-              <table class="app-table2" v-if="!getAdminUsers.length <= 0">
+              <table class="app-table2" v-if="!resultQuery.length <= 0">
                                   <thead>
                                       <tr class="app-table2-row">
                                          <th class="app-table2-header">Id</th>
@@ -29,10 +29,10 @@
                                   </tr>
                                   </thead>
                                   <tbody>
-                                  <tr v-for="(result, index) in getAdminUsers" :key="index" class="app-table2-row">
+                                  <tr class="app-table2-row" v-for="(result, index) in resultQuery" :key="index" >
                                     <td class="app-table2-data">{{index + 1}}</td>
                                   <td class="app-table2-data">{{result.userName}}</td>
-                                      <td class="app-table2-data"> {{result.rolesId}} </td>
+                                      <td class="app-table2-data"> {{result.rolesName}} </td>
                             <td class="app-table2-data">
                             <div @click="openEdit(result)" style="cursor:pointer" class="table-btn">Manage User<span class="table-button-icon"></span></div>
                             </td>
@@ -51,8 +51,10 @@ import EditUser from './EditUser'
 import { mapGetters } from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
+import Global from '../../../views/global.js'
 export default {
   name: "Home",
+      mixins:[Global],
   components: {
     AddUser,
     EditUser,
@@ -63,14 +65,25 @@ export default {
     return{
       AddUserModal: false,
       EditUserModal: false,
-      userData: ''
+      userData: '',
+       searchQuery: '',
+
     }
   },
     computed: {
     ...mapGetters([
        'getLoading',
       'getAdminUsers'
-    ])
+    ]),
+            resultQuery(){
+      if(this.searchQuery){
+      return this.getAdminUsers.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.userName.toLowerCase().includes(v))
+      })
+      }else{
+        return this.getAdminUsers;
+      }
+    },
   },
   async created(){
     await this.$store.dispatch("getRoles");

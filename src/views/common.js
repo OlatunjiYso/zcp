@@ -19,18 +19,7 @@ export default {
         }
     },
     async created(){
-      await this.$store.dispatch('getRoles')
-      await this.getBranch()
-      await this.fetchReason();
-      await this.fetchCountries();
-      await this.fetchStates();
-      await this.fetchCities();
-      await this.fetchTitles();
-      await this.fetchMaritalStatus();
-      await this.fetchCardType();
-      await this.fetchSocioProf();
-      await this.fetchReason();
-      await this.fetchCardSetup();
+
     },
     computed:{
     ...mapGetters([ 'getUrl','getUrl2','getPermissions','getAdminPermissions', 'getRoles']),

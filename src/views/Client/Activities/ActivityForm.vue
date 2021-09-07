@@ -11,20 +11,20 @@
           <router-link to="/client/activities"><div class="settings-icon"></div></router-link>
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">October 8th, 2020 </div>
+          <div class="admin-topbar-date">{{getDate}}</div>
         </div>
       </div>
         <ActivityForm1 v-if="form == 1" />
-        <ActivityForm3 v-else-if="form == 3" />
-         <ActivityForm2 v-else-if="form == 2" />
-         <ActivityForm5 v-else-if="form == 5" />
-          <ActivityForm6 v-else-if="form == 6" />
-          <ActivityForm7 v-else-if="form == 7" />
+          <ActivityForm2 com="iii" :searchCard="searchCard" v-else-if="form == 10" />
+        <ActivityForm3 v-else-if="form == 12" />
+         <ActivityForm5 v-else-if="form == 4" />
+          <ActivityForm6 v-else-if="form == 5" />
+          <ActivityForm7 v-else-if="form == 6" />
          <ActivityForm8 v-else-if="form == 8" />
-           <ActivityForm9 v-else-if="form == 9" />
-           <ActivityForm11 v-else-if="form == 11" />
-           <ActivityForm12 v-else-if="form == 12" />
-         <ActivityForm14 v-else-if="form == 14" />
+           <ActivityForm9 v-else-if="form == 7" />
+           <ActivityForm11 v-else-if="form == 9" />
+           <ActivityForm12 v-else-if="form == 11" />
+         <ActivityForm14 v-else-if="form == 3" />
     </div>
     <!-- <div class="app-admin-col-3">
       <Rightbar />
@@ -35,7 +35,6 @@
 <script>
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
-import operationMixen from '../../operationMixen.js'
 import Loader from '../../../components/Loader/Loader'
 import Status from '../../../components/Status/Status2'
 import {mapGetters} from 'vuex'
@@ -50,8 +49,9 @@ import ActivityForm9 from "../../../components/ActivityForms/ActivityForm9";
 import ActivityForm11 from "../../../components/ActivityForms/ActivityForm11";
 import ActivityForm12 from "../../../components/ActivityForms/ActivityForm12";
 import ActivityForm14 from "../../../components/ActivityForms/ActivityForm14";
+import Global from '../../global.js'
 export default {
-  name: "Home",
+      mixins:[Global],
   components: {
     ActivityForm1,
     ActivityForm2,
@@ -71,12 +71,11 @@ export default {
   },
   created() {
     this.form = this.$route.params.slug;
-    console.log("Form ",this.$route.params.slug);
+    
   },
       computed:{
     ...mapGetters([ 'getUrl2' ])
     }, 
-  mixins: [operationMixen],
   data(){
       return{
         form : 0,

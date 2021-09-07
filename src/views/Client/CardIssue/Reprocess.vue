@@ -25,7 +25,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Pickup Branch<span style="color:red">*</span></label>
-        <select v-model="requestData.pickupBranch" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.pickupBranch" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in branches" :key="index" :value="result.branchNo">{{result.branchName}}</option>
         </select>
       </div>
@@ -35,7 +35,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Reason<span style="color:red">*</span></label>
-        <select v-model="requestData.reason" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="requestData.reason" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in reasons" :key="index" :value="result.reasonId">{{result.reissueReason}}</option>
         </select>
       </div>
@@ -132,7 +132,7 @@ this.status = false;
         "surname_change":this.requestData.surname_change,
        }
       try {
-        const response = await axios.post(this.getUrl2 + '/api/CardReissue/ReprocessrejectedRequest',formData)
+        const response = await axios.post(this.getUrl2 + 'api/CardReissue/ReprocessrejectedRequest',formData)
         if(response.status == 200){
           this.loader = false;
           this.status = true;

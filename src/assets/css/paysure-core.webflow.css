@@ -1119,10 +1119,8 @@ body {
 
 .app-modal-close {
   position: absolute;
-  left: auto;
-  top: 7%;
-  right: 10%;
-  bottom: auto;
+  top: 15px;
+  right: 15px;
   font-family: Ionicons, sans-serif;
   color: #161616;
   font-size: 20px;
@@ -1223,14 +1221,14 @@ body {
 
 .details-header {
   margin-bottom: 4px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
 }
 
 .details-value {
   color: #6a6a6a;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
 }
 

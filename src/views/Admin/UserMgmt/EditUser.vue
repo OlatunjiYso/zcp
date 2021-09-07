@@ -10,11 +10,11 @@
       <div>
           <form @submit.prevent="updateUser">
              <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Username</label> 
-        <input :value="userData.userName" type="text" className="app-modal-form-field w-input" id="userName"  placeholder="Username"  required/>
+        <input readonly :value="userData.userName" type="text" className="app-modal-form-field w-input" id="userName"  placeholder="Username"  required/>
        <label style="color:#a3a3a3; font-weight:500;font-size:13px" >Role</label> 
-          <select :value="userData.roleId" style="marginBottom: 30px" class="app-select w-select" id="roleId">
+          <select required style="marginBottom: 30px" class="app-select w-select" id="roleId">
                <option selected>Select a Role</option> 
-             <option  v-for="(role, index) in bankRoles" :key="index" :value="role.id">{{role.name}}</option>        
+             <option :disabled="userData.rolesId == role.id ? true : false"  v-for="(role, index) in bankRoles" :key="index" :value="role.id">{{role.name}}</option>        
             </select>
           <button type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Update User</button>
         </form>
@@ -82,7 +82,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'User updated  Sucessfully'
              }
              else{
                this.loader = false;

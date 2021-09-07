@@ -87,27 +87,30 @@ this.status = false;
                  userName: this.form.userName,
                  password: this.form.password,
          }
+
+        const d1 = new Date ();
+const d2 = new Date ( d1 );
+d2.setHours ( d1.getHours() + 2 ); //two hour from now
          try {
            
              const response = await axios.post(this.getUrl + 'api/Login/companylogin',formData
              )
-             console.log("data11>>>", response.data.userName)
-             console.log("data33>>>", response.data)
-             console.log("data33>>>", response)
-              console.log("data22>>>", response.userName)
              if(response.status == 200 && response.data.userName != null){
+              localStorage.setItem('et', d2)
               await localStorage.setItem('token-mfb', this.token)
               await localStorage.setItem('user-mfb', JSON.stringify(response.data) )
+              
                this.loader = false;
                 this.isAttemptingLogin = true;
-               this.$router.push('/client/overview')
+              //  this.$router.push('/client/overview')
+               window.location = "/client/overview";
              }
              else{
               this.isAttemptingLogin = false;
                this.loader = false;
                this.status = true;
                this.state = 'failed';
-               this.message = response.data.responseMessage
+              this.message = "Invalid Credentials"
              }
 
          } catch (error) {

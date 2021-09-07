@@ -65,12 +65,15 @@ export default {
   methods: {
      async updateActivity(){
        this.loader = true
+ const user = JSON.parse(localStorage.getItem("user"))
          const formData = {
                  id: this.editData.id,
                  name: document.getElementById("name").value,
                  description: document.getElementById("description").value,
                  requireMakerChecker: document.getElementById("markerChecker").checked,
-                 isActive: true
+                 isActive: true,
+                userId: parseInt(user.id)
+        
          }
          try {
            
@@ -79,7 +82,7 @@ export default {
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = 'Activity Updated'
              }
              else{
                this.loader = false;

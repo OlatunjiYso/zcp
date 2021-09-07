@@ -126,8 +126,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
-             }
+ this.message = 'Request Approved Successfully'             }
              else{
                this.loader = false;
                this.status = true;
@@ -162,8 +161,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
-             }
+ this.message = 'Request Denied Successfully'             }
              else{
                this.loader = false;
                this.status = true;

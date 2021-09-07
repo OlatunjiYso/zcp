@@ -37,7 +37,7 @@
 
 
 <script>
-import operationMixen from "../../operationMixen.js";
+import global from '../../../views/common.js'
 import Leftbar from '../../../components/Client/leftbar/leftbar'
 import Rightbar from '../../../components/Client/rightbar/rightbar'
 import Approval from './Approval'
@@ -47,7 +47,7 @@ import Rejected from './RejectedRequest'
 import axios from 'axios'
 import {mapGetters} from 'vuex'
 export default {
-    mixins: [operationMixen],
+    mixins: [global],
   components: {
     Leftbar,
     Rightbar,
@@ -83,12 +83,14 @@ var date = today.getDate() + ', ' + months[today.getMonth()]+ ' ' +today.getFull
       return date
     }
     },
-   mounted(){
-      this.fetchAllRequests()
+      async created(){
+      await this.getBranch()
+      await this.fetchReason();
+            this.fetchAllRequests()
       this.fetchApprovalRequests();
       this.fetchAcknowledgeRequests();
       this.fetchRejectedRequests()
-  }, 
+      },
 methods:{
     async fetchAllRequests(){
         this.AllLoader = true
@@ -97,9 +99,9 @@ methods:{
    const request = result.data.map( x => {
        return {
             id: x.id,
-            pickupBranch: this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName,
-            reason: this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason,
-            requestBranch: this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName,
+            pickupBranch: this.branches.length > 0 ? this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName : null,
+            reason: this.reasons.length > 0 ? this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason : null,
+            requestBranch:  this.branches.length > 0 ? this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName : null,
             requestDate: x.requestDate,
             surname_change: x.surname_change,
             trans_id: x.trans_id,
@@ -125,9 +127,9 @@ methods:{
     const request = result.data.map( x => {
        return {
              id: x.id,
-           pickupBranch: this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName,
-            reason: this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason,
-            requestBranch: this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName,
+            pickupBranch: this.branches.length > 0 ? this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName : null,
+            reason: this.reasons.length > 0 ? this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason : null,
+            requestBranch:  this.branches.length > 0 ? this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName : null,
             requestDate: x.requestDate,
             surname_change: x.surname_change,
             trans_id: x.trans_id,
@@ -152,9 +154,9 @@ methods:{
     const request = result.data.map( x => {
        return {
              id: x.id,
-            pickupBranch: this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName,
-            reason: this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason,
-            requestBranch: this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName,
+            pickupBranch: this.branches.length > 0 ? this.branches.find(y =>{ return y.branchNo == x.pickupBranch }).branchName : null,
+            reason: this.reasons.length > 0 ? this.reasons.find(y =>{ return y.reasonId == x.reason }).reissueReason : null,
+            requestBranch:  this.branches.length > 0 ? this.branches.find(y =>{ return y.branchNo == x.requestBranch }).branchName : null,
             requestDate: x.requestDate,
             surname_change: x.surname_change,
             trans_id: x.trans_id,
@@ -175,7 +177,7 @@ methods:{
       async fetchRejectedRequests(){
           this.RejectLoader = true
            const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + '/api/CardReissue/PendingRejectRequest/'+companyId.companyId)
+ const result = await axios.get(this.getUrl2 + 'api/CardReissue/PendingRejectRequest/'+companyId.companyId)
            this.RejectRequests = result.data
                this.RejectLoader = false
   },

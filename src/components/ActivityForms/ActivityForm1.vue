@@ -1,21 +1,43 @@
 <template>
   <Loader v-show="loader"/>
-  <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>
+  <Status :state="state"  :message = "message" :resetState="resetState" v-if="status"/>
+  <div style="display:none" id="bulk-loader">
+    <Loader/>
+  </div>
+          <div style="z-index : 999999;display:none" class="app-modal-overlay"  id="bulk-status-success">
+    <div class="app-modal-div success" style="text-align:center">
+    <div> <div class="alert-icon"></div> <div class="alert-message" >Request sent successfully</div> 
+     <div @click="resetState2" style="margin-top:30px;cursor:pointer" class="app-modal-button">Close</div>
+    </div> 
+    </div>
+  </div>
+
+            <div style="z-index : 999999;display:none" class="app-modal-overlay" id="bulk-status-failed">
+    <div class="app-modal-div success" style="text-align:center">            
+     <div> 
+            <div class="alert-icon failed"></div>
+            <div class="alert-message" id="error-text">Operation Failed - Invalid File</div>
+            <div @click="resetState3" style="margin-top:30px;cursor:pointer" class="app-modal-button">Try Again</div>
+            </div>
+    </div>
+  </div>
+
   <div class="content-header">Instant Card Request</div>
-  <br/><br/>
-  <form @submit.prevent="sendJson">
-      <label for="myfile">Bulk Upload</label>
+  <br/>
+   <div @click="isBulk = !isBulk" style="cursor:pointer;background:#c00;float:left;" class="table-btn">{{isBulk ? 'Single Upload' : 'Bulk Upload'}}<span class="table-button-icon"></span></div>
+   <br/><br/><br/>
+
+  <form @submit.prevent="sendJson" v-if="isBulk">
+      <label for="myfile">Bulk Upload | <a href="./sample.xlsx" download>Download Request Sample</a></label>
 <input class="bulk-upload" ref="myfiles" type="file" id="myfile" name="myfile" accept=".xls, .xlsx" required>
 <br>
-  <button type="submit" class="app-form-button">Submit</button>
+  <button v-show ="isActiveBtn" type="submit" class="app-form-button">Submit</button>
   </form>
-
-  <div class="app-divider"></div>
-  <form @submit.prevent="sendRequest">
+  <form @submit.prevent="sendRequest" v-else>
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Title<span style="color:red">*</span></label>
-        <select v-model="form.title" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.title" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in titles" :key="index" :value="result.titleCode">{{result.titleName}}</option>
         </select>
       </div>
@@ -33,19 +55,19 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Gender<span style="color:red">*</span></label>
-        <select v-model="form.gender" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.gender" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in gender" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Marital Status<span style="color:red">*</span></label>
-        <select v-model="form.maritalStatus" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.maritalStatus" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in maritalStatus" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Mobile No<span style="color:red">*</span></label>
-        <input minlength="13" maxlength="13" v-model="form.mobileNo" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input  maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.mobileNo" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Email Address<span style="color:red">*</span></label>
@@ -66,20 +88,19 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Country<span style="color:red">*</span></label>
-        <select v-model="form.countryCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.countryCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in countries" :key="index" :value="result.countryCode">{{result.counrtyName}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">State<span style="color:red">*</span></label>
-        <select v-model="form.regionCode" @change="fetchStateCities($event)" style="marginBottom: 30px" class="app-select w-select">
-          <option  v-for="(result, index) in states" :key="index" :value="result.code">{{result.name}}</option>
-          <option value="0">Married</option>
+        <select required v-model="form.regionCode" @change="fetchStateCities($event)" style="marginBottom: 30px" class="app-select w-select">
+          <option  v-for="(result, index) in states" :key="index" :value="result.code">{{result.name}}</option>       
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">City<span style="color:red">*</span></label>
-        <select v-model="form.cityCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.cityCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in stateCities" :key="index" :value="result.code">{{result.name}}</option>
         </select>
       </div>
@@ -89,21 +110,21 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">ID Type<span style="color:red">*</span></label>
-        <select v-model="form.idCardTypeCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.idCardTypeCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in idCardType" :key="index" :value="result.code">{{result.description}}</option>
         </select>
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Issued Date<span style="color:red">*</span></label>
-        <input v-model="form.documentIssueDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.documentIssueDate" :max="todayDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Expiry Date<span style="color:red">*</span></label>
-        <input v-model="form.expiryDateOfDoc" type="date" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.expiryDateOfDoc" :min="newSorted" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input minlength="10" maxlength="10" v-model="form.accountNbr" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input  maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.accountNbr" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Name on Card<span style="color:red">*</span></label>
@@ -111,14 +132,14 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Socio Prof Code<span style="color:red">*</span></label>
-        <select v-model="form.socioProfCode" style="marginBottom: 30px" class="app-select w-select">
+        <select required v-model="form.socioProfCode" style="marginBottom: 30px" class="app-select w-select">
           <option  v-for="(result, index) in socioProf" :key="index" :value="result.socioCode">{{result.description}}</option>
         </select>
       </div>
 
 
     </div>
-    <button type="submit" class="app-form-button">Submit</button>
+    <button v-show ="isActiveBtn" type="submit" class="app-form-button">Submit</button>
   </form>
 </template>
 
@@ -142,12 +163,11 @@ export default {
     Loader,
     Status
   },
-  computed:{
-    ...mapGetters([ 'getUrl2', 'getUrl' ])
-  },
   mixins: [operationMixen],
   data(){
     return{
+      isBulk: false,
+      todayDate:  new Date().toISOString().split("T")[0],
       uploadFile:null,
       loader: false,
       status: false,
@@ -171,16 +191,45 @@ export default {
         "addressLine2": "",
         "cityCode": "",
         "regionCode": "",
-        "countryCode": "",
+        "countryCode": "566",
         "legalID": "",
         "idCardTypeCode": "",
-        "documentIssueDate": "",
-        "expiryDateOfDoc": "",
+        "documentIssueDate": null,
+        "expiryDateOfDoc": null,
         "accountNbr": "",
         "nameOnCard": "",
         "socioProfCode": ""
       },
-       arry:[]
+       arry:[],
+       ismounted:false,
+       isActiveBtn: false
+    }
+  },
+  async mounted() {
+
+    this.ismounted = true
+      const companyProduct = await axios.get(this.getUrl + 'api/CardProductSetup')
+   
+      if(companyProduct.data.length > 0 ){
+        this.isActiveBtn = true;
+      }
+      else{
+        this.isActiveBtn = false;
+      }
+  },
+    computed:{
+    ...mapGetters([ 'getUrl2', 'getUrl' ]),
+    newSorted(){
+      if(this.ismounted){
+            const issueDate = new Date();
+            const d = issueDate.setDate(issueDate.getDate() + 1);
+      const momentDate =  moment(issueDate).format('DD-MM-YYYY');
+       const a = new Date(d).toISOString().substr(0,10);
+
+      return a;
+            
+      }
+
     }
   },
   methods: {
@@ -213,6 +262,12 @@ export default {
     resetState(){
       this.status = false;
     },
+        resetState2(){
+       document.getElementById("bulk-status-success").style.display = "none";
+    },
+            resetState3(){
+       document.getElementById("bulk-status-failed").style.display = "none";
+    },
     async sendJson(){    
      var selectedFile = this.$refs.myfiles.files[0]
                     var reader = new FileReader();
@@ -224,14 +279,19 @@ export default {
                       workbook.SheetNames.forEach( async function(sheetName) {                  
                           var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                           var json_object = JSON.parse(JSON.stringify(XL_row_object))
-                          document.getElementById("jsonObject").innerHTML = json_object;
+                       
+                       
+                         const user = JSON.parse(localStorage.getItem("user-mfb"))
+                        const company = await axios.get('https://acctgw.zenithbank.com/AcctAPIGateWay/CardportalSecurityAPi/api/companies/' + parseInt(user.companyId))
+                          const companyProduct = await axios.get('https://acctgw.zenithbank.com/AcctAPIGateWay/CardportalSecurityAPi/api/CardProductSetup')
+                        const product = await companyProduct.data.find(x => { return x.companyId == parseInt(user.companyId) })
 
                        const newData = json_object.map( x => {
-                         return{
-                                   "productCode": x.productCode,
-                                  "branchNo": x.branchNo,
-                                  "companyId": parseInt(x.companyId),
-                                  "userId": parseInt(x.userId),
+                         return{      
+                                  "productCode": product.cardProductCode,
+                                  "branchNo": company.data.branch,
+                                  "companyId": parseInt(user.companyId),
+                                  "userId": parseInt(user.id),
                                   "title": x.title,
                                   "firstName": x.firstName,
                                   "middleName": x.middleName,
@@ -255,22 +315,107 @@ export default {
                                   "socioProfCode": x.socioProfCode
                          }
                        })
-                       const formData = newData
-         try{
-        const response = await axios.post('https://cors-zenith.herokuapp.com/https://webservicestest.zenithbank.com:8443/CardPortalOperations/api/CardRequest/makecardrequest',formData, {
+
+                             const newData2 = json_object.map( x => {
+                         return{      
+                                  "productCode": product.cardProductCode,
+                                  "branchNo": company.data.branch,
+                                  "companyId": parseInt(user.companyId),
+                                  "userId": parseInt(user.id),
+                                  "title": x.title,
+                                  "firstName": x.firstName,
+                                  "middleName": x.middleName,
+                                  "lastName": x.lastName,
+                                  "gender": x.gender,
+                                  "maritalStatus": x.maritalStatus,
+                                  "mobileNo": x.mobileNo,
+                                  "email": x.email,
+                                  "dateOfBirth": x.dateOfBirth,
+                                  "addressLine1": x.addressLine1,
+                                  "addressLine2": x.addressLine2,
+                                  "cityCode": x.cityCode,
+                                  "regionCode":x.regionCode,
+                                  "countryCode": x.countryCode,
+                                  "legalID": x.legalID,
+                                  "idCardTypeCode": x.idCardTypeCode,
+                                  "documentIssueDate": x.documentIssueDate,
+                                  "expiryDateOfDoc": x.expiryDateOfDoc,
+                                  "accountNbr": x.accountNbr,
+                                  "nameOnCard": x.nameOnCard,
+                                  "socioProfCode": x.socioProfCode
+                         }
+                       })
+    
+    var sorted_arr = newData.sort();
+    var valResults = [];
+    for (var i = 0; i < sorted_arr.length - 1; i++) {
+        if (sorted_arr[i + 1].accountNbr === sorted_arr[i].accountNbr) {
+            valResults.push(sorted_arr[i].accountNbr);
+           
+        }
+    }
+
+        var sorted_arr2 = newData.sort();
+
+      const newSorted =  sorted_arr2.map(s => {
+          return {
+           "documentIssueDate": new Date(s.documentIssueDate).toISOString().substr(0,10),
+            "expiryDateOfDoc": new Date(s.expiryDateOfDoc).toISOString().substr(0,10)
+          }
+        })
+
+    var valResults2 = [];
+    for (var i = 0; i < newSorted.length - 1; i++) {
+        if (newSorted[i].expiryDateOfDoc < newSorted[i].documentIssueDate) {
+     
+            valResults2.push(newSorted[i]);
+        }
+    }
+
+   const formData = newData2
+
+   if(valResults.length <= 0 ){
+
+        if(valResults2.length <= 0){
+
+              try{
+         document.getElementById("bulk-loader").style.display = "block";
+        const response = await axios.post('https://acctgw.zenithbank.com/AcctAPIGateWay/CardportalOperation/api/CardRequest/makecardrequest',formData, {
                   headers: {
                       "Content-Type": "application/json"
                   }
               })
         if(response.data[0].responseCode == "00"){
-            alert("Successful")
+          document.getElementById("bulk-loader").style.display = "none";
+           document.getElementById("bulk-status-success").style.display = "flex";
         }
         else{
-         alert("Failed")
+          console.log("400")
+           document.getElementById("bulk-loader").style.display = "none";
+        document.getElementById("bulk-status-failed").style.display = "flex";
         }
       } catch (error) {
-         alert("Failed")
+        console.log("500")
+         document.getElementById("bulk-loader").style.display = "none";
+         document.getElementById("bulk-status-failed").style.display = "flex";
       }
+   }
+
+      else{
+     document.getElementById("bulk-status-failed").style.display = "flex";
+     document.getElementById("error-text").innerHTML = "Expiry Date is less than Issue Date";
+   }
+
+   }
+                      
+   else{
+     document.getElementById("bulk-status-failed").style.display = "flex";
+     document.getElementById("error-text").innerHTML = "Multiple account number instants";
+   }
+
+
+                  
+
                         })
                     };
 
@@ -284,7 +429,7 @@ export default {
       this.loader = true;
             const user = JSON.parse(localStorage.getItem("user-mfb"))
      const company = await axios.get(this.getUrl + 'api/companies/' + parseInt(user.companyId))
-      const companyProduct = await axios.get(this.getUrl + '/api/CardProductSetup')
+      const companyProduct = await axios.get(this.getUrl + 'api/CardProductSetup')
      const product = await companyProduct.data.find(x => { return x.companyId == parseInt(user.companyId) })
        const formData ={
         "productCode": product.cardProductCode,
@@ -319,7 +464,7 @@ export default {
           this.loader = false;
           this.status = true;
           this.state = 'success';
-          this.message = 'Operation Sucessful'
+          this.message = 'Request submitted Sucessfully'
           this.clearForm();
         }
         else{

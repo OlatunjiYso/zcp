@@ -2,11 +2,15 @@
   <div>
        <Loader v-show="loader"/>
      <Status :state="state"  :message = "message" :resetState="resetState" v-if="status"/>
- <div class="content-header">Card Status</div>
+<div class="content-header">Card Status</div>
       <div class="content-sub">Check the status of a card</div>
       <div>
         <div>
-            <input  maxlength="10" v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number...">
+          <form @submit.prevent="searchCard">
+       <input required  maxlength="13" v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number">
+       <button type="submit" style="margin-top:-15px;margin-left:20px;font-size:15px;cursor:pointer;height:40px;background:#1b1b1b" className="app-icon table-button filter"><span className="table-button-icon"></span></button>        
+          </form>
+          
           </div>
         <!-- <div class="app-table-buttons">
           <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>
@@ -23,8 +27,7 @@
                            <th class="app-table2-header">Date</th>
                           <th class="app-table2-header">Name on Card</th>
                           <th class="app-table2-header">Account Number</th>
-                           <!-- <th class="app-table2-header">Product Type</th> -->
-                           <th class="app-table2-header"> Product Code</th>
+                           <th class="app-table2-header">Product Type</th>
                            <th class="app-table2-header">Client Code</th>
                             <th class="app-table2-header"></th>
                            
@@ -37,7 +40,6 @@
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
-                            <!-- <td class="app-table2-data">{{result.productName}}</td> -->
                             <td class="app-table2-data">{{result.productCode}}</td>  
                             <td class="app-table2-data">{{result.clientCode}}</td>  
                              <td class="app-table2-data">
@@ -61,9 +63,9 @@ import Status from '../../components/Status/Status2'
 import {mapGetters} from 'vuex'
 import EmptyData from '../../components/EmptyData/EmptyData'
 import Loading from '../../components/Loading/Loading'
-
-
+import Global from '../../views/global'
 export default {
+      mixins:[Global],
           components:{
      Loader,
      Status,
@@ -87,12 +89,17 @@ export default {
             clientCode: "93930"
         }],
         accountNbr:'',
-        cardData:[]
+        cardData:[],
+        cardSetup:[]
     }
+  },
+  created(){
+   this.$store.dispatch('getCardSetup')
   },
         computed:{
     ...mapGetters([
       'getUrl2',
+      'getCardSetup'
     ])
   },
   methods: {
@@ -101,26 +108,32 @@ this.status = false;
     },
    async searchForCard(e){
         const user = JSON.parse(localStorage.getItem("user-mfb"))
-         if (e.keyCode === 13) {
+   if (e.keyCode === 13) {
            this.loading = true
    const response = await axios.get(this.getUrl2 + 'api/CardRequest/cardbyaccountNo/'+  user.companyId + "/" + this.accountNbr)
    if(response.status == 200){
-         this.loading = false
-   this.cardData = response.data
+     const requests = response.data.map(x => { 
+         return {
+           ...x,
+             productCode :  this.cardSetup.length > 0 ? this.cardSetup.find((entry)=>{return x.productCode === entry.cardProductCode}).description : null
+         }
+        })
+   this.loading = false
+   this.cardData = requests
    }
    else{
        this.loading = false
    }
-
          }
     },
             async CheckStatus(result){
+               if( result.clientCode.length > 3){
        this.loader = true
        const user = JSON.parse(localStorage.getItem("user-mfb"))
           const form = {
               "companyId": user.companyId,
               "userId": user.id,
-              "clientCode": result.clientCode
+              "clientCode": result.clientCode == null ? "null" : result.clientCode
           }
          try {
            
@@ -146,9 +159,19 @@ this.status = false;
                this.state = 'failed';
                 this.message = error.message
          }
+          }
+              else{
+                  this.loader = false;
+               this.status = true;
+               this.state = 'failed';
+               this.message = "This card does not have a valid client code"
+              }
             
       },
  
   },
 }
 </script>
+<style scoped>
+a{text-decoration: none;}
+</style>

@@ -12,8 +12,8 @@
           </div>
         </div>
           <form @submit.prevent="filterArray" className="app-table-select">
-        <input v-model="startDate"  style="margin-right:20px;width:40%" type="date" className="app-modal-form-field w-input"   required/>
-         <input v-model="endDate"  style="margin-right:20px;width:40%" type="date" className="app-modal-form-field w-input"   required/>
+        <input v-model="startDate" :max="todayDate" style="margin-right:20px;width:40%" type="date" className="app-modal-form-field w-input"   required/>
+         <input v-model="endDate" :max="todayDate"  style="margin-right:20px;width:40%" type="date" className="app-modal-form-field w-input"   required/>
         <button type="submit" style="margin-right:20px;font-size:15px;cursor:pointer;height:40px;background:#1b1b1b" className="app-icon table-button filter"><span className="table-button-icon"></span></button> 
          <button @click="reload" style="font-size:15px;cursor:pointer;height:40px;" className="app-icon table-button filter"><span className="table-button-icon"></span></button> 
           </form>
@@ -27,7 +27,7 @@
                            <th class="app-table2-header">Date</th>
                           <th class="app-table2-header">Name on Card</th>
                           <th class="app-table2-header">Account Number</th>
-                           <th class="app-table2-header">Card Product Code</th>
+                           <th class="app-table2-header">Branch</th>
                            <th class="app-table2-header">Status</th>
                            <th class="app-table2-header"></th> 
                            
@@ -40,15 +40,8 @@
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
-                            <td class="app-table2-data">{{result.productCode}}</td>
-                            <th class="app-table2-data">{{ result.workflowId == 1 ? "Needs Approval" : 
-                                result.workflowId == 2 ? "Awaiting processing" : 
-                                result.workflowId == 3 ? "Approved" :
-                                 result.workflowId == 4 ? "Awaiting processing" :
-                                  result.workflowId == 5 ? "Processed and Shipped" :
-                                   result.workflowId == 6 ? "Needs Acknowledgement" :
-                                   result.workflowId == 0 ? "Rejected" : "null"
-                                }}</th>
+                            <td class="app-table2-data">{{result.branchNo}}</td>
+                            <th class="app-table2-data">{{ result.workflowDescription}}</th>
                               <td class="app-table2-data">
                                    <div @click="openModal(result)" style="cursor:pointer" class="table-btn">View<span class="table-button-icon"></span></div>
                             </td> 
@@ -72,8 +65,10 @@ import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
 import ViewDetails from './ViewDetails'
+import global from '../../../views/operationMixen'
 export default {
   props:['AllRequests','AllLoader'],
+
           components:{
      Loader,
      Status,
@@ -83,12 +78,13 @@ export default {
     },
   data(){
     return{
+            todayDate:  new Date().toISOString().split("T")[0],
          loading:false,
          loader: false,
         status: false,
         state: null,
         message: null,
-                viewDetails: false,
+        viewDetails: false,
         viewDetailsData:"",
         searchData:"",
         searchQuery: '',
@@ -117,10 +113,10 @@ export default {
   this.$emit('reloadRequests')
     },
     filterArray(){
-      this.loading = true
-
-      const a = new Date(this.startDate).toISOString().substr(0,10);
+        const a = new Date(this.startDate).toISOString().substr(0,10);
        const b = new Date(this.endDate).toISOString().substr(0,10);
+      if(b > a) {
+              this.loading = true
 
     const filtered = this.resultQuery.filter( x => {
       const transDate = new Date(x.create_at).toISOString().substr(0,10)
@@ -128,6 +124,13 @@ export default {
     })
     this.$emit("updateRequests", filtered) ;
     this.loading = false;
+      }
+      else{
+        this.status = true;
+        this.state = 'failed';
+        this.message = 'Start Date cannot be greater than End Date'
+      }
+
     },
           openModal(result){
    this.viewDetailsData = result
@@ -138,8 +141,8 @@ export default {
   },
      resetState(){
 this.status = false;
-              location.reload();
-         return false; 
+        //       location.reload();
+        //  return false; 
     },
   async  Approve(result){
        this.loader = true

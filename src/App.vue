@@ -9,30 +9,91 @@ import axios from 'axios'
 export default {
   data(){
     return{
-
+     events: ['click','mousemove','mousedown','scroll','keypress','load'],
+     warningTimer:null,
+     logoutTimer:null
     }
   },
-  created(){
-    axios.interceptors.response.use(undefined, function (err) {
-    return new Promise(function (resolve, reject) {
-      if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
-        if(localStorage.getItem(token-mfb)){
-           // if you ever get an unauthorized, logout the user
-        this.$store.dispatch('Logout')
-        return router.push('/client/login')
-      // you can also redirect to /login if needed !
-        }
-        else if(localStorage.getItem(token)){
-                 // if you ever get an unauthorized, logout the user
-        this.$store.dispatch('Logout')
-        return router.push('/admin/login')
-        }
-     
+  mounted(){
+  this.events.forEach( function (event) {
+    window.addEventListener(event, this.resetTimer);
+  }, this);
+
+  this.setTimers();
+  
+  this.checkExpiration();
+  },
+  methods: {
+
+    setTimers(){
+     this.warningTimer = setTimeout(this.warningMessage, 5 * 60 * 1000)
+    },
+
+    warningMessage(){
+      // alert("Warning")
+      //  this.$router.push("/admin/login")
+
+      if(localStorage.getItem("token")){
+       localStorage.removeItem("user")
+       localStorage.removeItem("token")
+       localStorage.removeItem("et")
+        // this.$router.push("/admin/login")
+          window.location = "/admin/login";
       }
-      throw err;
-    });
-  });
-  }
+      else if(localStorage.getItem("token-mfb")){
+        localStorage.removeItem("user-mfb") 
+       localStorage.removeItem("token-mfb")
+        localStorage.removeItem("et")
+        // this.$router.push("/client/login")
+          window.location = "/client/login";
+      }
+      else{
+        return;
+      }
+    },
+
+    resetTimer(){
+    clearTimeout(this.warningTimer)
+
+    this.setTimers()
+    },
+
+    checkExpiration (){ 
+    //check if past expiration date
+        var values = localStorage.getItem('et')
+        const expTime = new Date(values)
+        const today = new Date()
+    //check "my hour" index here
+
+  
+
+    if (expTime < today) {
+    
+      if(localStorage.getItem("token")){
+       localStorage.removeItem("user")
+       localStorage.removeItem("token")
+       localStorage.removeItem("et")
+        // this.$router.push("/admin/login")
+         window.location = "/admin/login";
+      }
+      else if(localStorage.getItem("token-mfb")){
+        localStorage.removeItem("user-mfb") 
+       localStorage.removeItem("token-mfb")
+        localStorage.removeItem("et")
+        // this.$router.push("/client/login")
+         window.location = "/client/login";
+      }
+      else{
+        return;
+      }
+
+    }
+    else{
+    
+      return;
+    }
+}
+  },
 }
 </script>
 

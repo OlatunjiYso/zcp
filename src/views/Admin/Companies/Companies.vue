@@ -4,7 +4,7 @@
               <AddMFB  :closeModal="closeModal" :closeModalReload="closeModalReload" />
           </div>
           <div v-show="EditModal">
-              <EditMFB :companyCardSetup="companyCardSetup" :editActivities="activities" :closeModal="closeEdit" :closeEditReload="closeEditReload" :editData="editData"/>
+              <EditMFB :cardData ="cardData" :companyCardSetup="companyCardSetup" :editActivities="activities" :closeModal="closeEdit" :closeEditReload="closeEditReload" :editData="editData"/>
           </div>
             <div v-show="CallerModal">
               <CallerModal :isSetup="isSetup" :callerData="callerData" :companyData="companyData"  :closeModal="closeCaller" :closeCallerReload="closeCaller" />
@@ -15,18 +15,18 @@
             <div class="app-admin-col-2">
  <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-          <div class="settings-icon"></div>
+          <div class="settings-icon" @click="previousPage"></div>
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">October 8th, 2020</div>
+          <div class="admin-topbar-date">{{getDate2}}</div>
         </div>
       </div>
       <div class="content-header">Companies</div>
-      <div class="content-sub">Here are the latest report on Paysure Agency</div>
+      <div class="content-sub">Here are the list of companies on board</div>
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
-            <input type="text" class="app-input-search w-input" maxlength="256" name="name" data-name="Name" placeholder="Search..." id="name"/>
+            <input v-model="searchQuery" type="text" class="app-input-search w-input" placeholder="Search" id="name">
           </div>
         </div>
         <div class="app-table-buttons">
@@ -36,7 +36,7 @@
       </div>
       <Loading v-if="getLoading"/>
         <div v-else>
-              <table class="app-table2" v-if="!getCompanies.length <= 0">
+              <table class="app-table2" v-if="!resultQuery.length <= 0">
                                   <thead>
                                       <tr class="app-table2-row">
                                         <!-- <th class="app-table2-header">.</th> -->
@@ -44,22 +44,20 @@
                                       <th class="app-table2-header">Name</th>
                                       <th class="app-table2-header">Code</th>
                                       <th class="app-table2-header">Email Address</th>
-                                       <th class="app-table2-header">Phone Number</th>
                                        <th class="app-table2-header">Account Number</th>
                                       <th class="app-table2-header"></th>
                                        <th class="app-table2-header"></th>
                                        <th class="app-table2-header"></th>
+                                        <th class="app-table2-header"></th>
                                   </tr>
                                   </thead>
                                   <tbody>
-                                  <tr v-for="(result, index) in getCompanies" :key="index" class="app-table2-row">
+                                  <tr v-for="(result, index) in resultQuery" :key="index" class="app-table2-row">
                                       <!-- <td class="app-table2-data"><input @click="selectCompany(result)" :id="`SC${result.id}`" type="checkbox" value="test" /></td> -->
                                     <td class="app-table2-data">{{index + 1}}</td>
                                   <td class="app-table2-data">{{result.name}}</td>
                                       <td class="app-table2-data"> {{result.companyCode}} </td>
                                         <td class="app-table2-data">{{result.emailAddress}}</td>
-                      
-                                        <td class="app-table2-data">{{result.phoneNumber}}</td>
                                         <td class="app-table2-data">{{result.accountNumber}}</td>
                                               <td class="app-table2-data">
                       <div @click="openCaller(result)" style="background:#c00;cursor:pointer" class="table-btn">Caller Id<span class="table-button-icon"></span></div>
@@ -69,6 +67,9 @@
                             </td> -->
                                          <td class="app-table2-data">
                             <div @click="openEdit(result)" style="cursor:pointer" class="table-btn">Update<span class="table-button-icon"></span></div>
+                            </td>
+                             <td class="app-table2-data">
+                            <router-link :to="`/admin/${result.name}/users/${result.id}`"> <div style="cursor:pointer" class="table-btn">Users<span class="table-button-icon"></span></div> </router-link>
                             </td>
                                   </tr>     
                                                                                                
@@ -93,8 +94,10 @@ import {mapGetters} from 'vuex'
 import EmptyData from '../../../components/EmptyData/EmptyData'
 import Loading from '../../../components/Loading/Loading'
 import CallerModal from './SetupCallerId'
+import Global from '../../../views/global.js'
 export default {
   name: "Home",
+    mixins:[Global],
   components: {
     Leftbar,
     Rightbar,
@@ -114,7 +117,9 @@ export default {
       CallerModal:false,
       companyData:"",
       callerData:"",
-      isSetup: false
+      isSetup: false,
+       searchQuery: '',
+       cardData:""
     }
   },
   computed:{
@@ -123,12 +128,21 @@ export default {
     'getUrl',
     'getUrl2',
     'getCompanies',
-  ])
+  ]),
+          resultQuery(){
+      if(this.searchQuery){
+      return this.getCompanies.filter((item)=>{
+        return this.searchQuery.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v))
+      })
+      }else{
+        return this.getCompanies;
+      }
+    },
   },
     created(){
    this.$store.dispatch("getCompanies");
   },
-  methods: {       
+  methods: {    
        selectCompany(result){
       var checkbox = document.getElementById(`SC${result.id}`);
       if (checkbox.checked == true){
@@ -177,6 +191,8 @@ export default {
 
              const response = await axios.get(this.getUrl + 'api/companies/CompanyAcivities/' + result.id)
          const response2 = await axios.get(this.getUrl + 'api/CardProductSetup')
+          const response3 = await axios.get(this.getUrl + 'api/CardProductSetup/' + result.id)
+          this.cardData = response3;
              let cardSetup = response2.data
              const y = cardSetup.find(x => { return x.companyId ==  result.id})
              this.companyCardSetup = y
@@ -184,7 +200,7 @@ export default {
             this.editData = result
            this.EditModal = true
 
-       },
+       },  
         closeEdit(){
            this.EditModal = false
        },

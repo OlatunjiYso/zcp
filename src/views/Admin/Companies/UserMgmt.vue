@@ -6,10 +6,9 @@
             <div class="app-admin-col-2">
             <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-          <div @click="previousPage" class="settings-icon"></div>
+         <router-link to="/admin/companies"> <div class="settings-icon"></div></router-link>
           <div @click = "switchView('user')" class="admin-top-barlinks" :class="[ userView ? activeClass : '']">User</div>
-          <div @click = "switchView('roles')" class="admin-top-barlinks" :class="[ rolesView ? activeClass : '']" v-show="checkPermAdmin('SuperAdmin_Management')">Roles</div>
-          <div @click = "switchView('permissions')" class="admin-top-barlinks" :class="[ permView ? activeClass : '']" v-show="checkPermAdmin('SuperAdmin_Management')">Permissions</div>
+          <!-- <div @click = "switchView('roles')" class="admin-top-barlinks" :class="[ rolesView ? activeClass : '']">Roles</div> -->
         </div>
          <div class="admin-top-bar-right">
           <div class="admin-topbar-date">{{getDate2}}</div>
@@ -18,12 +17,9 @@
         <div v-show="userView">
         <User/> 
         </div>
-            <div v-show="rolesView">
+            <!-- <div v-show="rolesView">
            <Roles/>       
-            </div>
-             <div v-show="permView">
-           <Permissions/>       
-            </div>
+            </div> -->
     </div>
       <!-- <div class="app-admin-col-3">
               <Rightbar />
@@ -33,29 +29,24 @@
 
 
 <script>
+import Global from '../../global.js'
 import Leftbar from '../../../components/Admin/leftbar/leftbar'
 import Rightbar from '../../../components/Admin/rightbar/rightbar'
 import User from './Users.vue'
-import Roles from './Roles/Roles.vue'
-import Permissions from './Perm/Perm.vue'
-import Global from '../../../views/global.js'
 export default {
   name: "Home",
-    mixins:[Global],
   components: {
     Leftbar,
     Rightbar,
-    Roles,
-    User,
-    Permissions
+    User
   },
+        mixins:[Global],
   data(){
       return{
         selectedTab: '',
         userView: true,
         rolesView: false,
-        permView: false,
-        activeClass:'admin-active-top-link'
+       activeClass:'admin-active-top-link'
       }
   },
 methods:{
@@ -67,17 +58,10 @@ methods:{
      
          this.userView = true
          this.rolesView = false
-         this.permView = false
         }
         else if(selected == 'roles') {
              this.userView = false
          this.rolesView = true
-         this.permView = false
-        }
-                else if(selected == 'permissions') {
-             this.userView = false
-         this.rolesView = false
-         this.permView = true
         }
 
     },
@@ -85,3 +69,7 @@ methods:{
 }
 }
 </script>
+
+<style scoped>
+a{text-decoration: none;}
+</style>

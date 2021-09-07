@@ -2,7 +2,7 @@
   <div>
                     <Loader v-show="loader"/>
      <Status :state="state" :closeModal = "closeModalReload" :message = "message" :resetState="resetState" v-if="status"/>
- <div class="content-header">Rejected Card Reissue Requests</div>
+ <div class="content-header">Rejected Card Cancellation Requests</div>
       <div class="content-sub">Here are the requests that were rejected</div>
       <div class="app-table-actions">
         <div class="app-table-search">
