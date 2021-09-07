@@ -5,6 +5,6 @@ import store from './store'
 import Axios from 'axios'
 
 
-// Axios.defaults.headers.common['Authorization'] = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTZXJ2aWNlTmFtZSI6IkNhcmRQb3J0YWxTZWN1cml0eUFQSSIsIkFwcE5hbWUiOiJDYXJkUG9ydGFsV2ViIiwibmJmIjoxNjI4NzU4MDc2LCJleHAiOjE3ODY1MjQ0NzYsImlhdCI6MTYyODc1ODA3Nn0.Xb-Kopu16nG3mLx6C7zz3kzVC_aekF8zKBcFeOrzFXA'
+Axios.defaults.headers.common['Authorization'] = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTZXJ2aWNlTmFtZSI6IkNhcmRQb3J0YWxTZWN1cml0eUFQSSIsIkFwcE5hbWUiOiJDYXJkUG9ydGFsV2ViQXBwbGljYXRpb24iLCJWYWxpZGF0ZUlQIjoiRmFsc2UiLCJuYmYiOjE2MzA5NDA5ODcsImV4cCI6MTc4ODcwNzM4NywiaWF0IjoxNjMwOTQwOTg3fQ.9bqQYZEd3t9pF1_YHvc2tGwQe5_tcL_Dd4KmgAAtjbQ'
 
 createApp(App).use(store).use(router).mount('#app')

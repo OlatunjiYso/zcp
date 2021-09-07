@@ -26,8 +26,9 @@
   <br/>
    <div @click="isBulk = !isBulk" style="cursor:pointer;background:#c00;float:left;" class="table-btn">{{isBulk ? 'Single Upload' : 'Bulk Upload'}}<span class="table-button-icon"></span></div>
    <br/><br/><br/>
+
   <form @submit.prevent="sendJson" v-if="isBulk">
-      <label for="myfile">Bulk Upload</label>
+      <label for="myfile">Bulk Upload | <a href="./sample.xlsx" download>Download Request Sample</a></label>
 <input class="bulk-upload" ref="myfiles" type="file" id="myfile" name="myfile" accept=".xls, .xlsx" required>
 <br>
   <button v-show ="isActiveBtn" type="submit" class="app-form-button">Submit</button>
@@ -281,8 +282,8 @@ export default {
                        
                        
                          const user = JSON.parse(localStorage.getItem("user-mfb"))
-                        const company = await axios.get('https://epmalive.africa.int.zenithbank.com/CardportalSecurityAPi/api/companies/' + parseInt(user.companyId))
-                          const companyProduct = await axios.get('https://epmalive.africa.int.zenithbank.com/CardportalSecurityAPi/api/CardProductSetup')
+                        const company = await axios.get('https://acctgw.zenithbank.com/AcctAPIGateWay/CardportalSecurityAPi/api/companies/' + parseInt(user.companyId))
+                          const companyProduct = await axios.get('https://acctgw.zenithbank.com/AcctAPIGateWay/CardportalSecurityAPi/api/CardProductSetup')
                         const product = await companyProduct.data.find(x => { return x.companyId == parseInt(user.companyId) })
 
                        const newData = json_object.map( x => {
@@ -379,7 +380,7 @@ export default {
 
               try{
          document.getElementById("bulk-loader").style.display = "block";
-        const response = await axios.post('https://epmalive.africa.int.zenithbank.com/CardportalOperation/api/CardRequest/makecardrequest',formData, {
+        const response = await axios.post('https://acctgw.zenithbank.com/AcctAPIGateWay/CardportalOperation/api/CardRequest/makecardrequest',formData, {
                   headers: {
                       "Content-Type": "application/json"
                   }

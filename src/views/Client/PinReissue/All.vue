@@ -2,7 +2,7 @@
   <div>
      <ViewDetails v-show="viewDetails" :closeModal="closeModal" :viewDetailsData="viewDetailsData" />
  <div class="content-header">All Request</div>
-      <div class="content-sub">Here are the all the card cancellation request</div>
+      <div class="content-sub">Here are the all the pin reissue request</div>
       <div class="app-table-actions">
         <div class="app-table-search">
           <div class="form-block w-form">
