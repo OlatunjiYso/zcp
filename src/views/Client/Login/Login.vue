@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="app-login-col-2">
-      <h2 class="login-header">Welcome Back!</h2>
+      <h2 class="login-header">Welcome</h2>
       <div class="login-sub">Kindly fill in your credentials to login into your account.</div>
       <div >
         <form @submit.prevent="Login">
