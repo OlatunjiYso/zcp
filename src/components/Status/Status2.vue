@@ -8,7 +8,7 @@
      <div v-else> 
             <div class="alert-icon failed"></div>
             <div class="alert-message">{{message}}</div>
-            <div @click="resetState" style="margin-top:30px;cursor:pointer" class="app-modal-button">Try Again</div>
+            <div @click="resetState" style="margin-top:30px;cursor:pointer" class="app-modal-button">Close</div>
             </div>
     </div>
   </div>

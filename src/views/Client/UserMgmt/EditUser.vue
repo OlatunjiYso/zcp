@@ -104,6 +104,7 @@ this.status = false;
                   userName: document.getElementById("userName").value,
                   mobileNo: document.getElementById("mobileNo").value,
                   rolesId: parseInt(this.userData.role),
+                   userId: parseInt(companyId.id),
                   isActive: true,
          }
          try {

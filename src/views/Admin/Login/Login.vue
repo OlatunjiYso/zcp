@@ -8,15 +8,15 @@
       </div>
     </div>
     <div class="app-login-col-2">
-      <h2 class="login-header">Welcome Back!</h2>
+      <h2 class="login-header">Welcome</h2>
       <div class="login-sub">Kindly fill in your credentials to login into your account.</div>
       <div >
-        <form @submit.prevent="testLogin">
+        <form @submit.prevent="Login">
           <div class="app-login-form-group">
             <label for="Email-address" class="login-label">User Name</label>
             <input v-model="form.userName" type="text" class="app-login-text-field w-input"  placeholder="john.doe" required></div>
           <div class="app-login-form-group">
-            <label for="password" class="login-label">Hardware Token</label>
+            <label for="password" class="login-label">Pin & Token</label>
             <input v-model="form.password" type="password" class="app-login-text-field w-input" placeholder="xxxxxxxxxxxxx" required>
             </div>
              <button type="submit" class="app-login-button" :disabled="this.isAttemptingLogin">{{this.isAttemptingLogin ? "Logging you in ...":"Login into Account" }}</button>

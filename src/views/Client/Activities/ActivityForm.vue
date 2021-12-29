@@ -25,6 +25,7 @@
            <ActivityForm11 v-else-if="form == 9" />
            <ActivityForm12 v-else-if="form == 11" />
          <ActivityForm14 v-else-if="form == 3" />
+         <ActivityForm15 v-else-if="form == 13" />
     </div>
     <!-- <div class="app-admin-col-3">
       <Rightbar />
@@ -49,6 +50,7 @@ import ActivityForm9 from "../../../components/ActivityForms/ActivityForm9";
 import ActivityForm11 from "../../../components/ActivityForms/ActivityForm11";
 import ActivityForm12 from "../../../components/ActivityForms/ActivityForm12";
 import ActivityForm14 from "../../../components/ActivityForms/ActivityForm14";
+import ActivityForm15 from "../../../components/ActivityForms/ActivityForm15";
 import Global from '../../global.js'
 export default {
       mixins:[Global],
@@ -64,6 +66,7 @@ export default {
     ActivityForm11,
     ActivityForm12,
     ActivityForm14,
+    ActivityForm15,
     Leftbar,
     Rightbar,
       Loader,

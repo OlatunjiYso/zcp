@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="app-login-col-2">
-      <h2 class="login-header">Welcome Back!</h2>
+      <h2 class="login-header">Welcome</h2>
       <div class="login-sub">Kindly fill in your credentials to login into your account.</div>
       <div >
         <form @submit.prevent="Login">
@@ -16,7 +16,7 @@
             <label for="Email-address" class="login-label">User Name</label>
             <input v-model="form.userName" type="text" class="app-login-text-field w-input"  placeholder="username" required></div>
           <div class="app-login-form-group">
-            <label for="password" class="login-label">Hardware Token</label>
+            <label for="password" class="login-label">Pin & Token</label>
             <input v-model="form.password" type="password" class="app-login-text-field w-input" placeholder="xxxxxxxxxxxxx" required>
             </div>
              <button type="submit" class="app-login-button" :disabled="this.isAttemptingLogin">{{this.isAttemptingLogin ? "Logging you in ...":"Login into Account" }}</button>
@@ -78,6 +78,34 @@ this.status = false;
    }
    this.token =  result.join(''); 
    return result.join('');
+    },
+        testLogin(){
+              const d1 = new Date ();
+const d2 = new Date ( d1 );
+
+d2.setMinutes ( d1.getMinutes() + 2 ); 
+          
+      let testData={
+"responseCode":"00",
+"responseMessage":"00-Success",
+"id":10,
+"companyId":4,
+"firstName":"Theresa",
+"lastName":"Ereme",
+"emailAddress":"tereme@opay-inc.com",
+"userName":"8113071891_TEREME",
+"mobileNo":"23418888329",
+"rolesId":33,
+"roleType":"MFB",
+"isActive":true,
+"permissions":[{"name":"Make_Requests"},{"name":"Activity_Requests"},{"id":19,"mfbOrBank":null,"name":"Mfb_User_Management","description":"manage users","isActive":true,"created_at":"2021-06-11T14:34:28.6079583+01:00"},{"id":17,"mfbOrBank":null,"name":"Card_Status","description":"check a card status","isActive":true,"created_at":"2021-06-11T14:34:28.6434479+01:00"}]
+}
+
+     this.GenerateToken(50);
+     localStorage.setItem('et', d2)
+       localStorage.setItem('token-mfb', this.token)   
+        localStorage.setItem('user-mfb', JSON.stringify(testData))    
+       this.$router.push('client/activity-form/1')
     },
     async Login(){
       this.GenerateToken(50);

@@ -7,7 +7,7 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" @focus="clearError" @blur = "searchForCard" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input  @focus="clearError" @blur = "searchForCard" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
         <p v-show="accError" style="color:red;font-size:12px">Invalid Account Number</p>
       </div>
        <div class="form-flex-col-3">
@@ -124,8 +124,10 @@ export default {
   },
     clearForm(){
       this.form.accountNumber= "";
-      this.form.last_6_digits_of_card= "";
-      this.form.amount= "";
+      this.form.accountName= "";
+      this.form.parammeterType = "";
+      this.form.dailyAmount= 0;
+      this.form.dailyCount = 0;
     },
     resetState(){
       this.status = false;
@@ -178,6 +180,7 @@ export default {
         const response = await axios.post(this.getUrl2 + 'api/CardParameterization/initialorreprocessparameterization',formData)
         if(response.data.responseCode == "00"){
            this.loader = false;
+           this.clearForm();
           this.status = true;
           this.state = 'success';
           this.message = 'Request submitted Sucessfully'
