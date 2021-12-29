@@ -2,12 +2,12 @@
   <Loader v-show="loader"/>
   <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>
        <ViewDetails v-show="viewDetails" :closeModal="closeModal" :viewDetailsData="viewDetailsData" />
-  <div class="content-header">Transaction Log</div>
+  <div class="content-header">Transaction Logs</div>
   <form @submit.prevent="sendRequest">
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input   maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" @focus="clearError" @blur = "searchForCard" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input @focus="clearError" @blur = "searchForCard" v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
         <p v-show="accError" style="color:red;font-size:12px">Invalid Account Number</p>
       </div>
        <div class="form-flex-col-3">
@@ -95,7 +95,7 @@ export default {
         "accountName": "",
         "startDate": "",
         "endDate": "",
-        "clientCode": null
+        "clientCode": "null"
       },
       reason:[],
       listDispute:[],
@@ -160,6 +160,9 @@ export default {
        const a = new Date(this.form.startDate).toISOString().substr(0,10);
        const b = new Date(this.form.endDate).toISOString().substr(0,10);
       if(b > a) {
+
+         if(this.form.clientCode != null){
+
       this.loader = true;
       const user = JSON.parse(localStorage.getItem("user-mfb"))
        const formData ={
@@ -189,6 +192,15 @@ export default {
         this.state = 'failed';
          this.message = error.message
       }
+
+
+         }
+         else{
+            this.loader = false;
+          this.status = true;
+          this.state = 'failed';
+          this.message = 'Invalid credentials- No Client Code'
+         }
       }
       else{
         this.loader = false;

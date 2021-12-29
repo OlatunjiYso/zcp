@@ -7,7 +7,7 @@
     <div class="form-flex">
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input  maxlength="13" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" v-model="form.accountNumber" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
+        <input  v-model="form.accountNumber" type="text" class="app-text-field w-input" id="" placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Last 6 Digits of Card<span style="color:red">*</span></label>
@@ -163,8 +163,8 @@ export default {
  this.loader = true;
        const formData =
  {
-  "username": "WEB",
-  "password": "WEB4321",
+  "username": this.callerData.mfbCallerUsername,
+  "password": this.callerData.mfbCallerPassword,
   "initiateDispenseRequest": {
     "listdispute": this.listDispute,
    "transDate": moment(this.form2.transDate).format('YYYY-MM-DD'),
@@ -228,8 +228,8 @@ export default {
     async sendRequest(){
       this.loader = true;
        const formData ={
-  "username": "WEB",
-  "password": "WEB4321",
+  "username": this.callerData.mfbCallerUsername,
+  "password": this.callerData.mfbCallerPassword,
   "searchDispense": {
     "acctNo": this.form.accountNumber,
     "last_6_digits_of_card": this.form.last_6_digits_of_card,

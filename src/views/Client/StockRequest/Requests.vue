@@ -8,7 +8,7 @@
         <div class="admin-top-bar">
         <div class="admin-top-bar-left">
          <router-link to="/client/activity-requests"><div class="settings-icon"></div></router-link>
-        <div  @click = "switchView('All')" class="admin-top-barlinks" :class="[ AllView ? activeClass : '']">All Requests</div>
+        <div  @click = "switchView('All')" class="admin-top-barlinks" :class="[ AllView ? activeClass : '']">All Stock Requests</div>
         <div v-show="checkPerm('Activity_Requests')" @click = "switchView('Approval')" class="admin-top-barlinks" :class="[ ApprovalView ? activeClass : '']">Pending Approval</div>
         <div v-show="checkPerm('Activity_Requests')" @click = "switchView('Acknowledge')" class="admin-top-barlinks" :class="[ AcknowledgeView ? activeClass : '']">Pending Acknowledgement</div>
         <div v-show="checkPerm('Make_Requests')" @click = "switchView('Rejected')" class="admin-top-barlinks" :class="[ RejectedView ? activeClass : '']">Rejected Requests</div>
@@ -119,7 +119,7 @@ methods:{
     async fetchAllRequests(){
         this.AllLoader = true
          const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/all/'+companyId.companyId);
+ const result = await axios.get(this.getUrl2 + 'api/CardStock/all/'+companyId.companyId);
        const requests = result.data.map(x => { 
          return {
            ...x,
@@ -142,7 +142,7 @@ methods:{
   async fetchApprovalRequests(){
         this.approvalLoader = true
          const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/pendingApproval/'+companyId.companyId)
+ const result = await axios.get(this.getUrl2 + 'api/CardStock/pendingApproval/'+companyId.companyId)
  const requests = result.data.map(x => { 
          return {
            ...x,
@@ -164,7 +164,7 @@ methods:{
     async fetchAcknowledgeRequests(){
           this.AcknowledgeLoader = true
            const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/pendingacknowledgement/'+companyId.companyId)
+ const result = await axios.get(this.getUrl2 + 'api/CardStock/pendingacknowledgement/'+companyId.companyId)
  const requests = result.data.map(x => { 
          return {
            ...x,
@@ -186,7 +186,7 @@ methods:{
       async fetchRejectedRequests(){
           this.RejectLoader = true
            const companyId = JSON.parse(localStorage.getItem("user-mfb"))
- const result = await axios.get(this.getUrl2 + 'api/CardRequest/PendingRejectRequest/'+companyId.companyId)
+ const result = await axios.get(this.getUrl2 + 'api/CardStock/PendingRejectRequest/'+companyId.companyId)
      const requests = result.data.map(x => { 
          return {
            ...x,

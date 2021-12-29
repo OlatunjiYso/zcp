@@ -3,7 +3,7 @@
        <Loader v-show="loader"/>
      <Status :state="state"  :message = "message" :resetState="resetState" v-if="status"/>
         <ViewDetails v-show="viewDetails" :closeModal="closeModal" :viewDetailsData="viewDetailsData" />
- <div class="content-header">Pending Card Requests</div>
+ <div class="content-header">Pending Card Stock Requests</div>
       <div class="content-sub">Here are the requests that need approval</div>
       <div class="app-table-actions">
         <div class="app-table-search">
@@ -26,11 +26,11 @@
                           <th class="app-table2-header">
                               <input  @click="selectAll" id="select-all" type="checkbox" value="test" />
                           </th>
-                           <th class="app-table2-header">Id</th>
+                            <th class="app-table2-header">Id</th>
                            <th class="app-table2-header">Date</th>
-                          <th class="app-table2-header">Name on Card</th>
-                          <th class="app-table2-header">Account Number</th>
-                           <th class="app-table2-header">Card Product Code</th>
+                          <th class="app-table2-header">No of Card</th>
+                          <th class="app-table2-header">Type of Card</th>
+                           <th class="app-table2-header">Product Type</th>
                             <th class="app-table2-header">Reason</th>
                             <th class="app-table2-header"></th>
                              <th class="app-table2-header"></th>
@@ -209,7 +209,7 @@ export default {
             }
          try {
            
-             const response = await axios.post(this.getUrl2 + 'api/CardRequest/approveoracknowledge',formData)
+             const response = await axios.post(this.getUrl2 + 'api/CardStock/approveoracknowledge',formData)
              if(response.data.responseCode == "00"){
                this.loader = false;
                this.status = true;
@@ -245,7 +245,7 @@ export default {
          }
          try {
            
-             const response = await axios.post(this.getUrl2 + 'api/CardRequest/RejectCardRequest',formData)
+             const response = await axios.post(this.getUrl2 + 'api/CardStock/RejectCardRequest',formData)
             if(response.data.responseCode == "00"){
                this.loader = false;
                this.status = true;

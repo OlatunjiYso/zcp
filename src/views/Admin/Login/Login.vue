@@ -16,7 +16,7 @@
             <label for="Email-address" class="login-label">User Name</label>
             <input v-model="form.userName" type="text" class="app-login-text-field w-input"  placeholder="john.doe" required></div>
           <div class="app-login-form-group">
-            <label for="password" class="login-label">Hardware Token</label>
+            <label for="password" class="login-label">Pin & Token</label>
             <input v-model="form.password" type="password" class="app-login-text-field w-input" placeholder="xxxxxxxxxxxxx" required>
             </div>
              <button type="submit" class="app-login-button" :disabled="this.isAttemptingLogin">{{this.isAttemptingLogin ? "Logging you in ...":"Login into Account" }}</button>

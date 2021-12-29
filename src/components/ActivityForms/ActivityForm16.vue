@@ -1,49 +1,34 @@
 <template>
   <Loader v-show="loader"/>
   <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>
-  <div class="content-header">Card Reissue </div>
+  <div class="content-header">Card Issuance</div>
   <form @submit.prevent="sendRequest">
     <div class="form-flex">
 
       <div class="form-flex-col-3">
-        <label class="login-label">Account Number<span style="color:red">*</span></label>
-        <input v-model="form.accountNumber" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <label class="login-label">Full Name<span style="color:red">*</span></label>
+        <input  type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
-      <div class="form-flex-col-3">
-        <label class="login-label">Account Name<span style="color:red">*</span></label>
-        <input v-model="form.accountName" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <div class="form-flex-col-3">
+        <label class="login-label">Email Address<span style="color:red">*</span></label>
+        <input  type="email" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
-      <div class="form-flex-col-3">
-        <label class="login-label">Pickup Branch<span style="color:red">*</span></label>
-        <select required v-model="form.pickupBranch" style="marginBottom: 30px" class="app-select w-select">
-          <option  v-for="(result, index) in branches" :key="index" :value="result.branchNo">{{result.branchName}}</option>
-        </select>
+       <div class="form-flex-col-3">
+        <label class="login-label">Date of Birth<span style="color:red">*</span></label>
+        <input  type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
-      <div class="form-flex-col-3">
-        <label class="login-label">Card Pan<span style="color:red">*</span></label>
-        <input v-model="form.cardPan" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <div class="form-flex-col-3">
+        <label class="login-label">BVN<span style="color:red">*</span></label>
+        <input  type="email" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
-      <div class="form-flex-col-3">
-        <label class="login-label">Reason<span style="color:red">*</span></label>
-        <select required v-model="form.reason" style="marginBottom: 30px" class="app-select w-select">
-          <option  v-for="(result, index) in reasons" :key="index" :value="result.reasonId">{{result.reissueReason}}</option>
-        </select>
+        <div class="form-flex-col-3">
+        <label class="login-label">Phone Number<span style="color:red">*</span></label>
+        <input  type="email" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
-                <div class="form-flex-col-3">
-        <label class="login-label">Surname Change(Optional)</label>
-        <input @keydown="specialCharVal($event)" v-model="form.surname_change" type="text" class="app-text-field w-input" required placeholder="Type Here" />
-      </div>
-      <!-- <div class="form-flex-col-3">
-        <label class="login-label">Activity By<span style="color:red">*</span></label>
-        <input v-model="form.activityBy" type="text" class="app-text-field w-input" required placeholder="Type Here" />
-      </div> -->
-      <div class="form-flex-col-3">
-        <label class="login-label">New Name of Card<span style="color:red">*</span></label>
-        <input @keydown="specialCharVal($event)" v-model="form.newNameOfCard" type="text" class="app-text-field w-input" required placeholder="Type Here" />
-      </div>
+     
     </div>
     <br><br>
-    <button type="submit" class="app-form-button">Submit</button>
+    <button type="submit" class="app-form-button">Create Account</button>
   </form>
 </template>
 

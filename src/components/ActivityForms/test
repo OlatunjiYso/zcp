@@ -28,7 +28,7 @@
    <br/><br/><br/>
 
   <form @submit.prevent="sendJson" v-if="isBulk">
-      <label for="myfile">Bulk Upload | <a href="https://res.cloudinary.com/vlog/raw/upload/v1634143152/DEBIT_BULK_SAMPLE.zip" download>Download Request Sample</a></label>
+      <label for="myfile">Bulk Upload | <a href="./sample.xlsx" download>Download Request Sample</a></label>
 <input class="bulk-upload" ref="myfiles" type="file" id="myfile" name="myfile" accept=".xls, .xlsx" required>
 <br>
   <button v-show ="isActiveBtn" type="submit" class="app-form-button">Submit</button>
@@ -43,15 +43,15 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">First Name<span style="color:red">*</span></label>
-        <input @keydown="specialCharVal($event)" v-model="form.firstName" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.firstName" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Middle Name</label>
-        <input @keydown="specialCharVal($event)" v-model="form.middleName" type="text" class="app-text-field w-input"  placeholder="Type Here" />
+        <input v-model="form.middleName" type="text" class="app-text-field w-input" placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Last Name<span style="color:red">*</span></label>
-        <input @keydown="specialCharVal($event)" v-model="form.lastName" @blur="populateCardName" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.lastName" @blur="populateCardName" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Gender<span style="color:red">*</span></label>
@@ -118,9 +118,9 @@
         <label class="login-label">Issued Date<span style="color:red">*</span></label>
         <input v-model="form.documentIssueDate" :max="todayDate" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
-      <div class="form-flex-col-3" v-show=" form.idCardTypeCode != '02' && form.idCardTypeCode != '04' ">
+      <div class="form-flex-col-3" v-show="form.idCardTypeCode != '02'">
         <label class="login-label">Expiry Date<span style="color:red">*</span></label>
-        <input v-model="form.expiryDateOfDoc" :min="newSorted" type="date" class="app-text-field w-input" placeholder="Type Here" />
+        <input v-model="form.expiryDateOfDoc" :min="newSorted" type="date" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Account Number<span style="color:red">*</span></label>
@@ -128,7 +128,7 @@
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Name on Card<span style="color:red">*</span></label>
-        <input @keydown="specialCharVal($event)" v-model="form.nameOnCard" type="text" class="app-text-field w-input" required placeholder="Type Here" />
+        <input v-model="form.nameOnCard" type="text" class="app-text-field w-input" required placeholder="Type Here" />
       </div>
       <div class="form-flex-col-3">
         <label class="login-label">Socio Prof Code<span style="color:red">*</span></label>
@@ -205,7 +205,6 @@ export default {
        isActiveBtn: false
     }
   },
-
   async mounted() {
 
     this.ismounted = true
@@ -219,7 +218,6 @@ export default {
       }
   },
     computed:{
-  
     ...mapGetters([ 'getUrl2', 'getUrl' ]),
     newSorted(){
       if(this.ismounted){
@@ -235,14 +233,6 @@ export default {
     }
   },
   methods: {
-      specialCharVal($event){
-
-            if(!$event.key.match(/^[a-zA-Z]*$/))
-            {
-                $event.preventDefault();
-            }
-           
-        },
     populateCardName(){
      this.form.nameOnCard = this.form.firstName + " " + this.form.lastName
     },
@@ -298,31 +288,31 @@ export default {
 
                        const newData = json_object.map( x => {
                          return{      
-                                  "productCode": product.cardProductCode.toString(),
-                                  "branchNo": company.data.branch.toString(),
+                                  "productCode": product.cardProductCode,
+                                  "branchNo": company.data.branch,
                                   "companyId": parseInt(user.companyId),
                                   "userId": parseInt(user.id),
-                                  "title": x.title.toString(),
-                                  "firstName": x.firstName.toString(),
-                                  "middleName": x.middleName.toString(),
-                                  "lastName": x.lastName.toString(),
-                                  "gender": x.gender.toString(),
-                                  "maritalStatus": x.maritalStatus.toString(),
-                                  "mobileNo": x.mobileNo.toString(),
-                                  "email": x.email.toString(),
-                                  "dateOfBirth": x.dateOfBirth.toString(),
-                                  "addressLine1": x.addressLine1.toString(),
-                                  "addressLine2": x.addressLine2.toString(),
-                                  "cityCode": x.cityCode.toString(),
-                                  "regionCode":x.regionCode.toString(),
-                                  "countryCode": x.countryCode.toString(),
-                                  "legalID": x.legalID.toString(),
-                                  "idCardTypeCode": x.idCardTypeCode.toString(),
-                                  "documentIssueDate": x.documentIssueDate.toString(),
-                                  "expiryDateOfDoc": x.expiryDateOfDoc.toString(),
-                                  "accountNbr": x.accountNbr.toString(),
-                                  "nameOnCard": x.nameOnCard.toString(),
-                                  "socioProfCode": x.socioProfCode.toString()
+                                  "title": x.title,
+                                  "firstName": x.firstName,
+                                  "middleName": x.middleName,
+                                  "lastName": x.lastName,
+                                  "gender": x.gender,
+                                  "maritalStatus": x.maritalStatus,
+                                  "mobileNo": x.mobileNo,
+                                  "email": x.email,
+                                  "dateOfBirth": x.dateOfBirth,
+                                  "addressLine1": x.addressLine1,
+                                  "addressLine2": x.addressLine2,
+                                  "cityCode": x.cityCode,
+                                  "regionCode":x.regionCode,
+                                  "countryCode": x.countryCode,
+                                  "legalID": x.legalID,
+                                  "idCardTypeCode": x.idCardTypeCode,
+                                  "documentIssueDate": x.documentIssueDate,
+                                  "expiryDateOfDoc": x.expiryDateOfDoc,
+                                  "accountNbr": x.accountNbr,
+                                  "nameOnCard": x.nameOnCard,
+                                  "socioProfCode": x.socioProfCode
                          }
                        })
 
@@ -458,17 +448,16 @@ export default {
         "addressLine1": this.form.addressLine1,
         "addressLine2": this.form.addressLine2,
         "cityCode": this.form.cityCode,
-        "regionCode": this.form.regionCode,
+        "regionCode":this.form.regionCode,
         "countryCode": this.form.countryCode,
         "legalID": this.form.legalID,
         "idCardTypeCode": this.form.idCardTypeCode,
         "documentIssueDate": moment(this.form.documentIssueDate).format('DD-MM-YYYY'),
-        "expiryDateOfDoc": this.form.idCardTypeCode == '02' || this.form.idCardTypeCode == '04' ? '06-10-3021' :  moment(this.form.expiryDateOfDoc).format('DD-MM-YYYY'),
+        "expiryDateOfDoc": moment(this.form.expiryDateOfDoc).format('DD-MM-YYYY'),
         "accountNbr": this.form.accountNbr,
         "nameOnCard": this.form.nameOnCard,
         "socioProfCode": this.form.socioProfCode
       }
-      console.log(formData)
       try {
         const response = await axios.post(this.getUrl2 + 'api/CardRequest/makecardrequest',[formData])
         if(response.data[0].responseCode == "00"){

@@ -38,8 +38,8 @@
         </select>
          </div>
             <div className="form-flex-col">
-               <input  style="display:inline-block" type="checkbox" id="cash" name="cash">
-            <label style="display:inline-block;margin-left:10px;color:#a3a3a3; font-weight:500;font-size:13px" for="cash">I agree to the <a href="https://drive.google.com/file/d/1ENniW_GqiHlGRGyIkjY-doKK0MQFdE31/view?ths=true">terms and conditions</a> </label> 
+               <input  style="display:inline-block" type="checkbox" id="cash" name="cash" required>
+            <label style="display:inline-block;margin-left:10px;color:#a3a3a3; font-weight:500;font-size:13px" for="cash">By setting up this new User, we confirm that the User is duly authorized by the Company to create/initiate/approve requests on the ZCard Portal on behalf of our Company. We hereby fully indemnify Zenith Bank Plc (“the Bank”) against any and all claims, demands, actions, suits, losses, costs, charges, expenses, damages, penalties and liabilities whatsoever which the Bank may incur by reason of or in connection with the setup of the User as a Super Admin, Maker or Checker on the ZCard portal.</label> 
          </div>
         </div>
           <button v-show="error == false" type="submit" style="marginTop:20px;display:block;cursor:pointer" class="app-modal-button">Add User</button>
@@ -130,7 +130,8 @@ this.status = false;
                   emailAddress: this.form.emailAddress,
                   userName: this.form.userName,
                   mobileNo: this.form.mobileNo,
-                  rolesId: parseInt(this.userRole)  ,
+                  rolesId: parseInt(this.userRole),
+                  userId: parseInt(companyId.id),
                   isActive: true,
          }
          try {

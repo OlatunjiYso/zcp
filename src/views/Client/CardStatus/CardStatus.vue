@@ -19,7 +19,7 @@
       <div>
         <div>
           <form @submit.prevent="searchCard">
-       <input required  maxlength="10" v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number">
+       <input required   v-model="accountNbr" v-on:keyup="searchForCard" style="display:inline-block;width:40%" type="text" class="app-input-search w-input" placeholder="Search by Account Number">
        <button type="submit" style="margin-top:-15px;margin-left:20px;font-size:15px;cursor:pointer;height:40px;background:#1b1b1b" className="app-icon table-button filter"><span className="table-button-icon"></span></button>        
           </form>
           
@@ -160,7 +160,7 @@ this.status = false;
                this.loader = false;
                this.status = true;
                this.state = 'success';
-               this.message = 'Operation Sucessful'
+               this.message = response.data.responseMessage
              }
              else{
                this.loader = false;

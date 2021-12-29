@@ -114,8 +114,8 @@ export default {
     }
   },
     async created(){
-  // const response = await axios.post(this.getUrl2 + 'api/DispenseErrorCaller/GetCallerId/' + result.id)
-  // this.callerData = response.data
+  const response = await axios.post(this.getUrl2 + 'api/DispenseErrorCaller/GetCallerId/' + result.id)
+  this.callerData = response.data
   },
   methods: {
                     openModal(result){
@@ -141,8 +141,8 @@ export default {
       this.loader = true;
 
      const formData = {
-  "username": "WEB",
-  "password": "WEB4321",
+  "username": this.callerData.mfbCallerUsername,
+  "password": this.callerData.mfbCallerPassword,
   "startDate":  moment(this.form.startDate).format('YYYY-MM-DD'),
   "endDate":  moment(this.form.endDate).format('YYYY-MM-DD'),
 }
