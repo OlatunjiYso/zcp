@@ -72,7 +72,6 @@ export default {
         this.$store.dispatch("fetchActivities"),
         this.$store.dispatch("fetchCompanyActivities",companyId.companyId),
       ]).then((response)=>{
-            console.log("Done",response)
             this.activities = response[0].data;
             this.companyActivities = response[1].data;
           })

@@ -65,7 +65,7 @@ export default {
         name:"Card Cancellation",
         url:"/client/card-cancellation"
       },
-            {
+       {
         id:7,
         name:"Dispute Requests",
         url:"/client/dispute-requests"
@@ -80,6 +80,16 @@ export default {
         name:"Pin Reissue",
         url:"/client/pin-reissue"
       },
+      {
+        id:14,
+        name:"Card Stock Request",
+        url:"/client/card-stock-request"
+      },
+      {
+        id:10002,
+        name:"Card Stock Request",
+        url:"/client/card-stock-request"
+      }
 
     ],
     activities:[]

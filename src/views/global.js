@@ -17,12 +17,12 @@ export default {
       await this.$store.dispatch('getRoles')
       if(localStorage.getItem('user-mfb')){
               const user = JSON.parse(localStorage.getItem('user-mfb'))
-      const roleName = this.getRoles.length > 0 ?  this.getRoles.find(x => { return x.id == user.rolesId }).name : null
+      const roleName = this.getRoles?.length > 0 ?  this.getRoles.find(x => { return x.id == user.rolesId }).name : null
      this.role = roleName;
       }
       else if(localStorage.getItem('user')){
         const user2 = JSON.parse(localStorage.getItem('user'))
-        const roleName2 = this.getRoles.length > 0 ? this.getRoles.find(x => { return x.id == user2.rolesId}).name : null
+        const roleName2 = this.getRoles?.length > 0 ? this.getRoles.find(x => { return x.id == user2.rolesId}).name : null
        this.role2 = roleName2;
       }
 
@@ -65,7 +65,7 @@ export default {
     const requests = response.data.map(x => { 
       return {
         ...x,
-          productCode :  this.getCardSetup.length > 0 ? this.getCardSetup.find((entry)=>{return x.productCode === entry.cardProductCode}).description : null
+          productCode :  this.getCardSetup?.length > 0 ? this.getCardSetup.find((entry)=>{return x.productCode === entry.cardProductCode}).description : null
       }
      })
 this.loading = false
