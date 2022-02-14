@@ -14,6 +14,8 @@ import CardParam from "../views/Client/CardParam/Requests";
 import PinReissue from "../views/Client/PinReissue/PinReissue";
 import Audit from '../views/Client/Audit/Audit.vue'
 import CardStatus from '../views/Client/CardStatus/CardStatus'
+import CardStockRequest from '../views/Client/StockRequest/Requests'
+import AccountHolders from '../views/Client/AccountHolders/Index.vue'
 
 import Login2 from '../views/Admin/Login/Login.vue'
 import Overview2 from '../views/Admin/Overview/Overview.vue'
@@ -117,7 +119,18 @@ const routes = [
     component: CardStatus,
     meta: { requiresMfbAuth: true }
   },
-
+{
+  path: '/client/card-stock-request',
+    name: 'CardStockRequest',
+    component: CardStockRequest,
+    meta: { requiresMfbAuth: true }
+},
+{
+  path: '/client/account-holders',
+    name: 'AccountHolders',
+    component: AccountHolders,
+    meta: { requiresMfbAuth: true }
+},
 
 
 
