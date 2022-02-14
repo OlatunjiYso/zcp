@@ -367,8 +367,8 @@ export default {
       this.form.idCardLegalID = "";
       this.form.address = "";
       this.form.city = "";
-      this.form.country = "";
-      this.form.nationality = "";
+      this.form.country = "566";
+      this.form.nationality = "Nigerian";
     },
     resetState() {
       this.status = false;
