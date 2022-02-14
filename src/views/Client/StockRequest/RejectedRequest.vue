@@ -23,7 +23,7 @@
                            <th class="app-table2-header">Date</th>
                           <th class="app-table2-header">No of Card</th>
                           <th class="app-table2-header">Type of Card</th>
-                           <th class="app-table2-header">Product Type</th>
+                           <th class="app-table2-header">Card Limit</th>
                            <th class="app-table2-header">Reason</th>
                             <th class="app-table2-header"></th>
                            
@@ -36,7 +36,7 @@
                             <td class="app-table2-data">{{result.create_at}}</td>
                             <td class="app-table2-data">{{result.nameOnCard}}</td>
                             <td class="app-table2-data">{{result.accountNbr}}</td> 
-                            <td class="app-table2-data">{{result.productCode}}</td>
+                            <td class="app-table2-data">{{result.cardLimit}}</td>
                             <td class="app-table2-data">{{result.reason}}</td>
                              <td class="app-table2-data">
                                    <div @click="openModal(result)" style="cursor:pointer" class="table-btn">Reprocess<span class="table-button-icon"></span></div>
