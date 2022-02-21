@@ -134,15 +134,18 @@ export default {
         id: 3,
         userName: "cynthia.jon-olawuyi",
         rolesId: 35,
-        permissions: [
-          { name: "Admin_View_CardStatus" },
-          { name: "Admin_Audit_Trail" }
-        ],
         // permissions: [
-        //   { name: "SuperAdmin_Management" },
-        //   { name: "Admin_Onboarding" },
-        //   { name: "Admin_User_Management" },
+        //   { name: "Admin_View_CardStatus" },
+        //   { name: "Admin_Audit_Trail" }
         // ],
+        permissions: [
+          { name: "SuperAdmin_Management" },
+          { name: "Admin_Onboarding" },
+          { name: "Admin_User_Management" },
+          { name: "Admin_View_CardStatus" },
+          { name: "Admin_Audit_Trail" },
+          {name: "testPermupdate"}
+        ],
       };
 
       this.GenerateToken(50);
