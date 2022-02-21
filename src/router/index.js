@@ -24,8 +24,10 @@ import Requests2 from '../views/Admin/Requests/Requests.vue'
 import UserMgmt2 from '../views/Admin/UserMgmt/UserMgmt.vue'
 import CreateRole2 from '../views/Admin/UserMgmt/Roles/CreateRole.vue'
 import Activities2 from '../views/Admin/Activities/Activities.vue'
+import ActivityRequest2 from '../views/Admin/ActivityRequests/ActivityRequests'
 import Audit2 from '../views/Admin/Audit/Audit.vue'
 import CardStatus2 from '../views/Admin/CardStatus/CardStatus'
+import CardStockRequest2 from '../views/Admin/StockRequest/Requests'
 import CompanyUsers from '../views/Admin/Companies/UserMgmt'
 
 const routes = [
@@ -188,6 +190,12 @@ const routes = [
     meta: { requiresAdminAuth: true }
   },
   {
+    path: '/admin/activity-requests',
+    name: 'ActivityRequest2',
+    component: ActivityRequest2,
+    meta: { requiresAdminAuth: true }
+  },
+  {
     path: '/admin/create-role',
     name: 'CreateRole2',
     component: CreateRole2,
@@ -198,6 +206,12 @@ const routes = [
     name: 'UserMgmt2',
     component: UserMgmt2,
     meta: { requiresAdminAuth: true }
+  },
+  {
+    path: '/admin/card-stock-request',
+      name: 'CardStockRequest2',
+      component: CardStockRequest2,
+      meta: { requiresAdminAuth: true }
   }
 
 ]
