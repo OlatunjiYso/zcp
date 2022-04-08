@@ -376,31 +376,11 @@ export default {
     async sendRequest() {
       this.loader = true;
       const user = JSON.parse(localStorage.getItem("user-mfb"));
-      const company = await axios.get(
-        this.getUrl + "api/companies/" + parseInt(user.companyId)
-      );
       const formData = {
         ...this.form,
         userId: parseInt(user.id),
         companyId: parseInt(user.companyId),
-        sex: this.form.gender,
-        // firstName: this.form.firstName,
-        // middleName: this.form.middleName,
-        // lastName: this.form.lastName,
-        // dateOfBirth: this.form.dateOfBirth,
-        // bvn: this.form.bvn,
-        // emailAddress: this.form.emailAddress,
-        // phoneNumber: this.form.phoneNo,
-        // gender: this.form.gender,
-        // idCardtype: this.form.idCardType,
-        // idCardIssueDate: this.form.idCardIssueDate,
-        // idCardExpiryDate: this.form.idCardExpiryDate,
-        // idCardLegalID: this.form.idCardLegalID,
-        // addressLine1: this.form.addressLine1,
-        // addressLine2: this.form.addressLine2,
-        // city: this.form.city,
-        // country: this.form.country,
-        // nationality: this.form.nationality,
+        sex: this.form.gender
       };
       try {
         const response = await axios.post(
@@ -413,10 +393,8 @@ export default {
         this.message = response.data.responseMessage;
         this.clearForm();
       } catch (error) {
-        const errorMsg = error.response.data
-          ? error.response.data.description ||
-            error.response.data.responseMessage
-          : error.message;
+        const errorMsg = error.response.data.responseMessage
+        || error.response.data.description;
         this.loader = false;
         this.status = true;
         this.state = "failed";

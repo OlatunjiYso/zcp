@@ -188,48 +188,34 @@ export default {
       const company = await axios.get(
         this.getUrl + "api/companies/" + parseInt(user.companyId)
       );
-      const companyProduct = await axios.get(
-        this.getUrl + "api/CardProductSetup"
-      );
-      const product = await companyProduct.data.find((x) => {
-        return x.companyId == parseInt(user.companyId);
-      });
       const formData = {
         userId: parseInt(user.id),
         companyId: parseInt(user.companyId),
         noOfCards: parseInt(this.no_of_cards),
         typeOfCard: this.type_of_card,
         cardLimit: this.cardLimit,
-        productType: product.cardProductCode,
+        productType: 'Credit Card',
         workflowId: 1,
         workflowDescription: "string",
-        branchNo: company.data.branch,
+        branchNo: company.data.branch
       };
       try {
         const response = await axios.post(
           this.getUrl2 + "api/CardStock/makecardstockrequest",
           formData
         );
-        if (response.status == 200) {
-          console.log('Inside TRY 200')
+        console.log('>>> response.data', response.data);
           this.loader = false;
           this.state = "success";
           this.status = true;
-          this.message = "Request submitted Sucessfully";
+          this.message = response.data.responseMessage
           this.clearForm();
-        } else {
-           console.log('Inside TRY ELSE')
-          this.loader = false;
-          this.status = true;
-          this.state = "failed";
-          this.message = response.data.responseMessage;
-        }
+        
       } catch (error) {
-         console.log('Inside TRY cATCH', error.message)
         this.loader = false;
         this.status = true;
         this.state = "failed";
-        this.message = "Error Occured Requesting Card Stock";
+        this.message = error.response.data.responseMessage;
       }
     },
   },
