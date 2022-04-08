@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="left-bar-menu">
     <div class="app-admin-brand"></div>
     <router-link to="/client/overview">
       <div class="admin-col-link-div" @click="changeNav(1)">
@@ -17,7 +17,10 @@
         </div>
       </div>
     </router-link>
-    <router-link to="/client/activity-requests" v-show="checkPerm('Activity_Requests')">
+    <router-link
+      to="/client/activity-requests"
+      v-show="checkPerm('Activity_Requests')"
+    >
       <div class="admin-col-link-div" @click="changeNav(2)">
         <div
           class="admin-col-1-links"
@@ -137,5 +140,10 @@ export default {
 <style scoped>
 a {
   text-decoration: none;
+}
+
+.left-bar-menu {
+  max-height: 80%;
+  overflow: scroll;
 }
 </style>
