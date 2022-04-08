@@ -16,7 +16,15 @@ export default {
          cardSetup: [],
          reasons: [],
          branches: [],
-         creditCardTypes: []
+         creditCardTypes: [],
+         companyReport: {
+            companyName: 'company',
+            cardsReceived: 0,
+            cardHolders: 0,
+            accountHolders: 0,
+          },
+         creditCardReports: [],
+         foo: ''
       }
    },
    async created() {
@@ -102,6 +110,26 @@ export default {
       async fetchCreditCardType() {
          const result = await axios.get(this.getUrl2 + 'api/Common/CreditCardType')
          this.creditCardTypes = result.data
+      },
+      async fetchCompanyReport(id) {
+         try {
+            const result = await axios.get(this.getUrl + `api/reports/${id}`)
+            this.companyReport = result.data?.companyReport
+         }
+         catch (err) {
+            console.log('Error From FetchcompanyReport:::', err.message)
+         }
+
+      },
+      async fetchCreditCardReport(id) {
+         try {
+            const result = await axios.get(this.getUrl + `api/reports/creditcardreport/company/${id}`);
+            this.creditCardReports = result.data?.reports
+         }
+         catch (err) {
+            console.log('Error occured', err.message)
+         }
+
       }
    },
 }

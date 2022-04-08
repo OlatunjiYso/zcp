@@ -7,27 +7,17 @@
       :resetState="resetState"
       v-if="status"
     />
-    <div class="content-header">Pending Card Requests Acknowledgements</div>
+    <ConfirmationModal
+      v-show="showConfirmationModal"
+      :closeConfirmationModal="closeConfirmationModal"
+      :confirmationModalData="confirmationModalData"
+      :closeConfirmationModalToast="closeConfirmationModalToast"
+      :approve="acknowledge"
+      :decline="()=>{}"
+    />
+    <div class="content-header">Card Stock Request Pending Acknowledgement</div>
     <div class="content-sub">
-      Here are the requests that need acknowledgements
-    </div>
-    <div class="app-table-actions">
-      <div class="app-table-search">
-        <div class="form-block w-form">
-          <input
-            v-model="searchQuery"
-            type="text"
-            class="app-input-search w-input"
-            placeholder="Account Number"
-            id="name"
-          />
-        </div>
-      </div>
-      <!-- <div class="app-table-buttons">
-          <a href="#" class="table-button">Sort <span class="table-button-icon"></span></a>
-          <a href="#" class="table-button">Filter <span class="table-button-icon"></span></a>
-          <a href="#" class="table-button">Actions <span class="table-button-icon"></span></a>
-        </div> -->
+      Here are the requests that needs acknowledgement.
     </div>
     <Loading v-if="AcknowledgeLoader" />
     <div v-else>
@@ -56,7 +46,7 @@
             <td class="app-table2-data">{{ result.cardLimit }}</td>
             <td class="app-table2-data">
               <div
-                @click="Acknowledge(result)"
+                @click="attemptAcknowledgement(result)"
                 style="cursor: pointer"
                 class="table-btn"
               >
@@ -78,13 +68,15 @@ import Status from "../../../components/Status/Status2";
 import { mapGetters } from "vuex";
 import EmptyData from "../../../components/EmptyData/EmptyData";
 import Loading from "../../../components/Loading/Loading";
+import ConfirmationModal from './ConfirmationModal.vue';
 export default {
-  props: ["AcknowledgeRequests", "AcknowledgeLoader"],
+  props: ["requestsPendingAcknowledge", "pendingAcknowledgeLoader"],
   components: {
     Loader,
     Status,
     EmptyData,
     Loading,
+    ConfirmationModal
   },
   data() {
     return {
@@ -93,36 +85,49 @@ export default {
       state: null,
       message: null,
       searchQuery: "",
+      showConfirmationModal: false,
+      confirmationModalData: {req: {}, intent: ''}
     };
   },
   computed: {
     ...mapGetters(["getUrl2"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.AcknowledgeRequests.filter((item) => {
+        return this.requestsPendingAcknowledge.filter((item) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => item.accountNbr.toLowerCase().includes(v));
         });
       } else {
-        return this.AcknowledgeRequests;
+        return this.requestsPendingAcknowledge;
       }
     },
   },
   methods: {
     resetState() {
       this.status = false;
-      location.reload();
+      //location.reload();
       return false;
     },
-    async Acknowledge(result) {
+    closeConfirmationModal() {
+      this.showConfirmationModal = false;
+    },
+    openConfirmationModal(intent, req) {
+      this.confirmationModalData.req = req;
+      this.confirmationModalData.intent = intent;
+      this.showConfirmationModal = true;
+    },
+    attemptAcknowledgement(req) {
+      this.openConfirmationModal('acknowledgement', req)
+    },
+    async acknowledge(req, reason) {
       this.loader = true;
       const user = JSON.parse(localStorage.getItem("user-mfb"));
       const formData = {
-        requestId: [result.id],
+        requestId: req.id,
         companyId: parseInt(user.companyId),
-        workflowId: 6,
+        workflowId: 5,
         userId: parseInt(user.id),
       };
       try {
@@ -141,12 +146,13 @@ export default {
           this.state = "failed";
           this.message = "Operation Failed";
         }
+        this.closeConfirmationModal();
       } catch (error) {
-        console.log(error);
         this.loader = false;
         this.status = true;
         this.state = "failed";
         this.message = "Operation Failed";
+        this.closeConfirmationModal();
       }
     },
   },

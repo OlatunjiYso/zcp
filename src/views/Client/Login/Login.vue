@@ -26,7 +26,7 @@
         Kindly fill in your credentials to login into your account.
       </div>
       <div>
-        <form @submit.prevent="testLogin80_25">
+        <form @submit.prevent="doLogin">
           <div class="app-login-form-group">
             <label for="Email-address" class="login-label">User Name</label>
             <input
@@ -77,6 +77,7 @@ import axios from "axios";
 import { mapGetters } from "vuex";
 import Loader from "../../../components/Loader/Loader";
 import Status from "../../../components/Status/Status2";
+import testUsers from "./testUsers";
 export default {
   props: ["closeAdd"],
   components: {
@@ -119,99 +120,15 @@ export default {
       this.token = result.join("");
       return result.join("");
     },
-    testLogin() {
+    testLogin(testData) {
       const d1 = new Date();
       const d2 = new Date(d1);
-
       d2.setMinutes(d1.getMinutes() + 2);
-
-      let testData = {
-        responseCode: "00",
-        responseMessage: "00-Success",
-        id: 15,
-        companyId: 2,
-        firstName: "Olatunji",
-        lastName: "Yusuf",
-        emailAddress: "olatunjiyso@gmail.com",
-        userName: "Olatunji",
-        mobileNo: "2348034747769",
-        rolesId: 31,
-        roleType: "MFB",
-        isActive: true,
-        permissions: [
-          { name: "Make_Requests" },
-          { name: "Activity_Requests" },
-          {
-            id: 19,
-            mfbOrBank: null,
-            name: "Mfb_User_Management",
-            description: "manage users",
-            isActive: true,
-            created_at: "2021-06-11T14:34:28.6079583+01:00",
-          },
-          {
-            id: 17,
-            mfbOrBank: null,
-            name: "Card_Status",
-            description: "check a card status",
-            isActive: true,
-            created_at: "2021-06-11T14:34:28.6434479+01:00",
-          },
-        ],
-      };
-
       this.GenerateToken(50);
       localStorage.setItem("et", d2);
       localStorage.setItem("token-mfb", this.token);
       localStorage.setItem("user-mfb", JSON.stringify(testData));
-      window.location = "client/activity-form/1";
-    },
-    testLogin80_25() {
-      const d1 = new Date();
-      const d2 = new Date(d1);
-
-      d2.setMinutes(d1.getMinutes() + 2);
-
-      let testData = {
-        responseCode: "00",
-        responseMessage: "00-Success",
-        id: 10001,
-        companyId: 2,
-        firstName: "Olatunji",
-        lastName: "Yusuf",
-        emailAddress: "olatunji.yusuf@zenithbank.com",
-        userName: "Olatunji",
-        mobileNo: "2348034747769",
-        rolesId: 32,
-        roleType: "MFB",
-        isActive: true,
-        permissions: [
-          { name: "Make_Requests" },
-          { name: "Activity_Requests" },
-          {
-            id: 19,
-            mfbOrBank: null,
-            name: "Mfb_User_Management",
-            description: "manage users",
-            isActive: true,
-            created_at: "2021-06-11T14:34:28.6079583+01:00",
-          },
-          {
-            id: 17,
-            mfbOrBank: null,
-            name: "Card_Status",
-            description: "check a card status",
-            isActive: true,
-            created_at: "2021-06-11T14:34:28.6434479+01:00",
-          },
-        ],
-      };
-
-      this.GenerateToken(50);
-      localStorage.setItem("et", d2);
-      localStorage.setItem("token-mfb", this.token);
-      localStorage.setItem("user-mfb", JSON.stringify(testData));
-      window.location = "client/activity-form/1";
+      window.location = "client/overview";
     },
     async Login() {
       this.GenerateToken(50);
@@ -253,6 +170,15 @@ export default {
         this.state = "failed";
         this.message = "System Error";
       }
+    },
+    doLogin() {
+      const userName = this.form.userName;
+      const pass = this.form.password;
+      const testUser = testUsers.find(u=> u.userName == userName);
+      if(testUser && testUser.password == pass) {
+        return this.testLogin(testUser.data);
+      }
+      return this.Login();
     },
   },
 };

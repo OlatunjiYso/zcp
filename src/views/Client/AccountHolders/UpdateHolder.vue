@@ -114,7 +114,7 @@ export default {
   computed: {
     ...mapGetters(["getUrl2", "getRoles"])
   },
-  created() { console.log('We are in Upload Modal', this.creditCardTypes)},
+  created() {},
   methods: {
     resetState() {
       this.status = false;

@@ -1,14 +1,10 @@
 <template>
   <div>
-    <ReprocessRequest
-      v-show="reprocessView"
-      :requestData="requestData"
-      :closeModal="closeModal"
-      :closeModalReload="closeModalReload"
-    />
-    <div class="content-header">Rejected Card Stock Requests</div>
-    <div class="content-sub">Here are the requests that were rejected</div>
-    <Loading v-if="RejectLoader" />
+    <div class="content-header">Card Stock Requests Pending Processing</div>
+    <div class="content-sub">
+      Here are the requests that have been submitted but are yet to be processed.
+    </div>
+    <Loading v-if="pendingProcessingLoader" />
     <div v-else>
       <table class="app-table2" v-if="!resultQuery.length <= 0">
         <thead>
@@ -16,10 +12,8 @@
             <th class="app-table2-header">Id</th>
             <th class="app-table2-header">Date</th>
             <th class="app-table2-header">No of Card</th>
-            <th class="app-table2-header">Type of Card</th>
+            <th class="app-table2-header">Type Of Card</th>
             <th class="app-table2-header">Card Limit</th>
-            <th class="app-table2-header">Reason</th>
-            <th class="app-table2-header"></th>
           </tr>
         </thead>
 
@@ -34,15 +28,6 @@
             <td class="app-table2-data">{{ result.noOfCards }}</td>
             <td class="app-table2-data">{{ result.typeOfCard }}</td>
             <td class="app-table2-data">{{ result.cardLimit }}</td>
-            <td class="app-table2-data">{{ result.reason }}</td>
-            <td class="app-table2-data">
-              <div
-                style="cursor: pointer"
-                class="table-btn"
-              >
-                Reprocess<span class="table-button-icon"></span>
-              </div>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -57,56 +42,43 @@ import Status from "../../../components/Status/Status2";
 import { mapGetters } from "vuex";
 import EmptyData from "../../../components/EmptyData/EmptyData";
 import Loading from "../../../components/Loading/Loading";
-import ReprocessRequest from "./Reprocess";
-
 export default {
-  props: ["rejectedRequests", "RejectLoader"],
+  props: ["requestsPendingProcessing", "pendingProcessingLoader"],
   components: {
     Loader,
     Status,
     EmptyData,
     Loading,
-    ReprocessRequest,
   },
   data() {
     return {
-      searchQuery: "",
-      requestData: "",
-      loading: false,
       loader: false,
       status: false,
       state: null,
       message: null,
-      reprocessView: false,
+      searchQuery: "",
     };
   },
   computed: {
     ...mapGetters(["getUrl2"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.rejectedRequests.filter((item) => {
+        return this.requestsPendingProcessing.filter((item) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => item.accountNbr.toLowerCase().includes(v));
         });
       } else {
-        return this.rejectedRequests;
+        return this.requestsPendingProcessing;
       }
     },
   },
   methods: {
-    closeModal() {
-      this.reprocessView = false;
-    },
-    closeModalReload() {
-      this.reprocessView = false;
-      location.reload();
+    resetState() {
+      this.status = false;
+      //location.reload();
       return false;
-    },
-    openModal(result) {
-      this.requestData = result;
-      this.reprocessView = true;
     },
   },
 };

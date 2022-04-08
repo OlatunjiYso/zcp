@@ -109,20 +109,36 @@
         </div>
       </div>
     </router-link>
-    <router-link
-      to="/admin/user-management"
-      v-show="checkPermAdmin('Admin_User_Management')"
-    >
+    <router-link to="/admin/reporting" v-show="checkPermAdmin('Admin_Audit_Trail')">
       <div class="admin-col-link-div" @click="changeNav(7)">
         <div
           class="admin-col-1-links"
           :class="[getCurrentAdminNav == 7 ? activeNav : '']"
         >
-          
+          
         </div>
         <div
           class="admin-col-link-text"
           :class="[getCurrentAdminNav == 7 ? activeNav : '']"
+        >
+          Reports
+        </div>
+      </div>
+    </router-link>
+    <router-link
+      to="/admin/user-management"
+      v-show="checkPermAdmin('Admin_User_Management')"
+    >
+      <div class="admin-col-link-div" @click="changeNav(8)">
+        <div
+          class="admin-col-1-links"
+          :class="[getCurrentAdminNav == 8 ? activeNav : '']"
+        >
+          
+        </div>
+        <div
+          class="admin-col-link-text"
+          :class="[getCurrentAdminNav == 8 ? activeNav : '']"
         >
           User<br />Management
         </div>
