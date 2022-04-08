@@ -55,36 +55,6 @@ export default {
       url: "/admin/go",
       requests: [
         {
-          id: 1,
-          name: "Card Requests",
-          url: "/admin/companies",
-        },
-        {
-          id: 11,
-          name: "Card Reissue",
-          url: "/admin/companies",
-        },
-        {
-          id: 2,
-          name: "Card Cancellation",
-          url: "/admin/companies",
-        },
-        {
-          id: 7,
-          name: "Dispute Requests",
-          url: "/admin/dispute-requests",
-        },
-        {
-          id: 12,
-          name: "Card Parameterization",
-          url: "/admin/card-param",
-        },
-        {
-          id: 6,
-          name: "Pin Reissue",
-          url: "/admin/pin-reissue",
-        },
-        {
           id: 14,
           name: "Card Stock Request",
           url: "/admin/card-stock-request",

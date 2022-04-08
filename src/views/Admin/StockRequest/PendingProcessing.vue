@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Loader v-show="loader" />
+    <LoaderPlus v-show="loader" :infoLine1="infoLine1" :infoLine2="infoLine2" />
     <Status
       :state="state"
       :message="message"
@@ -12,8 +12,18 @@
       :closeModal="closeModal"
       :viewDetailsData="viewDetailsData"
     />
-    <div class="content-header">Card Stock Requests Pending Processing</div>
-    <div class="content-sub">Here are the requests that needs to be</div>
+    <ConfirmationModal
+      v-show="showConfirmationModal"
+      :closeConfirmationModal="closeConfirmationModal"
+      :confirmationModalData="confirmationModalData"
+      :closeConfirmationModalToast="closeConfirmationModalToast"
+      :approve="Approve"
+      :decline="Decline"
+    />
+    <div class="content-header">Card Stock Pending Processing</div>
+    <div class="content-sub">
+      Here are the stock requests that needs to be processed
+    </div>
     <div class="app-table-actions">
       <div class="app-table-search">
         <div class="form-block w-form">
@@ -26,64 +36,18 @@
           />
         </div>
       </div>
-      <div className="app-table-select">
-        <input
-          required
-          placeholder="Reason"
-          v-show="multiAction"
-          v-model="reason[0]"
-          style="margin-right: 20px; width: 40%"
-          type="text"
-          className="app-modal-form-field w-input"
-        />
-        <button
-          v-show="multiAction"
-          @click="sendApprove"
-          style="
-            margin-right: 20px;
-            font-size: 15px;
-            cursor: pointer;
-            height: 40px;
-            background: #c00;
-          "
-          className="table-button filter"
-        >
-          Approve
-        </button>
-        <button
-          v-show="multiAction"
-          @click="sendDecline"
-          style="
-            font-size: 15px;
-            cursor: pointer;
-            height: 40px;
-            background: #1b1b1b;
-          "
-          className="table-button filter"
-        >
-          Decline
-        </button>
-      </div>
     </div>
     <Loading v-if="pendingProcessingLoader" />
     <div v-else>
-      <table class="app-table2" v-if="!resultQuery.length <= 0">
+      <table class="app-table2" v-if="!resultQuery?.length <= 0">
         <thead>
           <tr class="app-table2-row">
-            <th class="app-table2-header">
-              <input
-                @click="selectAll"
-                id="select-all"
-                type="checkbox"
-                value="test"
-              />
-            </th>
             <th class="app-table2-header">Id</th>
             <th class="app-table2-header">Date</th>
-            <th class="app-table2-header">No of Card</th>
+            <!-- <th class="app-table2-header">Company</th> -->
+            <th class="app-table2-header">No of Cards</th>
             <th class="app-table2-header">Type of Card</th>
-            <th class="app-table2-header">Product Type</th>
-            <th class="app-table2-header">Reason</th>
+            <th class="app-table2-header">Card Limit</th>
             <th class="app-table2-header"></th>
             <th class="app-table2-header"></th>
             <th class="app-table2-header"></th>
@@ -96,30 +60,12 @@
             :key="index"
             class="app-table2-row"
           >
-            <td class="app-table2-data">
-              <input
-                @click="addSingle(result)"
-                :id="`ReqA${result.id}`"
-                type="checkbox"
-                value="test"
-              />
-            </td>
             <td class="app-table2-data">{{ index + 1 }}</td>
             <td class="app-table2-data">{{ result.create_at }}</td>
+            <!-- <td class="app-table2-data">{{ 'companyName' }}</td> -->
             <td class="app-table2-data">{{ result.noOfCards }}</td>
             <td class="app-table2-data">{{ result.typeOfCard }}</td>
             <td class="app-table2-data">{{ result.cardLimit }}</td>
-            <td class="app-table2-data">
-              <input
-                v-show="singleAction"
-                v-model="reason[result.id]"
-                type="text"
-                class="app-input-search w-input"
-                placeholder="Type here"
-                id="name"
-                required
-              />
-            </td>
             <td class="app-table2-data">
               <div
                 @click="openModal(result)"
@@ -130,8 +76,7 @@
             </td>
             <td class="app-table2-data">
               <div
-                v-show="singleAction"
-                @click="sendApprove(result)"
+                @click="attemptApprove(result)"
                 style="cursor: pointer"
                 class="table-btn"
               >
@@ -140,8 +85,7 @@
             </td>
             <td class="app-table2-data">
               <div
-                v-show="singleAction"
-                @click="sendDecline(result)"
+                @click="attemptDecline(result)"
                 style="cursor: pointer; background: #c00"
                 class="table-btn"
               >
@@ -158,20 +102,22 @@
 
 <script>
 import axios from "axios";
-import Loader from "../../../components/Loader/Loader";
+import LoaderPlus from "../../../components/Loader/LoaderPlus";
 import Status from "../../../components/Status/Status2";
 import { mapGetters } from "vuex";
 import EmptyData from "../../../components/EmptyData/EmptyData";
 import Loading from "../../../components/Loading/Loading";
 import ViewDetails from "./ViewDetails";
+import ConfirmationModal from "./ConfirmationModal.vue";
 export default {
   props: ["reqPendingProcessing", "pendingProcessingLoader"],
   components: {
-    Loader,
+    LoaderPlus,
     Status,
     EmptyData,
     Loading,
     ViewDetails,
+    ConfirmationModal,
   },
   data() {
     return {
@@ -181,16 +127,21 @@ export default {
       state: null,
       message: null,
       searchQuery: "",
-      newReq: [],
+      newReq: 0,
       multiAction: false,
       singleAction: true,
-      reason: [],
+      reason: "",
       viewDetails: false,
       viewDetailsData: "",
+      showConfirmationModal: false,
+      confirmationModalData: { intent: "", req: {} },
+      showConfirmationModalToast: false,
+      infoLine1: "",
+      infoLine2: "",
     };
   },
   computed: {
-    ...mapGetters(["getUrl2"]),
+    ...mapGetters(["getUrl", "getCardSetup"]),
     resultQuery() {
       if (this.searchQuery) {
         return this.reqPendingProcessing.filter((item) => {
@@ -213,143 +164,85 @@ export default {
       this.viewDetailsData = result;
       this.viewDetails = true;
     },
-    checkBtnState() {
-      if (this.newReq.length <= 0) {
-        console.log("empty", this.newReq.length);
-        this.multiAction = false;
-        this.singleAction = true;
-      } else {
-        console.log("not empty", this.newReq.length);
-        this.multiAction = true;
-        this.singleAction = false;
-      }
+    closeConfirmationModal() {
+      this.showConfirmationModal = false;
     },
-    async selectAll() {
-      var checkbox = document.getElementById("select-all");
-      this.newReq = [];
-      if (checkbox.checked == true) {
-        for (var i = 0; i < this.reqPendingProcessing.length; i++) {
-          this.newReq.push(parseInt(this.reqPendingProcessing[i].id));
-          document.getElementById(
-            `ReqA${this.reqPendingProcessing[i].id}`
-          ).checked = true;
-        }
-        this.checkBtnState();
-      } else {
-        this.newReq = [];
-        for (var i = 0; i < this.reqPendingProcessing.length; i++) {
-          document.getElementById(
-            `ReqA${this.reqPendingProcessing[i].id}`
-          ).checked = false;
-        }
-        this.checkBtnState();
-      }
+    openConfirmationModal() {
+      this.showConfirmationModal = true;
     },
-    async addSingle(req, index) {
-      let Avalue = await parseInt(req.id);
-      var checkbox = document.getElementById(`ReqA${req.id}`);
-      const state = await this.newReq.some((x) => {
-        return x == Avalue;
-      });
-      console.log(state);
-      if (state == false && checkbox.checked == true) {
-        this.newReq.push(Avalue);
-        this.checkBtnState();
-      } else {
-        const newIndex = this.newReq.findIndex((result) => {
-          return result == Avalue;
-        });
-        await this.newReq.splice(newIndex, 1);
-        this.checkBtnState();
-      }
+    closeConfirmationModalToast() {
+      this.showConfirmationModal = false;
     },
-    pushRequest(id) {
-      this.newReq.push(id);
+    hideLoader() {
+      this.loader = false;
+      this.infoLine1 = "";
+      this.infoLine2 = "";
     },
-    sendApprove(result) {
-      this.loader = true;
-      if (this.singleAction == true) {
-        this.pushRequest(result.id);
-        this.Approve(result);
-      } else {
-        this.Approve();
-      }
+    attemptApprove(req) {
+      this.confirmationModalData.req = req;
+      this.confirmationModalData.intent = "approve";
+      this.openConfirmationModal();
     },
-    sendDecline(result) {
-      this.loader = true;
-      if (this.singleAction == true) {
-        this.pushRequest(result.id);
-        this.Decline(result);
-      } else {
-        this.Decline();
-      }
+    attemptDecline(req) {
+      console.log('attemeptdecline, req', req);
+      this.confirmationModalData.req = req;
+      this.confirmationModalData.intent = "decline";
+      this.openConfirmationModal();
     },
     async Approve(result) {
-      const user = JSON.parse(localStorage.getItem("user-mfb"));
+      this.closeConfirmationModal();
+      this.loader = true;
+      this.infoLine1 = "Kindly wait while we process your cards on PMA"
+      this.infoLine2 = "This may take a while . . . . ."
       const formData = {
-        requestId: this.newReq,
-        companyId: parseInt(user.companyId),
-        workflowId: 2,
-        userId: parseInt(user.id),
-        reason: result ? this.reason[result.id] : this.reason[0],
-        clientCode: "null",
+        companyId: result.companyId,
+        requestId: result.id,
+        reason: this.reason,
       };
       try {
         const response = await axios.post(
-          this.getUrl2 + "api/CardStock/approveoracknowledge",
+          this.getUrl + "api/cardstock/approval",
           formData
         );
-        if (response.data.responseCode == "00") {
-          this.loader = false;
-          this.status = true;
-          this.state = "success";
-          this.message = "Request Approved Successfully";
-        } else {
-          this.loader = false;
-          this.status = true;
-          this.state = "failed";
-          this.message = response.data.responseMessage;
-        }
+        this.hideLoader();
+        this.status = true;
+        this.state = "success";
+        this.message = response.data.responseMessage;
+        this.closeConfirmationModal();
       } catch (error) {
-        console.log(error);
-        this.loader = false;
+        this.hideLoader();
         this.status = true;
         this.state = "failed";
-        this.message = "Operation Failed";
+        this.message = error.response?.data.responseMessage;
+        this.closeConfirmationModal();
       }
     },
     async Decline(result) {
-      const user = JSON.parse(localStorage.getItem("user-mfb"));
+      this.closeConfirmationModal();
+      this.loader = true;
+      this.infoLine1 = "Rejecting request"
+      this.infoLine2 = ""
       const formData = {
-        requestId: this.newReq,
-        companyId: parseInt(user.companyId),
-        workflowId: 0,
-        userId: parseInt(user.id),
-        reason: result ? this.reason[result.id] : this.reason[0],
-        clientCode: "null",
+        companyId: result.companyId,
+        requestId: result.id,
+        reason: this.reason,
       };
       try {
         const response = await axios.post(
-          this.getUrl2 + "api/CardStock/RejectCardRequest",
+          this.getUrl + "api/cardstock/rejection",
           formData
         );
-        if (response.data.responseCode == "00") {
-          this.loader = false;
-          this.status = true;
-          this.state = "success";
-          this.message = "Request Denied Successfully";
-        } else {
-          this.loader = false;
-          this.status = true;
-          this.state = "failed";
-          this.message = response.data.responseMessage;
-        }
+        this.hideLoader();
+        this.status = true;
+        this.state = "success";
+        this.message = response.data.responseMessage;
+        this.closeConfirmationModal();
       } catch (error) {
-        console.log(error);
-        this.loader = false;
+        this.hideLoader();
         this.status = true;
         this.state = "failed";
-        this.message = "Operation Failed";
+        this.message = error.response?.data.responseMessage;
+        this.closeConfirmationModal();
       }
     },
     resetState() {

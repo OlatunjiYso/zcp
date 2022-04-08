@@ -6,8 +6,11 @@
       :closeModal="closeModal"
       :viewDetailsData="viewDetailsData"
     />
-    <div class="content-header">Card Stock Pending Dispatch</div>
-    <div class="content-sub">Here are the cardstocks that are yet to be dispatched</div>
+    <div class="content-header">Acknowledged Card Stock Request</div>
+    <div class="content-sub">
+      Here are the credit card stock that have been acknowledged by the
+      MFB
+    </div>
     <div class="app-table-actions">
       <div class="app-table-search">
         <div class="form-block w-form">
@@ -21,7 +24,7 @@
         </div>
       </div>
     </div>
-    <Loading v-if="pendingDispatchLoader" />
+    <Loading v-if="acknowledgedLoader" />
     <div v-else>
       <table class="app-table2" v-if="!resultQuery?.length <= 0">
         <thead>
@@ -30,11 +33,12 @@
             <th class="app-table2-header">Date</th>
             <!-- <th class="app-table2-header">Company</th> -->
             <th class="app-table2-header">No of Card</th>
-            <th class="app-table2-header">Type of Card</th>
-            <th class="app-table2-header"> Card Limit</th>
+            <th class="app-table2-header">Type Of Card</th>
+            <th class="app-table2-header">Card Limit</th>
             <th class="app-table2-header"></th>
           </tr>
         </thead>
+
         <tbody>
           <tr
             v-for="(result, index) in resultQuery"
@@ -43,7 +47,7 @@
           >
             <td class="app-table2-data">{{ index + 1 }}</td>
             <td class="app-table2-data">{{ result.create_at }}</td>
-            <!-- <td class="app-table2-data">{{ '{companyName}' }}</td> -->
+            <!-- <td class="app-table2-data">{{ "companyName" }}</td> -->
             <td class="app-table2-data">{{ result.noOfCards }}</td>
             <td class="app-table2-data">{{ result.typeOfCard }}</td>
             <td class="app-table2-data">{{ result.cardLimit }}</td>
@@ -70,16 +74,15 @@ import EmptyData from "../../../components/EmptyData/EmptyData";
 import Loading from "../../../components/Loading/Loading";
 import ViewDetails from "./ViewDetails";
 export default {
-  props: ["reqPendingDispatch", "pendingDispatchLoader"],
+  props: ["acknowledgedRequests", "acknowledgedLoader"],
   components: {
     Loader,
     EmptyData,
     Loading,
-    ViewDetails,
+    ViewDetails
   },
   data() {
     return {
-      loading: false,
       loader: false,
       searchQuery: "",
       viewDetails: false,
@@ -90,18 +93,17 @@ export default {
     ...mapGetters(["getUrl2"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.reqPendingDispatch.filter((item) => {
+        return this.acknowledgedRequests.filter((item) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => item.accountNbr.toLowerCase().includes(v));
         });
       } else {
-        return this.reqPendingDispatch;
+        return this.acknowledgedRequests;
       }
     },
   },
-
   methods: {
     closeModal() {
       this.viewDetails = false;
@@ -109,7 +111,7 @@ export default {
     openModal(result) {
       this.viewDetailsData = result;
       this.viewDetails = true;
-    }
+    },
   },
 };
 </script>

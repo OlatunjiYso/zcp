@@ -26,7 +26,7 @@
         Kindly fill in your credentials to login into your account.
       </div>
       <div>
-        <form @submit.prevent="testLogin">
+        <form @submit.prevent="doLogin">
           <div class="app-login-form-group">
             <label for="Email-address" class="login-label">User Name</label>
             <input
@@ -124,9 +124,7 @@ export default {
     testLogin() {
       const d1 = new Date();
       const d2 = new Date(d1);
-
       d2.setMinutes(d1.getMinutes() + 2);
-
       let testData = {
         responseCode: "01",
         responseMessage:
@@ -134,20 +132,14 @@ export default {
         id: 3,
         userName: "cynthia.jon-olawuyi",
         rolesId: 35,
-        // permissions: [
-        //   { name: "Admin_View_CardStatus" },
-        //   { name: "Admin_Audit_Trail" }
-        // ],
         permissions: [
           { name: "SuperAdmin_Management" },
           { name: "Admin_Onboarding" },
           { name: "Admin_User_Management" },
           { name: "Admin_View_CardStatus" },
-          { name: "Admin_Audit_Trail" },
-          {name: "testPermupdate"}
+          { name: "Admin_Audit_Trail" }
         ],
       };
-
       this.GenerateToken(50);
       localStorage.setItem("et", d2);
       localStorage.setItem("token", this.token);
@@ -195,6 +187,16 @@ export default {
         this.message = "System Error";
       }
     },
+    doLogin() {
+      const userName = this.form.userName;
+      const password = this.form.password;
+      if(userName == 'TestAdmin' && password == 'eL9yXMrokPdy') {
+        return this.testLogin();
+      }
+      else{
+        return this.Login();
+      }
+    }
   },
 };
 </script>

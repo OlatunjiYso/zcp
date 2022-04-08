@@ -11,13 +11,6 @@
             ><div class="settings-icon"></div></router-link
           >
           <div
-            @click="switchView('All')"
-            class="admin-top-barlinks"
-            :class="[AllView ? activeClass : '']"
-          >
-            All Stock Requests
-          </div>
-          <div
             @click="switchView('PendingProcessing')"
             class="admin-top-barlinks"
             :class="[PendingProcessingView ? activeClass : '']"
@@ -45,23 +38,22 @@
           >
             Rejected Requests
           </div>
+          <div
+            @click="switchView('Acknowledged')"
+            class="admin-top-barlinks"
+            :class="[AcknowledgedView ? activeClass : '']"
+          >
+            Acknowledged Stock Requests
+          </div>
         </div>
         <div class="admin-top-bar-right">
           <div class="admin-topbar-date">{{ getDate }}</div>
         </div>
       </div>
-      <div v-show="AllView">
-        <All
-          :allLoader="allLoader"
-          :allRequests="allRequests"
-          @updateRequests="updateAllRequest"
-          @reloadRequests="reloadAllRequest"
-        />
-      </div>
       <div v-show="PendingProcessingView">
         <PendingProcessing
           :pendingProcessingLoader="pendingProcessingLoader"
-          :reqPendingProcessing="reqPendingProcessing"
+          :reqPendingProcessing="reqPendingProccessing"
         />
       </div>
       <div v-show="PendingDispatchView">
@@ -82,17 +74,23 @@
           :rejectedRequests="rejectedRequests"
         />
       </div>
+      <div v-show="AcknowledgedView">
+        <AcknowledgedRequest
+          :acknowledgedLoader="acknowledgedLoader"
+          :acknowledgedRequests="acknowledgedRequests"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 
 <script>
-import Leftbar from '../../../components/Admin/leftbar/leftbar'
-import All from "./All";
+import Leftbar from "../../../components/Admin/leftbar/leftbar";
 import PendingProcessing from "./PendingProcessing";
 import PendingDispatch from "./PendingDispatch";
 import PendingAcknowledge from "./PendingAcknowledge";
+import AcknowledgedRequest from "./AcknowledgedRequest.vue";
 import Rejected from "./RejectedRequest";
 import axios from "axios";
 import { mapGetters } from "vuex";
@@ -103,37 +101,37 @@ export default {
   name: "Home",
   components: {
     Leftbar,
-    All,
     PendingProcessing,
     PendingDispatch,
     PendingAcknowledge,
     Rejected,
+    AcknowledgedRequest,
     Loader,
   },
   data() {
     return {
       selectedTab: "",
-      AllView: true,
-      PendingProcessingView: false,
+      PendingProcessingView: true,
       PendingDispatchView: false,
       PendingAcknowledgeView: false,
       RejectedView: false,
+      AcknowledgedView: false,
       activeClass: "admin-active-top-link",
-      allRequests: [],
       reqPendingProcessing: [],
       reqPendingDispatch: [],
       reqPendingAcknowledgement: [],
       rejectedRequests: [],
-      allLoader: false,
+      acknowledgedRequests: [],
       pendingProcessingLoader: false,
       pendingDispatchLoader: false,
       pendingAcknowledgeLoader: false,
       rejectLoader: false,
+      acknowledgedLoader: false,
       globalLoader: false,
     };
   },
   computed: {
-    ...mapGetters(["getUrl2", "getCardSetup"]),
+    ...mapGetters(["getUrl", "getCardSetup"]),
     getDate: function () {
       var today = new Date();
       var months = [
@@ -160,181 +158,98 @@ export default {
     },
   },
   async created() {
-      this.globalLoader = true;
-      await this.$store.dispatch("getCardSetup");
-      await this.$store.dispatch("getRoles");
-      await this.fetchReason();
-      await this.fetchCardType();
-      await this.fetchCreditCardType();
-      await this.fetchCardSetup();
-      this.globalLoader = false;
-      this.fetchAllRequests();
-      this.fetchReqPendingProcessing();
-      this.fetchReqPendingDispatch();
-      this.fetchReqPendingAcknowledgement();
-      this.fetchRejectedRequests();
+    this.globalLoader = true;
+    await this.$store.dispatch("getCardSetup");
+    await this.$store.dispatch("getRoles");
+    await this.fetchReason();
+    await this.fetchCardType();
+    await this.fetchCreditCardType();
+    await this.fetchCardSetup();
+    this.globalLoader = false;
+    this.fetchReqPendingProcessing();
+    this.fetchReqPendingDispatch();
+    this.fetchReqPendingAcknowledgement();
+    this.fetchRejectedRequests();
+    this.fetchAcknowledgedRequests();
   },
   methods: {
-    reloadAllRequest() {
-      this.fetchAllRequests();
-    },
-    updateAllRequest(result) {
-      this.allRequests = result;
-    },
-    async fetchAllRequests() {
-      this.allLoader = true;
-      const result = await axios.get(this.getUrl2 + "api/CardStock/all/2");
-      const requests = result.data.map((x) => {
+    serializeRequests(requests) {
+      if (!Array.isArray(requests)) return [];
+      return requests.map((req) => {
         return {
-          ...x,
+          ...req,
           typeOfCard:
             this.creditCardTypes.length > 0
               ? this.creditCardTypes.find((entry) => {
-                  return x.typeOfCard === entry.cardProductCode;
+                  return req.typeOfCard === entry.cardProductCode;
                 })?.description
               : null,
-          create_at: x.create_at?.split("T")[0],
+          create_at: req.create_at?.split("T")[0],
         };
       });
-      this.allRequests = requests;
-      this.allLoader = false;
-    },
-
-    async fetchReqPendingDispatch() {
-      this.pendingDispatchLoader = true;
-      const result = await axios.get(
-        this.getUrl2 + "api/CardStock/pendingApproval/2"
-      );
-      const requests = result.data.map((x) => {
-        return {
-          ...x,
-          typeOfCard:
-            this.creditCardTypes.length > 0
-              ? this.creditCardTypes.find((entry) => {
-                  return x.typeOfCard === entry.cardProductCode;
-                })?.description
-              : null,
-          productType:
-            this.creditCardTypes.length > 0
-              ? this.creditCardTypes.find((entry) => {
-                  return x.productType === entry.code;
-                })?.description
-              : null,
-          create_at: x.create_at?.split("T")[0],
-        };
-      });
-      this.reqPendingDispatch = requests;
-      this.pendingDispatchLoader = false;
     },
     async fetchReqPendingProcessing() {
       this.pendingProcessingLoader = true;
       const result = await axios.get(
-        this.getUrl2 + "api/CardStock/pendingApproval/2"
+        this.getUrl + "api/CardStock/pendingprocessing"
       );
-      const requests = result.data.map((x) => {
-        return {
-          ...x,
-          typeOfCard:
-            this.creditCardTypes.length > 0
-              ? this.creditCardTypes.find((entry) => {
-                  return x.typeOfCard === entry.cardProductCode;
-                })?.description
-              : null,
-          productType:
-            this.creditCardTypes.length > 0
-              ? this.creditCardTypes.find((entry) => {
-                  return x.productType === entry.code;
-                })?.description
-              : null,
-          create_at: x.create_at?.split("T")[0],
-        };
-      });
+      const requests = this.serializeRequests(result.data.requests);
       this.reqPendingProccessing = requests;
       this.pendingProcessingLoader = false;
+    },
+    async fetchReqPendingDispatch() {
+      this.pendingDispatchLoader = true;
+      const result = await axios.get(
+        this.getUrl + "api/cardstock/pendingdispatch"
+      );
+      const requests = this.serializeRequests(result.data.requests);
+      this.reqPendingDispatch = requests;
+      this.pendingDispatchLoader = false;
     },
     async fetchReqPendingAcknowledgement() {
       this.pendingAcknowledgeLoader = true;
       const result = await axios.get(
-        this.getUrl2 + "api/CardStock/pendingacknowledgement/2"
+        this.getUrl + "api/cardstock/pendingacknowledgement"
       );
-      const requests = result.data.map((x) => {
-        return {
-          ...x,
-          typeOfCard:
-            this.creditCardTypes.length > 0
-              ? this.creditCardTypes.find((entry) => {
-                  return x.typeOfCard === entry.cardProductCode;
-                })?.description
-              : null,
-          productType:
-            this.creditCardTypes.length > 0
-              ? this.creditCardTypes.find((entry) => {
-                  return x.productType === entry.code;
-                })?.description
-              : null,
-          create_at: x.create_at?.split("T")[0],
-        };
-      });
+      const requests = this.serializeRequests(result.data.requests);
       this.reqPendingAcknowledgement = requests;
       this.pendingAcknowledgeLoader = false;
     },
     async fetchRejectedRequests() {
       this.rejectLoader = true;
-      const result = await axios.get(
-        this.getUrl2 + "api/CardStock/PendingRejectRequest/2"
-      );
-      const requests = result.data.map((x) => {
-        return {
-          ...x,
-          typeOfCard:
-            this.creditCardTypes.length > 0
-              ? this.creditCardTypes.find((entry) => {
-                  return x.typeOfCard === entry.cardProductCode;
-                })?.description
-              : null,
-          productType:
-            this.creditCardTypes.length > 0
-              ? this.creditCardTypes.find((entry) => {
-                  return x.productType === entry.code;
-                })?.description
-              : null,
-          create_at: x.create_at?.split("T")[0],
-        };
-      });
+      const result = await axios.get(this.getUrl + "api/cardstock/rejected/");
+      const requests = this.serializeRequests(result.data.requests);
       this.rejectedRequests = requests;
       this.rejectLoader = false;
     },
+    async fetchAcknowledgedRequests() {
+      this.acknowledgedLoader = true;
+      const result = await axios.get(
+        this.getUrl + "api/cardstock/acknowledged"
+      );
+      const requests = this.serializeRequests(result.data.requests);
+      this.acknowledgedRequests = requests;
+      this.acknowledgedLoader = false;
+    },
 
+    turnOffViews() {
+      this.AcknowledgedView = false;
+      this.PendingProcessingView = false;
+      this.PendingDispatchView = false;
+      this.PendingAcknowledgeView = false;
+      this.RejectedView = false;
+    },
     switchView(selected) {
-      if (selected == "All") {
-        this.AllView = true;
-        this.PendingProcessingView = false;
-        this.PendingDispatchView = false;
-        this.PendingAcknowledgeView = false;
-        this.RejectedView = false;
+      this.turnOffViews();
+      if (selected == "Acknowledged") {
+        this.AcknowledgedView = true;
       } else if (selected == "PendingProcessing") {
-        this.AllView = false;
         this.PendingProcessingView = true;
-        this.PendingDispatchView = false;
-        this.PendingAcknowledgeView = false;
-        this.RejectedView = false;
       } else if (selected == "PendingDispatch") {
-        this.AllView = false;
-        this.PendingProcessingView = false;
         this.PendingDispatchView = true;
-        this.PendingAcknowledgeView = false;
-        this.RejectedView = false;
       } else if (selected == "PendingAcknowledge") {
-        this.AllView = false;
-        this.PendingProcessingView = false;
-        this.PendingDispatchView = false;
         this.PendingAcknowledgeView = true;
-        this.RejectedView = false;
       } else if (selected == "Rejected") {
-        this.AllView = false;
-        this.PendingProcessingView = false;
-        this.PendingDispatchView = false;
-        this.PendingAcknowledgeView = false;
         this.RejectedView = true;
       }
     },

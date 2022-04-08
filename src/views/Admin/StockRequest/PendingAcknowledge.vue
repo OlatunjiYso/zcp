@@ -1,15 +1,15 @@
 <template>
   <div>
     <Loader v-show="loader" />
-    <Status
-      :state="state"
-      :message="message"
-      :resetState="resetState"
-      v-if="status"
+    <ViewDetails
+      v-show="viewDetails"
+      :closeModal="closeModal"
+      :viewDetailsData="viewDetailsData"
     />
-    <div class="content-header">Card Stock Request Pending Acknowledgement </div>
+    <div class="content-header">Card Stock Pending Acknowledgement</div>
     <div class="content-sub">
-      Here are the stock requests pending acknowledgement
+      Here are the dispatched credit card stock pending acknowledgement from the
+      MFB
     </div>
     <div class="app-table-actions">
       <div class="app-table-search">
@@ -26,11 +26,12 @@
     </div>
     <Loading v-if="pendingAcknowledgeLoader" />
     <div v-else>
-      <table class="app-table2" v-if="!resultQuery.length <= 0">
+      <table class="app-table2" v-if="!resultQuery?.length <= 0">
         <thead>
           <tr class="app-table2-row">
             <th class="app-table2-header">Id</th>
             <th class="app-table2-header">Date</th>
+            <!-- <th class="app-table2-header">Company</th> -->
             <th class="app-table2-header">No of Card</th>
             <th class="app-table2-header">Type Of Card</th>
             <th class="app-table2-header">Card Limit</th>
@@ -46,16 +47,16 @@
           >
             <td class="app-table2-data">{{ index + 1 }}</td>
             <td class="app-table2-data">{{ result.create_at }}</td>
+            <!-- <td class="app-table2-data">{{ "companyName" }}</td> -->
             <td class="app-table2-data">{{ result.noOfCards }}</td>
             <td class="app-table2-data">{{ result.typeOfCard }}</td>
             <td class="app-table2-data">{{ result.cardLimit }}</td>
             <td class="app-table2-data">
               <div
-                @click="Acknowledge(result)"
-                style="cursor: pointer"
-                class="table-btn"
+                @click="openModal(result)"
+                style="cursor: pointer; color: red; text-decoration: underline"
               >
-                Acknowledge<span class="table-button-icon"></span>
+                View<span class="table-button-icon"></span>
               </div>
             </td>
           </tr>
@@ -67,27 +68,25 @@
 </template>
 
 <script>
-import axios from "axios";
 import Loader from "../../../components/Loader/Loader";
-import Status from "../../../components/Status/Status2";
 import { mapGetters } from "vuex";
 import EmptyData from "../../../components/EmptyData/EmptyData";
 import Loading from "../../../components/Loading/Loading";
+import ViewDetails from "./ViewDetails";
 export default {
   props: ["reqPendingAcknowledgement", "pendingAcknowledgeLoader"],
   components: {
     Loader,
-    Status,
     EmptyData,
     Loading,
+    ViewDetails
   },
   data() {
     return {
       loader: false,
-      status: false,
-      state: null,
-      message: null,
       searchQuery: "",
+      viewDetails: false,
+      viewDetailsData: "",
     };
   },
   computed: {
@@ -106,41 +105,12 @@ export default {
     },
   },
   methods: {
-    resetState() {
-      this.status = false;
-      location.reload();
-      return false;
+    closeModal() {
+      this.viewDetails = false;
     },
-    async Acknowledge(result) {
-      this.loader = true;
-      const formData = {
-        requestId: [result.id],
-        companyId: parseInt(user.companyId),
-        workflowId: 6
-      };
-      try {
-        const response = await axios.post(
-          this.getUrl2 + "api/CardStock/approveoracknowledge",
-          formData
-        );
-        if (response.status == 200) {
-          this.loader = false;
-          this.status = true;
-          this.state = "success";
-          this.message = "Operation Sucessful";
-        } else {
-          this.loader = false;
-          this.status = true;
-          this.state = "failed";
-          this.message = "Operation Failed";
-        }
-      } catch (error) {
-        console.log(error);
-        this.loader = false;
-        this.status = true;
-        this.state = "failed";
-        this.message = "Operation Failed";
-      }
+    openModal(result) {
+      this.viewDetailsData = result;
+      this.viewDetails = true;
     },
   },
 };
