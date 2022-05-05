@@ -51,7 +51,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Loader from "../../../components/Loader/Loader";
 import Status from "../../../components/Status/Status";
 import { mapGetters } from "vuex";
@@ -62,6 +61,8 @@ export default {
     "confirmationModalData",
     "approve",
     "decline",
+    "testProp",
+    "transientProp"
   ],
   components: {
     Loader,
@@ -104,15 +105,15 @@ export default {
       return approveMsg;
     },
   },
-  created() {},
+  created() { console.log('testProp =', this.testProp, 'transientProp', this.transientProp), console.log('confirmationModalData =', this.confirmationModalData)},
   methods: {
     resetState() {
       this.status = false;
     },
     async send() {
-      const { req, intent } = this.confirmationModalData;
-      const reason = this.reason
-      if(intent === 'approve') {
+      const { intent, req } = this.confirmationModalData;
+      const reason = this.reason;
+      if(intent === 'approve' || intent === 'acknowledgement') {
         this.approve(req, reason);
       }
       else{

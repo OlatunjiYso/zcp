@@ -1,14 +1,16 @@
 <template>
   <div>
-    <ReprocessRequest
+    <div v-if="reprocessModalData != undefined"> 
+      <ReprocessRequest
       v-show="reprocessView"
-      :requestData="requestData"
+      :reprocessModalData="reprocessModalData"
       :closeModal="closeModal"
       :closeModalReload="closeModalReload"
     />
+    </div>
     <div class="content-header">Rejected Card Stock Requests</div>
-    <div class="content-sub">Here are the requests that were rejected</div>
-    <Loading v-if="RejectLoader" />
+    <div class="content-sub">Here are the requests that were rejected by your management</div>
+    <Loading v-if="rejectedReqLoader" />
     <div v-else>
       <table class="app-table2" v-if="!resultQuery.length <= 0">
         <thead>
@@ -39,6 +41,7 @@
               <div
                 style="cursor: pointer"
                 class="table-btn"
+                @click="openReprocessModal(result)"
               >
                 Reprocess<span class="table-button-icon"></span>
               </div>
@@ -57,10 +60,10 @@ import Status from "../../../components/Status/Status2";
 import { mapGetters } from "vuex";
 import EmptyData from "../../../components/EmptyData/EmptyData";
 import Loading from "../../../components/Loading/Loading";
-import ReprocessRequest from "./Reprocess";
+import ReprocessRequest from "./Reprocess.vue";
 
 export default {
-  props: ["rejectedRequests", "RejectLoader"],
+  props: ["rejectedReq", "rejectedReqLoader"],
   components: {
     Loader,
     Status,
@@ -71,27 +74,32 @@ export default {
   data() {
     return {
       searchQuery: "",
-      requestData: "",
       loading: false,
       loader: false,
       status: false,
       state: null,
       message: null,
       reprocessView: false,
+      reprocessModalData: {},
     };
   },
   computed: {
     ...mapGetters(["getUrl2"]),
+    mfbRoles: function () {
+      return this.getRoles.filter((x) => {
+        return x.mfbOrBank == "mfb";
+      });
+    },
     resultQuery() {
       if (this.searchQuery) {
-        return this.rejectedRequests.filter((item) => {
+        return this.rejectedReq.filter((item) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => item.accountNbr.toLowerCase().includes(v));
         });
       } else {
-        return this.rejectedRequests;
+        return this.rejectedReq;
       }
     },
   },
@@ -104,8 +112,9 @@ export default {
       location.reload();
       return false;
     },
-    openModal(result) {
-      this.requestData = result;
+    openReprocessModal(result) {
+      this.reprocessModalData = {...result};
+      this.reprocessModalData.rejectedBy = ' your Management'
       this.reprocessView = true;
     },
   },

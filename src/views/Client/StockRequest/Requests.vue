@@ -10,102 +10,124 @@
           <router-link to="/client/activity-requests"
             ><div class="settings-icon"></div></router-link
           >
-          <!-- <div
-            @click="switchView('All')"
-            class="admin-top-barlinks"
-            :class="[AllView ? activeClass : '']"
-          >
-            All Stock Requests
-          </div> -->
           <div
             v-show="checkPerm('Activity_Requests')"
-            @click="switchView('pendingApproval')"
+            @click="switchView('initiatedReq')"
             class="admin-top-barlinks"
-            :class="[pendingApprovalView ? activeClass : '']"
+            :class="[initiatedReqView ? activeClass : '']"
           >
-            Pending Approval
+            Initiated
           </div>
           <div
             v-show="checkPerm('Activity_Requests')"
-            @click="switchView('pendingProcessing')"
+            @click="switchView('approvedReq')"
             class="admin-top-barlinks"
-            :class="[pendingProcessingView ? activeClass : '']"
+            :class="[approvedReqView ? activeClass : '']"
           >
-            Pending Processing
+            Approved
           </div>
           <div
             v-show="checkPerm('Activity_Requests')"
-            @click="switchView('pendingDispatch')"
+            @click="switchView('csdApprovedReq')"
             class="admin-top-barlinks"
-            :class="[pendingDispatchView ? activeClass : '']"
+            :class="[csdApprovedReqView ? activeClass : '']"
           >
-            Pending Dispatch
+            CSD Approved
           </div>
           <div
             v-show="checkPerm('Activity_Requests')"
-            @click="switchView('pendingAcknowledge')"
+            @click="switchView('processedReq')"
             class="admin-top-barlinks"
-            :class="[pendingAcknowledgeView ? activeClass : '']"
+            :class="[processedReqView ? activeClass : '']"
           >
-            Pending Acknowledgement
+            Processed
           </div>
           <div
             v-show="checkPerm('Activity_Requests')"
-            @click="switchView('acknowledged')"
+            @click="switchView('dispatchedReq')"
             class="admin-top-barlinks"
-            :class="[acknowledgedView ? activeClass : '']"
+            :class="[dispatchedReqView ? activeClass : '']"
           >
-            Acknowledged Requests
+            Dispatched
           </div>
           <div
             v-show="checkPerm('Activity_Requests')"
-            @click="switchView('rejected')"
+            @click="switchView('acknowledgedReq')"
             class="admin-top-barlinks"
-            :class="[rejectedView ? activeClass : '']"
+            :class="[acknowledgedReqView ? activeClass : '']"
           >
-            Rejected Requests
+            Acknowledged
+          </div>
+          <div
+            v-show="checkPerm('Activity_Requests')"
+            @click="switchView('rejectedReq')"
+            class="admin-top-barlinks"
+            :class="[rejectedReqView ? activeClass : '']"
+          >
+            Rejected
+          </div>
+          <div
+            v-show="checkPerm('Activity_Requests')"
+            @click="switchView('csdRejectedReq')"
+            class="admin-top-barlinks"
+            :class="[csdRejectedReqView ? activeClass : '']"
+          >
+            CSD Rejected
           </div>
         </div>
         <div class="admin-top-bar-right">
           <div class="admin-topbar-date">{{ getDate }}</div>
         </div>
       </div>
-      <div v-show="pendingApprovalView">
-        <PendingApproval
-          :pendingApprovalLoader="pendingApprovalLoader"
-          :requestsPendingApproval="requestsPendingApproval"
+      <div v-show="initiatedReqView">
+        <InitiatedReq
+          :initiatedReqLoader="initiatedReqLoader"
+          :initiatedReq="initiatedReq"
           :checkPerm="checkPerm"
         />
       </div>
-      <div v-show="pendingProcessingView">
-        <PendingProcessing
-          :pendingProcessingLoader="pendingProcessingLoader"
-          :requestsPendingProcessing="requestsPendingProcessing"
+      <div v-show="approvedReqView">
+        <ApprovedReq
+          :approvedReqLoader="approvedReqLoader"
+          :approvedReq="approvedReq"
         />
       </div>
-      <div v-show="pendingDispatchView">
-        <PendingDispatch
-          :pendingDispatchLoader="pendingDispatchLoader"
-          :requestsPendingDispatch="requestsPendingDispatch"
+      <div v-show="csdApprovedReqView">
+        <CSDApprovedReq
+          :csdApprovedReqLoader="csdApprovedReqLoader"
+          :csdApprovedReq="csdApprovedReq"
         />
       </div>
-      <div v-show="pendingAcknowledgeView">
-        <PendingAcknowledge
-          :pendingAcknowledgeLoader="pendingAcknowledgeLoader"
-          :requestsPendingAcknowledge="requestsPendingAcknowledge"
+      <div v-show="processedReqView">
+        <ProcessedReq
+          :processedReqLoader="processedReqLoader"
+          :processedReq="processedReq"
+        />
+      </div>
+      <div v-show="dispatchedReqView">
+        <DispatchedReq
+          :dispatchedReqLoader="dispatchedReqLoader"
+          :dispatchedReq="dispatchedReq"
           :checkPerm="checkPerm"
         />
       </div>
-      <div v-show="acknowledgedView">
-        <Acknowledged
-          :acknowledgedLoader="acknowledgedLoader"
-          :acknowledgedRequests="acknowledgedRequests"
+      <div v-show="acknowledgedReqView">
+        <AcknowledgedReq
+          :acknowledgedReqLoader="acknowledgedReqLoader"
+          :acknowledgedReq="acknowledgedReq"
         />
       </div>
-      <div v-show="rejectedView">
-        <Rejected
-          :rejectLoader="rejectLoader"
-          :rejectedRequests="rejectedRequests"
+      <div v-show="rejectedReqView">
+        <RejectedReq
+          :rejectedReqLoader="rejectedReqLoader"
+          :rejectedReq="rejectedReq"
+          :checkPerm="checkPerm"
+        />
+      </div>
+      <div v-show="csdRejectedReqView">
+        <CSDRejectedReq
+          :csdRejectedReqLoader="csdRejectedReqLoader"
+          :csdRejectedReq="csdRejectedReq"
           :checkPerm="checkPerm"
         />
       </div>
@@ -120,12 +142,14 @@
 <script>
 import Leftbar from "../../../components/Client/leftbar/leftbar";
 import Rightbar from "../../../components/Client/rightbar/rightbar";
-import PendingApproval from "./PendingApproval";
-import PendingProcessing from "./PendingProcessing";
-import PendingDispatch from "./PendingDispatch";
-import PendingAcknowledge from "./PendingAcknowledge";
-import Acknowledged from "./Acknowledged";
-import Rejected from "./RejectedRequest";
+import InitiatedReq from "./InitiatedReq.vue";
+import ApprovedReq from "./ApprovedReq.vue";
+import CSDApprovedReq from "./CSDApproved.vue";
+import DispatchedReq from "./DispatchedReq.vue";
+import ProcessedReq from "./ProcessedReq.vue";
+import AcknowledgedReq from "./AcknowledgedReq";
+import RejectedReq from "./RejectedRequest";
+import CSDRejectedReq from "./CSDRejected.vue";
 import All from "./All";
 import axios from "axios";
 import { mapGetters } from "vuex";
@@ -137,12 +161,14 @@ export default {
   components: {
     Leftbar,
     Rightbar,
-    PendingApproval,
-    PendingProcessing,
-    PendingDispatch,
-    PendingAcknowledge,
-    Acknowledged,
-    Rejected,
+    InitiatedReq,
+    ApprovedReq,
+    CSDApprovedReq,
+    ProcessedReq,
+    DispatchedReq,
+    AcknowledgedReq,
+    RejectedReq,
+    CSDRejectedReq,
     All,
     Loader,
   },
@@ -150,27 +176,34 @@ export default {
     return {
       selectedTab: "",
       AllView: true,
-      pendingApprovalView: true,
-      pendingProcessingView: false,
-      pendingDispatchView: false,
-      pendingAcknowledgeView: false,
-      acknowledgedView: false,
-      rejectedView: false,
+      initiatedReqView: true,
+      approvedReqView: false,
+      csdApprovedReqView: false,
+      processedReqView: false,
+      dispatchedReqView: false,
+      acknowledgedReqView: false,
+      rejectedReqView: false,
+      csdRejectedReqView: false,
       activeClass: "admin-active-top-link",
-      requestsPendingApproval: [],
-      requestsPendingProcessing: [],
-      requestsPendingDispatch: [],
-      requestsPendingAcknowledge: [],
-      acknowledgedRequests: [],
-      rejectedRequests: [],
+
+      initiatedReq: [],
+      approvedReq: [],
+      csdApprovedReq: [],
+      processedReq: [],
+      dispatchedReq: [],
+      acknowledgedReq: [],
+      rejectedReq: [],
+      csdRejectedReq: [],
       AllRequests: [],
 
-      pendingApprovalLoader: false,
-      pendingProcessingLoader: false,
-      pendingDispatchLoader: false,
-      pendingAcknowledgeLoader: false,
-      acknowledgedLoader: false,
-      rejectLoader: false,
+      initiatedReqLoader: false,
+      approvedReqLoader: false,
+      csdApprovedReqLoader: false,
+      processedReqLoader: false,
+      dispatchedReqLoader: false,
+      acknowledgedReqLoader: false,
+      rejectedReqLoader: false,
+      csdRejectedReqLoader: false,
       AllLoader: false,
       globalLoader: false,
     };
@@ -212,12 +245,14 @@ export default {
     await this.fetchCardSetup();
     this.globalLoader = false;
     //this.fetchAllRequests();
-    this.fetchRequestsPendingApproval();
-    this.fetchRequestsPendingProcessing();
-    this.fetchRequestsPendingDispatch();
-    this.fetchRequestsPendingAcknowledge();
+    this.fetchInitiatedRequests();
+    this.fetchApprovedRequests();
+    this.fetchCsdApprovedRequests();
+    this.fetchProcessedRequests();
+    this.fetchDispatchedRequests();
     this.fetchAcknowledgedRequests();
     this.fetchRejectedRequests();
+    this.fetchCsdRejectedRequests();
   },
   methods: {
     reloadAllRequest() {
@@ -254,8 +289,8 @@ export default {
       this.AllLoader = false;
     },
 
-    async fetchRequestsPendingApproval() {
-      this.pendingApprovalLoader = true;
+    async fetchInitiatedRequests() {
+      this.initiatedReqLoader = true;
       const companyId = JSON.parse(localStorage.getItem("user-mfb"));
       const result = await axios.get(
         this.getUrl2 + "api/CardStock/pendingApproval/" + companyId.companyId
@@ -267,15 +302,15 @@ export default {
           create_at: x.create_at?.split("T")[0],
         };
       });
-      this.requestsPendingApproval = requests;
-      this.pendingApprovalLoader = false;
+      this.initiatedReq = requests;
+      this.initiatedReqLoader = false;
     },
 
-    async fetchRequestsPendingProcessing() {
-      this.pendingProcessingLoader = true;
+    async fetchApprovedRequests() {
+      this.approvedReqLoader = true;
       const companyId = JSON.parse(localStorage.getItem("user-mfb"));
       const result = await axios.get(
-        this.getUrl2 + "api/CardStock/pendingProcessing/" + companyId.companyId
+        this.getUrl2 + "api/CardStock/mfbApproved/" + companyId.companyId
       );
       const requests = result.data.map((x) => {
         return {
@@ -284,31 +319,15 @@ export default {
           create_at: x.create_at?.split("T")[0],
         };
       });
-      this.requestsPendingProcessing = requests;
-      this.pendingProcessingLoader = false;
+      this.approvedReq = requests;
+      this.approvedReqLoader = false;
     },
-    async fetchRequestsPendingDispatch() {
-      this.pendingDispatchLoader = true;
-      const companyId = JSON.parse(localStorage.getItem("user-mfb"));
-      const result = await axios.get(
-        this.getUrl2 + "api/CardStock/pendingDispatch/" + companyId.companyId
-      );
-      const requests = result.data.map((x) => {
-        return {
-          ...x,
-          typeOfCard: this.decodeCardType(x),
-          create_at: x.create_at?.split("T")[0],
-        };
-      });
-      this.requestsPendingDispatch = requests;
-      this.pendingDispatchLoader = false;
-    },
-    async fetchRequestsPendingAcknowledge() {
-      this.pendingAcknowledgeLoader = true;
+    async fetchCsdApprovedRequests() {
+      this.csdApprovedReqLoader = true;
       const companyId = JSON.parse(localStorage.getItem("user-mfb"));
       const result = await axios.get(
         this.getUrl2 +
-          "api/CardStock/pendingacknowledgement/" +
+          "api/CardStock/csdApprovedRequests/" +
           companyId.companyId
       );
       const requests = result.data.map((x) => {
@@ -318,16 +337,49 @@ export default {
           create_at: x.create_at?.split("T")[0],
         };
       });
-      this.requestsPendingAcknowledge = requests;
-      this.pendingAcknowledgeLoader = false;
+      this.csdApprovedReq = requests;
+      this.csdApprovedReqLoader = false;
     },
+    async fetchProcessedRequests() {
+      this.processedReqLoader = true;
+      const companyId = JSON.parse(localStorage.getItem("user-mfb"));
+      const result = await axios.get(
+        this.getUrl2 +
+          "api/CardStock/processed/" +
+          companyId.companyId
+      );
+      const requests = result.data.map((x) => {
+        return {
+          ...x,
+          typeOfCard: this.decodeCardType(x),
+          create_at: x.create_at?.split("T")[0],
+        };
+      });
+      this.processedReq = requests;
+      this.processedReqLoader = false;
+    },
+    async fetchDispatchedRequests() {
+      this.dispatchedReqLoader = true;
+      const companyId = JSON.parse(localStorage.getItem("user-mfb"));
+      const result = await axios.get(
+        this.getUrl2 + "api/CardStock/dispatched/" + companyId.companyId
+      );
+      const requests = result.data.map((x) => {
+        return {
+          ...x,
+          typeOfCard: this.decodeCardType(x),
+          create_at: x.create_at?.split("T")[0],
+        };
+      });
+      this.dispatchedReq = requests;
+      this.dispatchedReqLoader = false;
+    },
+    
     async fetchAcknowledgedRequests() {
-      this.acknowledgedLoader = true;
+      this.acknowledgedReqLoader = true;
       const companyId = JSON.parse(localStorage.getItem("user-mfb"));
       const result = await axios.get(
-        this.getUrl2 +
-          "api/CardStock/acknowledged/" +
-          companyId.companyId
+        this.getUrl2 + "api/CardStock/acknowledged/" + companyId.companyId
       );
       const requests = result.data.map((x) => {
         return {
@@ -336,15 +388,15 @@ export default {
           create_at: x.create_at?.split("T")[0],
         };
       });
-      this.acknowledgedRequests = requests;
-      this.acknowledgedLoader = false;
+      this.acknowledgedReq = requests;
+      this.acknowledgedReqLoader = false;
     },
     async fetchRejectedRequests() {
-      this.RejectLoader = true;
+      this.rejectedReqLoader = true;
       const companyId = JSON.parse(localStorage.getItem("user-mfb"));
       const result = await axios.get(
         this.getUrl2 +
-          "api/CardStock/PendingRejectRequest/" +
+          "api/CardStock/mfbRejected/" +
           companyId.companyId
       );
       const requests = result.data.map((x) => {
@@ -354,34 +406,56 @@ export default {
           create_at: x.create_at?.split("T")[0],
         };
       });
-      this.rejectedRequests = requests;
-      this.rejectLoader = false;
+      this.rejectedReq = requests;
+      this.rejectedReqLoader = false;
+    },
+    async fetchCsdRejectedRequests() {
+      this.csdRejectedReqLoader = true;
+      const companyId = JSON.parse(localStorage.getItem("user-mfb"));
+      const result = await axios.get(
+        this.getUrl2 + "api/CardStock/csdRejectedRequest/" + companyId.companyId
+      );
+      const requests = result.data.map((x) => {
+        return {
+          ...x,
+          typeOfCard: this.decodeCardType(x),
+          create_at: x.create_at?.split("T")[0],
+        };
+      });
+      this.csdRejectedReq = requests;
+      this.csdRejectedReqLoader = false;
     },
     turnOffViews() {
       this.AllView = false;
-      this.pendingApprovalView = false;
-      this.pendingProcessingView = false;
-      this.pendingDispatchView = false;
-      this.pendingAcknowledgeView = false;
-      this.acknowledgedView = false;
-      this.rejectedView = false;
+      this.initiatedReqView = false;
+      this.approvedReqView = false;
+      this.csdApprovedReqView = false;
+      this.processedReqView = false;
+      this.dispatchedReqView = false;
+      this.acknowledgedReqView = false;
+      this.rejectedReqView = false;
+      this.csdRejectedReqView = false;
     },
     switchView(selected) {
       this.turnOffViews();
       if (selected == "All") {
         this.AllView = true;
-      } else if (selected == "pendingApproval") {
-        this.pendingApprovalView = true;
-      } else if (selected == "pendingProcessing") {
-        this.pendingProcessingView = true;
-      } else if (selected == "pendingDispatch") {
-        this.pendingDispatchView = true;
-      } else if (selected == "pendingAcknowledge") {
-        this.pendingAcknowledgeView = true;
-      } else if (selected == "acknowledged") {
-        this.acknowledgedView = true;
-      } else if (selected == "rejected") {
-        this.rejectedView = true;
+      } else if (selected == "initiatedReq") {
+        this.initiatedReqView = true;
+      } else if (selected == "approvedReq") {
+        this.approvedReqView = true;
+      } else if (selected == "csdApprovedReq") {
+        this.csdApprovedReqView = true;
+      } else if (selected == "processedReq") {
+        this.processedReqView = true;
+      }else if (selected == "dispatchedReq") {
+        this.dispatchedReqView = true;
+      }  else if (selected == "acknowledgedReq") {
+        this.acknowledgedReqView = true;
+      } else if (selected == "rejectedReq") {
+        this.rejectedReqView = true;
+      } else if (selected == "csdRejectedReq") {
+        this.csdRejectedReqView = true;
       }
     },
   },

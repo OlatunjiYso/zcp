@@ -204,7 +204,6 @@ export default {
           this.getUrl2 + "api/CardStock/makecardstockrequest",
           formData
         );
-        console.log('>>> response.data', response.data);
           this.loader = false;
           this.state = "success";
           this.status = true;

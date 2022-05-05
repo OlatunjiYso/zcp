@@ -11,15 +11,15 @@
       v-show="showConfirmationModal"
       :closeConfirmationModal="closeConfirmationModal"
       :confirmationModalData="confirmationModalData"
-      :closeConfirmationModalToast="closeConfirmationModalToast"
+      :closeConfirmationModalToast=null
       :approve="acknowledge"
       :decline="()=>{}"
     />
-    <div class="content-header">Card Stock Request Pending Acknowledgement</div>
+    <div class="content-header">Dispatched Card Stock Requests.</div>
     <div class="content-sub">
-      Here are the requests that needs acknowledgement.
+      Here are the requests that have been dispatched and needs acknowledgement.
     </div>
-    <Loading v-if="AcknowledgeLoader" />
+    <Loading v-if="dispatchedReqLoader" />
     <div v-else>
       <table class="app-table2" v-if="!resultQuery.length <= 0">
         <thead>
@@ -44,7 +44,7 @@
             <td class="app-table2-data">{{ result.noOfCards }}</td>
             <td class="app-table2-data">{{ result.typeOfCard }}</td>
             <td class="app-table2-data">{{ result.cardLimit }}</td>
-            <td class="app-table2-data">
+            <td class="app-table2-data" v-show="checkPerm('Approve_Credit_Card_StockRequest')">
               <div
                 @click="attemptAcknowledgement(result)"
                 style="cursor: pointer"
@@ -70,7 +70,7 @@ import EmptyData from "../../../components/EmptyData/EmptyData";
 import Loading from "../../../components/Loading/Loading";
 import ConfirmationModal from './ConfirmationModal.vue';
 export default {
-  props: ["requestsPendingAcknowledge", "pendingAcknowledgeLoader"],
+  props: ["dispatchedReq", "dispatchedReqLoader", "checkPerm"],
   components: {
     Loader,
     Status,
@@ -93,21 +93,21 @@ export default {
     ...mapGetters(["getUrl2"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.requestsPendingAcknowledge.filter((item) => {
+        return this.dispatchedReq.filter((item) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => item.accountNbr.toLowerCase().includes(v));
         });
       } else {
-        return this.requestsPendingAcknowledge;
+        return this.dispatchedReq;
       }
     },
   },
   methods: {
     resetState() {
       this.status = false;
-      //location.reload();
+      location.reload();
       return false;
     },
     closeConfirmationModal() {
@@ -144,7 +144,7 @@ export default {
           this.loader = false;
           this.status = true;
           this.state = "failed";
-          this.message = "Operation Failed";
+          this.message = response.data.responseMessage;
         }
         this.closeConfirmationModal();
       } catch (error) {

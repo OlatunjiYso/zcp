@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="content-header">Card Stock Request Pending Dispatch</div>
+    <div class="content-header">Processed Card Stock Request</div>
     <div class="content-sub">
-      Here are the requests that have been processed, but are yet to be dispatched.
+      Here are the requests that have been processed.
     </div>
-    <Loading v-if="pendingDispatchLoader" />
+    <Loading v-if="processedReqLoader" />
     <div v-else>
       <table class="app-table2" v-if="!resultQuery.length <= 0">
         <thead>
@@ -43,7 +43,7 @@ import { mapGetters } from "vuex";
 import EmptyData from "../../../components/EmptyData/EmptyData";
 import Loading from "../../../components/Loading/Loading";
 export default {
-  props: ["requestsPendingDispatch", "pendingDispatchLoader"],
+  props: ["processedReq", "processedReqLoader"],
   components: {
     Loader,
     Status,
@@ -63,21 +63,21 @@ export default {
     ...mapGetters(["getUrl2"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.requestsPendingDispatch.filter((item) => {
+        return this.processedReq.filter((item) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => item.accountNbr.toLowerCase().includes(v));
         });
       } else {
-        return this.requestsPendingDispatch;
+        return this.processedReq;
       }
     },
   },
   methods: {
     resetState() {
       this.status = false;
-      //location.reload();
+      location.reload();
       return false;
     },
   },

@@ -179,7 +179,6 @@ export default {
       return false;
     },
     openEdit(result) {
-      console.log("clickeduser");
       this.userData = result;
       this.EditUserModal = true;
     },

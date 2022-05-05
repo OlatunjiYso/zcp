@@ -88,11 +88,11 @@ export default {
     },
     confirmationMsg: function () {
       const { intent, req } = this.confirmationModalData;
-      const { noOfCards, typeOfCard, cardLimit } = req;
-      const declineMsg = `Caution: You are about to decline a stock request made by ${"companyName"}, consisting of ${noOfCards} nos of ${
+      const { noOfCards, typeOfCard, cardLimit, companyName } = req;
+      const declineMsg = `Caution: You are about to decline a stock request made by ${companyName}}, consisting of ${noOfCards} nos of ${
         typeOfCard || ""
       }, each on a Limit of ₦${cardLimit}. Proceed if you are sure`;
-      const approveMsg = `Caution: You are about to approve a stock request made by ${"companyName"}, consisting of ${noOfCards} nos of ${
+      const approveMsg = `Caution: You are about to approve a stock request made by ${companyName}, consisting of ${noOfCards} nos of ${
         typeOfCard || ""
       }, each on a Limit of ₦${cardLimit}. Proceed if you are sure`;
       if (intent == "decline") return declineMsg;

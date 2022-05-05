@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="content-header">Card Stock Requests Pending Processing</div>
+    <div class="content-header">CSD Approved Card Stock Requests</div>
     <div class="content-sub">
-      Here are the requests that have been submitted but are yet to be processed.
+      Here are the requests that have been approved by the bank CSD
     </div>
-    <Loading v-if="pendingProcessingLoader" />
+    <Loading v-if="csdApprovedReqLoader" />
     <div v-else>
       <table class="app-table2" v-if="!resultQuery.length <= 0">
         <thead>
@@ -43,7 +43,7 @@ import { mapGetters } from "vuex";
 import EmptyData from "../../../components/EmptyData/EmptyData";
 import Loading from "../../../components/Loading/Loading";
 export default {
-  props: ["requestsPendingProcessing", "pendingProcessingLoader"],
+  props: ["csdApprovedReq", "csdApprovedReqLoader"],
   components: {
     Loader,
     Status,
@@ -63,21 +63,21 @@ export default {
     ...mapGetters(["getUrl2"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.requestsPendingProcessing.filter((item) => {
+        return this.csdApprovedReq.filter((item) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => item.accountNbr.toLowerCase().includes(v));
         });
       } else {
-        return this.requestsPendingProcessing;
+        return this.csdApprovedReq;
       }
     },
   },
   methods: {
     resetState() {
       this.status = false;
-      //location.reload();
+      location.reload();
       return false;
     },
   },

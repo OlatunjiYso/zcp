@@ -32,18 +32,18 @@
             Pending Acknowledgement
           </div>
           <div
-            @click="switchView('Rejected')"
-            class="admin-top-barlinks"
-            :class="[RejectedView ? activeClass : '']"
-          >
-            Rejected Requests
-          </div>
-          <div
             @click="switchView('Acknowledged')"
             class="admin-top-barlinks"
             :class="[AcknowledgedView ? activeClass : '']"
           >
-            Acknowledged Stock Requests
+            Acknowledged
+          </div>
+           <div
+            @click="switchView('Rejected')"
+            class="admin-top-barlinks"
+            :class="[RejectedView ? activeClass : '']"
+          >
+            Rejected
           </div>
         </div>
         <div class="admin-top-bar-right">

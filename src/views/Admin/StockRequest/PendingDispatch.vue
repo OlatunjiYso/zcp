@@ -28,7 +28,7 @@
           <tr class="app-table2-row">
             <th class="app-table2-header">Id</th>
             <th class="app-table2-header">Date</th>
-            <!-- <th class="app-table2-header">Company</th> -->
+            <th class="app-table2-header">Company</th>
             <th class="app-table2-header">No of Card</th>
             <th class="app-table2-header">Type of Card</th>
             <th class="app-table2-header"> Card Limit</th>
@@ -43,7 +43,7 @@
           >
             <td class="app-table2-data">{{ index + 1 }}</td>
             <td class="app-table2-data">{{ result.create_at }}</td>
-            <!-- <td class="app-table2-data">{{ '{companyName}' }}</td> -->
+            <td class="app-table2-data">{{ result.companyName }}</td>
             <td class="app-table2-data">{{ result.noOfCards }}</td>
             <td class="app-table2-data">{{ result.typeOfCard }}</td>
             <td class="app-table2-data">{{ result.cardLimit }}</td>

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="content-header">Acknowledged Card Stock Request</div>
+    <div class="content-header">Approved Card Stock Requests</div>
     <div class="content-sub">
-      Here are the requests that have been acknowledged
+      Here are the requests that have been approved by your management.
     </div>
-    <Loading v-if="acknowledgedLoader" />
+    <Loading v-if="approvedReqLoader" />
     <div v-else>
       <table class="app-table2" v-if="!resultQuery.length <= 0">
         <thead>
@@ -37,14 +37,13 @@
 </template>
 
 <script>
-import axios from "axios";
 import Loader from "../../../components/Loader/Loader";
 import Status from "../../../components/Status/Status2";
 import { mapGetters } from "vuex";
 import EmptyData from "../../../components/EmptyData/EmptyData";
 import Loading from "../../../components/Loading/Loading";
 export default {
-  props: ["acknowledgedRequests", "acknowledgeLoader"],
+  props: ["approvedReq", "approvedReqLoader"],
   components: {
     Loader,
     Status,
@@ -64,14 +63,14 @@ export default {
     ...mapGetters(["getUrl2"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.acknowledgedRequests.filter((item) => {
+        return this.approvedReq.filter((item) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => item.accountNbr.toLowerCase().includes(v));
         });
       } else {
-        return this.acknowledgedRequests;
+        return this.approvedReq;
       }
     },
   },

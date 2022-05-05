@@ -139,13 +139,13 @@ export default {
   mixins: [Common],
   data() {
     return {
-      // companyReport: {
-      //   companyName: 'company',
-      //   cardsReceived: 0,
-      //   cardHolders: 0,
-      //   accountHolders: 0,
-      // },
-      // creditCardReports: [],
+      companyReport: {
+        companyName: 'company',
+        cardsReceived: 0,
+        cardHolders: 0,
+        accountHolders: 0,
+      },
+      creditCardReports: [],
       loading: false,
     };
   },
@@ -153,7 +153,7 @@ export default {
     const id = this.$route.params.id;
     await this.$store.dispatch("getRoles");
     await this.fetchCompanyReport(id);
-    await this.fetchCreditCardReport(id);
+    await this.fetchCompanyCreditCardReport(id);
   },
   computed: {
     ...mapGetters([
@@ -171,14 +171,15 @@ export default {
       const fetchCompanyReport = axios.get(
         this.getUrl + "api/reports/" + this.$route.params.id
       );
-      const fetchCreditCardReport = axios.get(
+      const fetchCompanyCreditCardReport = axios.get(
         `${this.getUrl}api/reports/creditcardreport/company/${id}`
       );
-      const calls = [fetchCompanyReport, fetchCreditCardReport];
+      const calls = [fetchCompanyReport, fetchCompanyCreditCardReport];
       const results = await Promise.all(calls);
       this.companyReport = results[0]?.data.companyReport;
       const reports = results[1].data?.reports;
-      this.creditCarReports = reports?.slice(0, 3);
+      //taking just a few of credit card reports.
+      this.creditCardReports = reports?.slice(0, 3);
       this.loading = false;
     },
   },

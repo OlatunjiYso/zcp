@@ -19,11 +19,13 @@
       :closeConfirmationModalToast="closeConfirmationModalToast"
       :approve="approve"
       :decline="decline"
+      :testProp="testProp"
+      :transientProp="'transient rubbbisddhsh'"
     />
-    <div class="content-header">Pending Card Stock Requests</div>
+    <div class="content-header">Initiated Card Stock Requests</div>
     <div class="content-sub">Here are the requests that need approval</div>
     <div class="app-table-actions"></div>
-    <Loading v-if="pendingApprovalLoader" />
+    <Loading v-if="initiatedReqLoader" />
     <div v-else>
       <table class="app-table2" v-if="!resultQuery.length <= 0">
         <thead>
@@ -97,7 +99,7 @@ import ViewDetails from "./ViewDetails";
 import ConfirmationModal from "./ConfirmationModal.vue";
 
 export default {
-  props: ["requestsPendingApproval", "pendingApprovalLoader", "checkPerm"],
+  props: ["initiatedReq", "initiatedReqLoader", "checkPerm"],
   components: {
     Loader,
     Status,
@@ -121,22 +123,23 @@ export default {
       viewDetails: false,
       viewDetailsData: "",
       showConfirmationModal: false,
-      confirmationModalData: {intent:'', req: {}},
-      showConfirmationModalToast: false
+      confirmationModalData: {intent:'99', req: {}},
+      showConfirmationModalToast: false,
+      testProp: {flag: 'true'}
     };
   },
   computed: {
     ...mapGetters(["getUrl2"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.requestsPendingApproval.filter((item) => {
+        return this.initiatedReq.filter((item) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => item.accountNbr.toLowerCase().includes(v));
         });
       } else {
-        return this.requestsPendingApproval;
+        return this.initiatedReq;
       }
     },
   },
@@ -159,13 +162,13 @@ export default {
       this.showConfirmationModal = false;
     },
     attemptApprove(req) {
-      this.confirmationModalData.req = req;
       this.confirmationModalData.intent = 'approve';
+      this.confirmationModalData.req = req;
       this.openConfirmationModal();
     },
     attemptDecline(req) {
-      this.confirmationModalData.req = req;
       this.confirmationModalData.intent = 'decline';
+       this.confirmationModalData.req = req;
       this.openConfirmationModal();
     },
     async approve(req, reason) {
@@ -187,7 +190,7 @@ export default {
         this.status = true;
         if (response.data.responseCode == "00") {
           this.state = "success";
-          this.message = "Request Approved Successfully";
+          this.message = response.data.responseMessage;
         } else {
           this.state = "failed";
           this.message = response.data.responseMessage;
@@ -196,7 +199,7 @@ export default {
         this.loader = false;
         this.status = true;
         this.state = "failed";
-        this.message = "Operation Failed";
+        this.message = "Operation Failed. Please Contact Admin";
       }
     },
     async decline(req, reason) {

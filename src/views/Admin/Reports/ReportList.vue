@@ -7,7 +7,7 @@
       :cardReportData="cardReportData"
     />
     <div class="content-header">All Credit Cards Report</div>
-    <div class="content-sub">Here are the all the cards issed by Company</div>
+    <div class="content-sub">Here are the all the cards issued by Company</div>
     <div class="app-table-actions">
       <div class="app-table-search">
         <div class="form-block w-form">
