@@ -14,6 +14,9 @@ import CardParam from "../views/Client/CardParam/Requests";
 import PinReissue from "../views/Client/PinReissue/PinReissue";
 import Audit from '../views/Client/Audit/Audit.vue'
 import CardStatus from '../views/Client/CardStatus/CardStatus'
+import CardStockRequest from '../views/Client/StockRequest/Requests'
+import AccountHolders from '../views/Client/AccountHolders/Index.vue'
+
 
 import Login2 from '../views/Admin/Login/Login.vue'
 import Overview2 from '../views/Admin/Overview/Overview.vue'
@@ -22,9 +25,14 @@ import Requests2 from '../views/Admin/Requests/Requests.vue'
 import UserMgmt2 from '../views/Admin/UserMgmt/UserMgmt.vue'
 import CreateRole2 from '../views/Admin/UserMgmt/Roles/CreateRole.vue'
 import Activities2 from '../views/Admin/Activities/Activities.vue'
+import ActivityRequest2 from '../views/Admin/ActivityRequests/ActivityRequests'
 import Audit2 from '../views/Admin/Audit/Audit.vue'
 import CardStatus2 from '../views/Admin/CardStatus/CardStatus'
+import CardStockRequest2 from '../views/Admin/StockRequest/Requests'
 import CompanyUsers from '../views/Admin/Companies/UserMgmt'
+import Reporting2 from '../views/Admin/Reports/Reporting.vue';
+import CompanyReport2 from '../views/Admin/Reports/CompanyReport.vue';
+import CardReportList2 from '../views/Admin/Reports/CardReportList.vue';
 
 const routes = [
   {
@@ -117,6 +125,20 @@ const routes = [
     component: CardStatus,
     meta: { requiresMfbAuth: true }
   },
+{
+  path: '/client/card-stock-request',
+    name: 'CardStockRequest',
+    component: CardStockRequest,
+    meta: { requiresMfbAuth: true }
+},
+{
+  path: '/client/account-holders',
+    name: 'AccountHolders',
+    component: AccountHolders,
+    meta: { requiresMfbAuth: true }
+},
+
+
 
 
 
@@ -175,6 +197,12 @@ const routes = [
     meta: { requiresAdminAuth: true }
   },
   {
+    path: '/admin/activity-requests',
+    name: 'ActivityRequest2',
+    component: ActivityRequest2,
+    meta: { requiresAdminAuth: true }
+  },
+  {
     path: '/admin/create-role',
     name: 'CreateRole2',
     component: CreateRole2,
@@ -185,7 +213,31 @@ const routes = [
     name: 'UserMgmt2',
     component: UserMgmt2,
     meta: { requiresAdminAuth: true }
-  }
+  },
+  {
+    path: '/admin/card-stock-request',
+      name: 'CardStockRequest2',
+      component: CardStockRequest2,
+      meta: { requiresAdminAuth: true }
+  },
+  {
+    path: '/admin/reporting',
+      name: 'Reporting2',
+      component: Reporting2,
+      meta: { requiresAdminAuth: true }
+  },
+  {
+    path: '/admin/reporting/company/:id',
+      name: 'CompanyReport2',
+      component: CompanyReport2,
+      meta: { requiresAdminAuth: true }
+  },
+  {
+    path: '/admin/reporting/company/cards/:id',
+      name: 'CardReportList2',
+      component: CardReportList2,
+      meta: { requiresAdminAuth: true }
+  } 
 
 ]
 

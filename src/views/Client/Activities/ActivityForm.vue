@@ -1,31 +1,42 @@
 <template>
-  <Loader v-show="loader"/>
-  <Status :state="state" :closeModal = "closeAddReload" :message = "message" :resetState="resetState" v-if="status"/>
+  <Loader v-show="loader" />
+  <Status
+    :state="state"
+    :closeModal="closeAddReload"
+    :message="message"
+    :resetState="resetState"
+    v-if="status"
+  />
   <div class="app-admin-section">
     <div class="app-admin-col-1">
-      <Leftbar/>
+      <Leftbar />
     </div>
     <div class="app-admin-col-2">
       <div class="admin-top-bar">
         <div class="admin-top-bar-left">
-          <router-link to="/client/activities"><div class="settings-icon"></div></router-link>
+          <router-link to="/client/activities"
+            ><div class="settings-icon"></div></router-link
+          >
         </div>
         <div class="admin-top-bar-right">
-          <div class="admin-topbar-date">{{getDate}}</div>
+          <div class="admin-topbar-date">{{ getDate }}</div>
         </div>
       </div>
-        <ActivityForm1 v-if="form == 1" />
-          <ActivityForm2 com="iii" :searchCard="searchCard" v-else-if="form == 10" />
-        <ActivityForm3 v-else-if="form == 12" />
-         <ActivityForm5 v-else-if="form == 4" />
-          <ActivityForm6 v-else-if="form == 5" />
-          <ActivityForm7 v-else-if="form == 6" />
-         <ActivityForm8 v-else-if="form == 8" />
-           <ActivityForm9 v-else-if="form == 7" />
-           <ActivityForm11 v-else-if="form == 9" />
-           <ActivityForm12 v-else-if="form == 11" />
-         <ActivityForm14 v-else-if="form == 3" />
-         <ActivityForm15 v-else-if="form == 13" />
+      <CardRequestForm v-if="form == 1" />
+      <CardCancellationForm :searchCard="searchCard" v-else-if="form == 10" />
+      <TransactionLogsForm v-else-if="form == 12" />
+      <PinGenerationForm v-else-if="form == 4" />
+      <PinReIssueForm v-else-if="form == 5" />
+      <ChargeBackForm v-else-if="form == 6" />
+      <CardReactivationForm v-else-if="form == 8" />
+      <CardDeactivationForm v-else-if="form == 7" />
+      <CardReIssueForm v-else-if="form == 9" />
+      <CardParameterizationForm v-else-if="form == 11" />
+      <CardStatusForm v-else-if="form == 3" />
+      <CardStockRequestForm v-else-if="form == 13" />
+      <AccountOpeningForm v-else-if="form == 14" />
+      <CardStockRequestForm v-else-if="form == 10002" />
+      <AccountOpeningForm v-else-if="form == 10003" />
     </div>
     <!-- <div class="app-admin-col-3">
       <Rightbar />
@@ -34,70 +45,69 @@
 </template>
 
 <script>
-import Leftbar from '../../../components/Client/leftbar/leftbar'
-import Rightbar from '../../../components/Client/rightbar/rightbar'
-import Loader from '../../../components/Loader/Loader'
-import Status from '../../../components/Status/Status2'
-import {mapGetters} from 'vuex'
-import ActivityForm1 from "../../../components/ActivityForms/ActivityForm1";
-import ActivityForm2 from "../../../components/ActivityForms/ActivityForm2";
-import ActivityForm3 from "../../../components/ActivityForms/ActivityForm3";
-import ActivityForm5 from "../../../components/ActivityForms/ActivityForm5";
-import ActivityForm6 from "../../../components/ActivityForms/ActivityForm6";
-import ActivityForm7 from "../../../components/ActivityForms/ActivityForm7";
-import ActivityForm8 from "../../../components/ActivityForms/ActivityForm8";
-import ActivityForm9 from "../../../components/ActivityForms/ActivityForm9";
-import ActivityForm11 from "../../../components/ActivityForms/ActivityForm11";
-import ActivityForm12 from "../../../components/ActivityForms/ActivityForm12";
-import ActivityForm14 from "../../../components/ActivityForms/ActivityForm14";
-import ActivityForm15 from "../../../components/ActivityForms/ActivityForm15";
-import Global from '../../global.js'
+import Leftbar from "../../../components/Client/leftbar/leftbar";
+import Rightbar from "../../../components/Client/rightbar/rightbar";
+import Loader from "../../../components/Loader/Loader";
+import Status from "../../../components/Status/Status2";
+import { mapGetters } from "vuex";
+import CardRequestForm from "../../../components/ActivityForms/CardRequestForm";
+import CardCancellationForm from "../../../components/ActivityForms/CardCancellationForm";
+import TransactionLogsForm from "../../../components/ActivityForms/TransactionLogsForm";
+import PinGenerationForm from "../../../components/ActivityForms/PinGenerationForm";
+import PinReIssueForm from "../../../components/ActivityForms/PinReIssueForm";
+import ChargeBackForm from "../../../components/ActivityForms/ChargeBackForm";
+import CardReactivationForm from "../../../components/ActivityForms/CardReactivationForm";
+import CardDeactivationForm from "../../../components/ActivityForms/CardDeactivationForm";
+import CardReIssueForm from "../../../components/ActivityForms/CardReIssueForm";
+import CardParameterizationForm from "../../../components/ActivityForms/CardParameterizationForm";
+import CardStatusForm from "../../../components/ActivityForms/CardStatusForm";
+import CardStockRequestForm from "../../../components/ActivityForms/CardStockRequestForm";
+import AccountOpeningForm from "../../../components/ActivityForms/AccountOpeningForm";
+import CreditCardIssuance from "../../../components/ActivityForms/CreditCardIssuance";
+import Global from "../../global.js";
 export default {
-      mixins:[Global],
+  mixins: [Global],
   components: {
-    ActivityForm1,
-    ActivityForm2,
-    ActivityForm3,
-    ActivityForm5,
-    ActivityForm6,
-    ActivityForm7,
-    ActivityForm8,
-    ActivityForm9,
-    ActivityForm11,
-    ActivityForm12,
-    ActivityForm14,
-    ActivityForm15,
+    CardRequestForm,
+    CardCancellationForm,
+    TransactionLogsForm,
+    PinGenerationForm,
+    PinReIssueForm,
+    ChargeBackForm,
+    CardReactivationForm,
+    CardDeactivationForm,
+    CardReIssueForm,
+    CardParameterizationForm,
+    CardStatusForm,
+    CardStockRequestForm,
+    AccountOpeningForm,
     Leftbar,
     Rightbar,
-      Loader,
-     Status
+    Loader,
+    Status,
   },
   created() {
     this.form = this.$route.params.slug;
-    
   },
-      computed:{
-    ...mapGetters([ 'getUrl2' ])
-    }, 
-  data(){
-      return{
-        form : 0,
-        loader: false,
-        status: false,
-        state: null,
-        message: null,  
-
-      }
+  computed: {
+    ...mapGetters(["getUrl2"]),
   },
-  methods: {
-
+  data() {
+    return {
+      form: 0,
+      loader: false,
+      status: false,
+      state: null,
+      message: null,
+    };
   },
-}
+  methods: {},
+};
 </script>
 
 <style scoped>
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 .activity-card-header {
   margin-bottom: 15px;
@@ -105,15 +115,15 @@ a {
   font-size: 14px;
   font-weight: 700;
 }
-.activity-btn{
-    background: #c00;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 3px;
-    cursor: pointer;
-    color: white;
-    width: 100px;
+.activity-btn {
+  background: #c00;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  cursor: pointer;
+  color: white;
+  width: 100px;
 }
 </style>
